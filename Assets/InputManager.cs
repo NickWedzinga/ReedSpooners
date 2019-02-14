@@ -4,11 +4,13 @@ using UnityEngine;
 
 public class InputManager : MonoBehaviour
 {
+    public static InputManager instance;
     float _currentTime;
     public float _approachRate { get; set; }
     // Start is called before the first frame update
     void Start()
     {
+        instance = this;
         print("Start running");
         _currentTime = Time.deltaTime;
 
