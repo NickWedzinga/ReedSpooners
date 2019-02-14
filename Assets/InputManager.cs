@@ -7,8 +7,11 @@ public class InputManager : MonoBehaviour
 {
     float _currentTime;
     public float _approachRate { get; set; }
+
     public int Score;
     public Text ScoreText;
+
+
     public ObjectManager objectManager;
 
     // Start is called before the first frame update
@@ -20,6 +23,7 @@ public class InputManager : MonoBehaviour
         _currentTime = Time.deltaTime;
         Score = 0;
         ScoreText.text = "Score: " + Score.ToString();
+
         
 
         // Change to increase speed

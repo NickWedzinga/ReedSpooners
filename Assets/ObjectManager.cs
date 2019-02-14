@@ -1,23 +1,48 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ObjectManager : MonoBehaviour
 {
     public GameObject[] Objects = new GameObject[100];
     public int lastObjectPositionZ = 0;
     private int nrOfHighlightedObjects = 10;
+
+    public Text Announcer;
+    private float _AnnouncerTextTimer;
+    private Color _OriginalColor;
+
+    public int VisualVariableCounter;
         
     // Start is called before the first frame update
     void Start()
     {
+        VisualVariableCounter = 1;
+
+        _OriginalColor = Announcer.color;
+        _AnnouncerTextTimer = Time.deltaTime;
+        
+        Announcer.text = "GET READY FOR ROUND " + VisualVariableCounter.ToString();
+        Announcer.fontSize = 40;
+
         SpawnObjects();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        print(Announcer.IsActive());
+        if (_AnnouncerTextTimer > 0)
+        {
+            Announcer.color = Color.Lerp(_OriginalColor, Color.clear, Mathf.Min(1, _AnnouncerTextTimer / 3.0f));
+            _AnnouncerTextTimer += Time.deltaTime;
+            if (_AnnouncerTextTimer > 3.0f)
+            {
+                _AnnouncerTextTimer = 0.0f;
+                Announcer.gameObject.SetActive(false);
+            }
+        }
     }
 
     void SpawnObjects()
@@ -83,24 +108,32 @@ public class ObjectManager : MonoBehaviour
 
     public void Reset()
     {
-        print("WHERE WE DROPPIN BOIS");
+        //print("WHERE WE DROPPIN BOIS");
         for (int i = 0; i < Objects.Length; ++i)
         {
             Objects[i].gameObject.name = "Spike";
             Objects[i].GetComponent<MeshRenderer>().material.color = Objects[0].GetComponent<MeshRenderer>().material.color;
             Objects[i].transform.position = new Vector3(4.75f * RandomLane() , Objects[i].transform.position.y, Objects[i].transform.position.z);
-            //Objects[i].gameObject.SetActive(false);
             Objects[i].SetActive(true);
         }
 
+        // Choose random objects that will be highlighted
         RandomHighlight();
+
+        // Announcer text reset and active
+        VisualVariableCounter++;
+        Announcer.text = "GET READY FOR ROUND " + VisualVariableCounter.ToString();
+        Announcer.gameObject.SetActive(true);
+        _AnnouncerTextTimer += Time.deltaTime;
+
+        int highlightType = 1;
 
         for (int i = 0; i < Objects.Length; ++i)
         {
             if (Objects[i].gameObject.name == "Coin")
             {
                 // Object should be highlighted, apply highlight
-                ApplyHighlight(i, 1);
+                ApplyHighlight(i, highlightType);
             }
         }
     }
