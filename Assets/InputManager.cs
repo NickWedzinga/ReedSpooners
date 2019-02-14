@@ -9,11 +9,14 @@ public class InputManager : MonoBehaviour
     public float _approachRate { get; set; }
     public int Score;
     public Text ScoreText;
+    public ObjectManager objectManager;
 
     // Start is called before the first frame update
     void Start()
     {
-        print("Start running");
+        print("WHY AH U RUNNING?!");
+        objectManager = gameObject.GetComponent<ObjectManager>();
+
         _currentTime = Time.deltaTime;
         Score = 0;
         ScoreText.text = "Score: " + Score.ToString();
@@ -26,6 +29,11 @@ public class InputManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (transform.position.z > objectManager.lastObjectPositionZ + 50)
+        {
+            Reset();
+        }
+
         _currentTime += Time.deltaTime;
         if ((Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) && transform.position.x < 1)
         {
@@ -40,16 +48,28 @@ public class InputManager : MonoBehaviour
         _approachRate += Time.deltaTime;
     }
 
+    private void Reset()
+    {
+        objectManager.Reset();
+
+        _approachRate = 5.0f;
+        gameObject.transform.position = new Vector3(0, 1, 0.5f);
+    }
+
     public void OnCollisionEnter(Collision bigColliderBoi)
     {
         if (bigColliderBoi.gameObject.name == "Spike")
         {
-            Destroy(bigColliderBoi.gameObject);
+            //Destroy(bigColliderBoi.gameObject);
+            //bigColliderBoi.gameObject.transform.position = new Vector3(bigColliderBoi.gameObject.transform.position.x, 10, bigColliderBoi.gameObject.transform.position.z);
+            bigColliderBoi.gameObject.SetActive(false);
             Score -= 50;
         }
         if (bigColliderBoi.gameObject.name == "Coin")
         {
-            Destroy(bigColliderBoi.gameObject);
+            //Destroy(bigColliderBoi.gameObject);
+            //bigColliderBoi.gameObject.transform.position = new Vector3(bigColliderBoi.gameObject.transform.position.x, 10, bigColliderBoi.gameObject.transform.position.z);
+            bigColliderBoi.gameObject.SetActive(false);
             Score += 50;
         }
         ScoreText.text = "Score: " + Score.ToString();

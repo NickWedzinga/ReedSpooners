@@ -304,7 +304,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 508518437}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d64a5c64fd0e9104abb16de61f1c9c7c, type: 3}
   m_Name: 
@@ -959,6 +959,7 @@ GameObject:
   - component: {fileID: 1801603279}
   - component: {fileID: 1801603283}
   - component: {fileID: 1801603284}
+  - component: {fileID: 1801603285}
   m_Layer: 0
   m_Name: Chad
   m_TagString: Untagged
@@ -1069,3 +1070,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Score: 0
   ScoreText: {fileID: 1195408081}
+--- !u!114 &1801603285
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1801603278}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d64a5c64fd0e9104abb16de61f1c9c7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

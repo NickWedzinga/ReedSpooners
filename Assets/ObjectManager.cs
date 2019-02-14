@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class ObjectManager : MonoBehaviour
 {
-    GameObject[] Objects = new GameObject[100];
-    int nrOfHighlightedObjects = 10;
+    public GameObject[] Objects = new GameObject[100];
+    public int lastObjectPositionZ = 0;
+    private int nrOfHighlightedObjects = 10;
         
     // Start is called before the first frame update
     void Start()
@@ -42,8 +43,10 @@ public class ObjectManager : MonoBehaviour
             if (Objects[i].gameObject.name == "Coin")
             {
                 // Object should be highlighted, apply highlight
-                ApplyHighlight(i);
+                ApplyHighlight(i, 0);
             }
+            if (i == Objects.Length - 1)
+                lastObjectPositionZ = (int)Objects[i].transform.position.z;
         }
     }
 
@@ -78,8 +81,36 @@ public class ObjectManager : MonoBehaviour
         }
     }
 
-    public virtual void ApplyHighlight(int index)
+    public void Reset()
     {
-        Objects[index].GetComponent<MeshRenderer>().material.color = new Color(255, 0, 0);
+        print("WHERE WE DROPPIN BOIS");
+        for (int i = 0; i < Objects.Length; ++i)
+        {
+            Objects[i].gameObject.name = "Spike";
+            Objects[i].GetComponent<MeshRenderer>().material.color = Objects[0].GetComponent<MeshRenderer>().material.color;
+            Objects[i].transform.position = new Vector3(4.75f * RandomLane() , Objects[i].transform.position.y, Objects[i].transform.position.z);
+            //Objects[i].gameObject.SetActive(false);
+            Objects[i].SetActive(true);
+        }
+
+        RandomHighlight();
+
+        for (int i = 0; i < Objects.Length; ++i)
+        {
+            if (Objects[i].gameObject.name == "Coin")
+            {
+                // Object should be highlighted, apply highlight
+                ApplyHighlight(i, 1);
+            }
+        }
+    }
+
+    public virtual void ApplyHighlight(int index, int highlightType)
+    {
+        // Red Hue
+        if(highlightType == 0)
+            Objects[index].GetComponent<MeshRenderer>().material.color = new Color(255, 0, 0);
+        else if (highlightType == 1)
+            Objects[index].GetComponent<MeshRenderer>().material.color = new Color(0, 0, 255);
     }
 }
