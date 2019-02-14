@@ -45,12 +45,12 @@ public class InputManager : MonoBehaviour
         if (bigColliderBoi.gameObject.name == "Spike")
         {
             Destroy(bigColliderBoi.gameObject);
-            Score -= 100;
+            Score -= 50;
         }
         if (bigColliderBoi.gameObject.name == "Coin")
         {
             Destroy(bigColliderBoi.gameObject);
-            Score += 100;
+            Score += 50;
         }
         ScoreText.text = "Score: " + Score.ToString();
     }

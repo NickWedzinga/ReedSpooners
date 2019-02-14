@@ -4,33 +4,47 @@ using UnityEngine;
 
 public class ObjectManager : MonoBehaviour
 {
-    //GameObject Objects[100] = {GameObject.CreatePrimitive(PrimitiveType.Cube)}
-
+    GameObject[] Objects = new GameObject[100];
+    int nrOfHighlightedObjects = 10;
+        
     // Start is called before the first frame update
     void Start()
     {
-        // Spawn random objects
-        for (int i = 3; i < 103; ++i)
-        {
-            GameObject Object = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            Object.AddComponent<Rigidbody>();
-            Object.AddComponent<BoxCollider>();
-
-            Object.gameObject.name = "Spike";
-            Object.transform.position = new Vector3(4.75f * RandomLane(), 1, (i) * 10 + i/10);
-
-            if (RandomHighlight())
-            {
-                Object.gameObject.name = "Coin";
-                Object.GetComponent<MeshRenderer>().material.color = new Color(255, 0, 0);
-            }
-        }
+        SpawnObjects();
     }
 
     // Update is called once per frame
     void Update()
     {
+        
+    }
 
+    void SpawnObjects()
+    {
+        for (int i = 0; i < Objects.Length; ++i)
+        {
+            Objects[i] = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            Objects[i].gameObject.name = "Spike";
+        }
+
+        RandomHighlight();
+
+        // Spawn random objects
+        for (int i = 0; i < Objects.Length; ++i)
+        {
+            //Objects[i-3] = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            Objects[i].AddComponent<Rigidbody>();
+            Objects[i].AddComponent<BoxCollider>();
+
+            // i* 10 for 10 distance between objects, + i/10 to increase distance between slightly the higher the approach rate, +30 to start at z = 30
+            Objects[i].transform.position = new Vector3(4.75f * RandomLane(), 1, (i) * 10 + i / 10 + 30);
+
+            if (Objects[i].gameObject.name == "Coin")
+            {
+                // Object should be highlighted, apply highlight
+                ApplyHighlight(i);
+            }
+        }
     }
 
     int RandomLane()
@@ -45,12 +59,27 @@ public class ObjectManager : MonoBehaviour
             return 1;
     }
 
-    bool RandomHighlight()
+    void RandomHighlight()
     {
-        float value = Random.value * 10;
+        List<int> indexList = new List<int>();
 
-        if ((int)value == 0)
-            return true;
-        return false;
+        while (indexList.Count < nrOfHighlightedObjects)
+        {
+            int value = (int)(Random.value * Objects.Length);
+            if(!indexList.Contains(value) && value > 5)
+            {
+                indexList.Add(value);
+            }   
+        }
+
+        for (int i = 0; i < nrOfHighlightedObjects; ++i)
+        {
+            Objects[indexList[i]].gameObject.name = "Coin";
+        }
+    }
+
+    public virtual void ApplyHighlight(int index)
+    {
+        Objects[index].GetComponent<MeshRenderer>().material.color = new Color(255, 0, 0);
     }
 }
