@@ -4,10 +4,15 @@ using UnityEngine;
 
 public enum TECHNIQUE
 {
-    CONTROL = 0,
-    HUE_BLUE = 1,
-    HUE_RED = 2,
-    GLOW = 3,
+    CONTROL,
+    HUE_BLUE,
+    HUE_RED,
+    GLOW,
+    MOTION,
+    TEXTURE,
+    VALUE,
+    FLASH,
+    TECHNIQUES,
 }
 
 struct Stats
@@ -25,6 +30,7 @@ public class Subset : MonoBehaviour
     Stats stats = new Stats();
     int objects = 10;
     int lookingAt = -1;
+    public TECHNIQUE technique;
 
     // Start is called before the first frame update
     void Start()
