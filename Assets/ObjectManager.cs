@@ -21,6 +21,8 @@ public class ObjectManager : MonoBehaviour
 
     private System.Random _random = new System.Random();
 
+    public Mesh coinMesh;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -60,6 +62,7 @@ public class ObjectManager : MonoBehaviour
         {
             Objects[i] = GameObject.CreatePrimitive(PrimitiveType.Cube);
             Objects[i].gameObject.name = "Spike";
+            Objects[i].GetComponent<MeshRenderer>().material.color = Color.grey;
         }
 
         RandomizeObjectsForHighlight();
@@ -136,7 +139,7 @@ public class ObjectManager : MonoBehaviour
         for (int i = 0; i < Objects.Length; ++i)
         {
             Objects[i].gameObject.name = "Spike";
-            Objects[i].GetComponent<MeshRenderer>().material.color = Objects[0].GetComponent<MeshRenderer>().material.color;
+            Objects[i].GetComponent<MeshRenderer>().material.color = Color.grey;
             Objects[i].transform.position = new Vector3(4.75f * RandomLane() , Objects[i].transform.position.y, Objects[i].transform.position.z);
             Objects[i].SetActive(true);
         }
@@ -163,7 +166,7 @@ public class ObjectManager : MonoBehaviour
     {
         // V0 : Control
         if (highlightType == 0)
-            Objects[index].GetComponent<MeshRenderer>().material.color = _OriginalObjectColor;
+            Objects[index].gameObject.GetComponent<MeshFilter>().mesh = coinMesh;
         // V1 : Hue (red)
         else if (highlightType == 1)
             Objects[index].GetComponent<MeshRenderer>().material.color = new Color(255, 0, 0);

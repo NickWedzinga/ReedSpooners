@@ -495,6 +495,7 @@ MonoBehaviour:
   VisualVariableCounter: 0
   highlightType: 0
   VisualVariableOrder: 0000000001000000020000000300000004000000050000000600000007000000
+  coinMesh: {fileID: 0}
 --- !u!4 &508518439
 Transform:
   m_ObjectHideFlags: 0
@@ -1376,3 +1377,4 @@ MonoBehaviour:
   VisualVariableCounter: 0
   highlightType: 0
   VisualVariableOrder: 0000000001000000020000000300000004000000050000000600000007000000
+  coinMesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
