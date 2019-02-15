@@ -493,6 +493,8 @@ MonoBehaviour:
   lastObjectPositionZ: 0
   Announcer: {fileID: 0}
   VisualVariableCounter: 0
+  highlightType: 0
+  VisualVariableOrder: 0000000001000000020000000300000004000000050000000600000007000000
 --- !u!4 &508518439
 Transform:
   m_ObjectHideFlags: 0
@@ -1372,3 +1374,5 @@ MonoBehaviour:
   lastObjectPositionZ: 0
   Announcer: {fileID: 66900528}
   VisualVariableCounter: 0
+  highlightType: 0
+  VisualVariableOrder: 0000000001000000020000000300000004000000050000000600000007000000
