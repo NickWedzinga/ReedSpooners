@@ -22,7 +22,7 @@ public class Subset : MonoBehaviour
     Tobii.Gaming.GazePoint gazePoint = new Tobii.Gaming.GazePoint();
     new Camera camera = FindObjectOfType<Camera>();
     bool active = false;
-    Stats stats = new Stats();
+    public Stats stats = new Stats();
     int objects = 10;
     int lookingAt = -1;
     TECHNIQUE _technique;

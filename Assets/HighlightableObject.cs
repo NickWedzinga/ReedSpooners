@@ -15,7 +15,7 @@ public class HighlightableObject : MonoBehaviour
     public float TFD;
     public int fixations;
 
-    TYPE type;
+    public TYPE type;
 
     Subset owner;
     GazeAware gazeAware;
@@ -50,5 +50,10 @@ public class HighlightableObject : MonoBehaviour
         {
             owner.UpdateScore(type);
         }
+    }
+
+    public void GazeAware(bool on)
+    {
+        gazeAware.enabled = on;
     }
 }

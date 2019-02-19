@@ -4,20 +4,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-struct Stats
+public struct Stats
 {
     public int score, coins, spikes;
     public List<float> TFD, TTFF;
     public List<int> fixations;
 }
 
-class StatTracker
+public class StatTracker
 {
     private Dictionary<TECHNIQUE, Stats> stats;
 
     string filePath;
 
-    StatTracker()
+    public StatTracker()
     {
         stats = new Dictionary<TECHNIQUE, Stats>();
         filePath = "PlayerStatsReedSpooners.csv";
@@ -27,42 +27,46 @@ class StatTracker
         }
     }
 
-    void AddTechnique(TECHNIQUE technique, Stats _stats)
+    public void AddTechnique(TECHNIQUE technique, Stats _stats)
     {
         stats.Add(technique, _stats);
     }
 
-    void SaveStats()
+    public void SaveStats()
     {
-        foreach (var technique in stats.Values)
+        string playerText = "";
+        foreach (var techniqueStats in stats)
         {
-            string playerText = technique.score.ToString();
+            playerText += techniqueStats.Key.ToString();
             playerText += ',';
-            playerText += technique.coins.ToString();
+            var stats = techniqueStats.Value;
+            playerText += stats.score.ToString();
             playerText += ',';
-            playerText += technique.spikes.ToString();
+            playerText += stats.coins.ToString();
+            playerText += ',';
+            playerText += stats.spikes.ToString();
             playerText += ',';
 
             for (int i = 0; i < GameManager.instance.nrOfHighlightedObjects; ++i)
             {
-                playerText += technique.TFD[i].ToString();
+                playerText += stats.TFD[i].ToString();
                 playerText += ',';
             }
             for (int i = 0; i < GameManager.instance.nrOfHighlightedObjects; ++i)
             {
-                playerText += technique.TTFF[i].ToString();
+                playerText += stats.TTFF[i].ToString();
                 playerText += ',';
             }
             for (int i = 0; i < GameManager.instance.nrOfHighlightedObjects; ++i)
             {
-                playerText += technique.fixations[i].ToString();
+                playerText += stats.fixations[i].ToString();
                 playerText += ',';
             }
+        }
 
-            using (System.IO.StreamWriter sw = System.IO.File.AppendText(filePath))
-            {
-                sw.Write(playerText);
-            }
+        using (System.IO.StreamWriter sw = System.IO.File.AppendText(filePath))
+        {
+            sw.Write(playerText);
         }
     }
 }

@@ -5,9 +5,9 @@ using UnityEngine.UI;
 
 public class ObjectManager : MonoBehaviour
 {
-    public GameObject[] Objects = new GameObject[100];
+    public HighlightableObject[] Objects = new HighlightableObject[100];
     public int lastObjectPositionZ = 0;
-    private int nrOfHighlightedObjects = 10;
+    public int nrOfHighlightedObjects { get; private set; } = 10;
     private Color _OriginalObjectColor;
 
     public Text Announcer;
@@ -22,8 +22,6 @@ public class ObjectManager : MonoBehaviour
     private System.Random _random = new System.Random();
 
     public Mesh coinMesh;
-
-    public int nrOfHighlightedObjects { get; private set; } = 10;
         
     // Start is called before the first frame update
     void Start()
@@ -62,9 +60,10 @@ public class ObjectManager : MonoBehaviour
     {
         for (int i = 0; i < Objects.Length; ++i)
         {
-            Objects[i] = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            Objects[i].gameObject.name = "Spike";
-            Objects[i].GetComponent<MeshRenderer>().material.color = Color.grey;
+            GameObject gObj = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            Objects[i] = gObj.AddComponent<HighlightableObject>();
+            Objects[i].type = TYPE.SPIKE;
+            Objects[i].gameObject.GetComponent<MeshRenderer>().material.color = Color.grey;
         }
 
         RandomizeObjectsForHighlight();
@@ -72,13 +71,13 @@ public class ObjectManager : MonoBehaviour
         // Spawn random objects
         for (int i = 0; i < Objects.Length; ++i)
         {
-            Objects[i].AddComponent<Rigidbody>();
-            Objects[i].AddComponent<BoxCollider>();
+            Objects[i].gameObject.AddComponent<Rigidbody>();
+            Objects[i].gameObject.AddComponent<BoxCollider>();
 
             // i* 10 for 10 distance between objects, + i/10 to increase distance between slightly the higher the approach rate, +30 to start at z = 30
             Objects[i].transform.position = new Vector3(4.75f * RandomLane(), 1, (i) * 10 + i / 10 + 50);
 
-            if (Objects[i].gameObject.name == "Coin")
+            if (Objects[i].type == TYPE.COIN)
             {
                 // Object should be highlighted, apply highlight
                 //ApplyHighlight(i, VisualVariableOrder[VisualVariableCounter]);
@@ -116,7 +115,7 @@ public class ObjectManager : MonoBehaviour
 
         for (int i = 0; i < nrOfHighlightedObjects; ++i)
         {
-            Objects[indexList[i]].gameObject.name = "Coin";
+            Objects[indexList[i]].type = TYPE.COIN;
         }
     }
 
