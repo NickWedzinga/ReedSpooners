@@ -8,8 +8,11 @@ public class InputManager : MonoBehaviour
     public static InputManager instance;
 
     public float _approachRate { get; set; }
+
     public int Score;
     public Text ScoreText;
+
+
     public ObjectManager objectManager;
 
     // Start is called before the first frame update
@@ -20,6 +23,7 @@ public class InputManager : MonoBehaviour
         objectManager = gameObject.GetComponent<ObjectManager>();
         Score = 0;
         ScoreText.text = "Score: " + Score.ToString();
+
         
 
         // Change to increase speed
