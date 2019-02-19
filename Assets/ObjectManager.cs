@@ -6,7 +6,7 @@ public class ObjectManager : MonoBehaviour
 {
     public GameObject[] Objects = new GameObject[100];
     public int lastObjectPositionZ = 0;
-    private int nrOfHighlightedObjects = 10;
+    public int nrOfHighlightedObjects { get; private set; } = 10;
         
     // Start is called before the first frame update
     void Start()

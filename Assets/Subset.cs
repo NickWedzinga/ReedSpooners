@@ -15,68 +15,33 @@ public enum TECHNIQUE
     TECHNIQUES,
 }
 
-struct Stats
-{
-    public int score, coins, spikes;
-    public List<float> TFD, TTFF;
-}
-
 public class Subset : MonoBehaviour
 {
     List<HighlightableObject> HighlightableObjects = new List<HighlightableObject>();
+    public ObjectManager objectManager;
     Tobii.Gaming.GazePoint gazePoint = new Tobii.Gaming.GazePoint();
     new Camera camera = FindObjectOfType<Camera>();
     bool active = false;
     Stats stats = new Stats();
     int objects = 10;
     int lookingAt = -1;
-    public TECHNIQUE technique;
+    TECHNIQUE _technique;
+    public TECHNIQUE technique { get { return _technique; } set { Reset(); _technique = value; } }
 
     // Start is called before the first frame update
     void Start()
     {
-        stats.score = 0;
-        stats.coins = 0;
-        stats.spikes = 0;
-        stats.TFD = new List<float>(new float[objects]);
-        stats.TTFF = new List<float>(new float[objects]);
+        objectManager = gameObject.GetComponent<ObjectManager>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(active)
-        {
-            GazeCheck();
-        }
-    }
 
-    // Gaze intersection check
-    void GazeCheck()
-    {
-        Vector3 screenGaze = new Vector3(gazePoint.Screen.x, gazePoint.Screen.y, 0);
-        Vector3 worldGaze = camera.ScreenToWorldPoint(screenGaze);
-        Ray ray = new Ray(worldGaze, InputManager.instance.transform.forward);
-        RaycastHit hitInfo;
-        bool hit = Physics.Raycast(ray, out hitInfo);
-        if(hit)
-        {
-            HighlightableObject obj = hitInfo.collider.gameObject.GetComponent<HighlightableObject>();
-            if (HighlightableObjects.Contains(obj))
-            {
-                if (stats.TTFF[obj.ID] < 0)
-                    stats.TTFF[obj.ID] = gazePoint.Timestamp;
-
-                if (lookingAt != obj.ID)
-                    lookingAt = obj.ID;
-                else
-                    stats.TFD[lookingAt] += Time.deltaTime;
-            }
-        }
     }
 
     // Updates score, called during collision in a HighlightableObject
-    public void UpdateScoreBoard(TYPE type)
+    public void UpdateScore(TYPE type)
     {
         switch (type)
         {
@@ -89,5 +54,27 @@ public class Subset : MonoBehaviour
                 stats.score -= 50;
                 break;
         }
+    }
+
+    public void UpdateGazeStuff(float TFD, float TTFF, int fixations, int ID)
+    {
+        stats.TFD[ID] = TFD;
+        stats.TTFF[ID] = TTFF;
+        stats.fixations[ID] = fixations;
+    }
+
+    void Reset()
+    {
+        ResetScore();
+        objectManager.Reset();
+    }
+
+    void ResetScore()
+    {
+        stats.score = 0;
+        stats.coins = 0;
+        stats.spikes = 0;
+        stats.TFD = new List<float>(new float[objects]);
+        stats.TTFF = new List<float>(new float[objects]);
     }
 }

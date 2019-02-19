@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class InputManager : MonoBehaviour
 {
     public static InputManager instance;
-    float _currentTime;
+
     public float _approachRate { get; set; }
     public int Score;
     public Text ScoreText;
@@ -18,8 +18,6 @@ public class InputManager : MonoBehaviour
         instance = this;
         print("WHY AH U RUNNING?!");
         objectManager = gameObject.GetComponent<ObjectManager>();
-
-        _currentTime = Time.deltaTime;
         Score = 0;
         ScoreText.text = "Score: " + Score.ToString();
         
@@ -31,12 +29,10 @@ public class InputManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (transform.position.z > objectManager.lastObjectPositionZ + 50)
+        if (transform.position.z > GameManager.instance.lastObjectPositionZ + 50)
         {
             Reset();
         }
-
-        _currentTime += Time.deltaTime;
         if ((Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) && transform.position.x < 1)
         {
             transform.Translate(4.75f, 0, 0);
@@ -52,7 +48,7 @@ public class InputManager : MonoBehaviour
 
     private void Reset()
     {
-        objectManager.Reset();
+        //objectManager.Reset();
 
         _approachRate = 5.0f;
         gameObject.transform.position = new Vector3(0, 1, 0.5f);

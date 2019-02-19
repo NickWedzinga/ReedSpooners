@@ -4,28 +4,33 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    // A list of hits per object per technique
-    Dictionary<TECHNIQUE, Stats> subsetStats = new Dictionary<TECHNIQUE, Stats>();
+    public static GameManager instance;
+
     Subset subset;
+    int technique;
+
+    public int lastObjectPositionZ { get { return subset.objectManager.lastObjectPositionZ; } }
+    public int nrOfHighlightedObjects { get { return subset.objectManager.nrOfHighlightedObjects; } }
 
     // Start is called before the first frame update
     void Start()
     {
         subset = gameObject.AddComponent<Subset>();
+        instance = this;
     }
 
     // Update is called once per frame
     void Update()
     {
-        for (int i = 0; i < (int)TECHNIQUE.TECHNIQUES; ++i)
-        {
-            subset.enabled = true;
-            subset.technique
-            //while(Condition for changing what technique)
-            {
-                // Do stuff with object manager
-            }
-            subset.enabled = false;
+        // Check conditions for swapping technique
+        //SwapTechnique((TECHNIQUE)technique++)
+    }
+
+    void SwapTechnique(TECHNIQUE technique)
+    {
+        if (technique != TECHNIQUE.TECHNIQUES)
+        { 
+            subset.technique = technique;
         }
     }
 }

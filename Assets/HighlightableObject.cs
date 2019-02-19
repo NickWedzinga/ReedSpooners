@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Tobii.Gaming;
 
 public enum TYPE
 {
@@ -10,28 +11,44 @@ public enum TYPE
 
 public class HighlightableObject : MonoBehaviour
 {
-    Subset owner;
+    public float TTFF;
+    public float TFD;
+    public int fixations;
+
     TYPE type;
-    public int ID;
+
+    Subset owner;
+    GazeAware gazeAware;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        gazeAware = gameObject.GetComponent<GazeAware>();
+        TTFF = -1;
+        TFD = 0;
+        fixations = 0;
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if(gazeAware.HasGazeFocus)
+        {
+            fixations++;
+
+            if (TTFF < 0)
+                TTFF = Time.time;
+            
+            TFD += Time.deltaTime;
+        }
     }
 
     void OnCollisionEnter(Collision CollisionInfo)
     {
-        //If the object collides with the player
+        // If the object collides with the player
         if(CollisionInfo.gameObject.GetComponent<InputManager>())
         {
-            owner.UpdateScoreBoard(type);
+            owner.UpdateScore(type);
         }
     }
 }
