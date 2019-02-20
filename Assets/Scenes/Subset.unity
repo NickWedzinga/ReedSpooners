@@ -496,6 +496,7 @@ MonoBehaviour:
   highlightType: 0
   VisualVariableOrder: 0000000001000000020000000300000004000000050000000600000007000000
   coinMesh: {fileID: 0}
+  HighlightTexture: {fileID: 0}
 --- !u!4 &508518439
 Transform:
   m_ObjectHideFlags: 0
@@ -1378,3 +1379,4 @@ MonoBehaviour:
   highlightType: 0
   VisualVariableOrder: 0000000001000000020000000300000004000000050000000600000007000000
   coinMesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+  HighlightTexture: {fileID: 2800000, guid: b526ec8f183f1ff49aaa32ebab03ce79, type: 3}

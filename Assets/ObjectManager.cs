@@ -22,6 +22,9 @@ public class ObjectManager : MonoBehaviour
     private System.Random _random = new System.Random();
 
     public Mesh coinMesh;
+    public Texture2D HighlightTexture;
+
+    private float _FlashingTimer;
 
     // Start is called before the first frame update
     void Start()
@@ -30,12 +33,13 @@ public class ObjectManager : MonoBehaviour
         Shuffle(VisualVariableOrder); 
 
         VisualVariableCounter = 0;
+        _FlashingTimer = 0.0f;
 
         _OriginalObjectColor = Color.gray;//Objects[0].GetComponent<MeshRenderer>().material.color;
         _OriginalTextColor = Announcer.color;
         _AnnouncerTextTimer = Time.deltaTime;
         
-        Announcer.text = "GET READY FOR ROUND " + VisualVariableCounter.ToString();
+        Announcer.text = "GET READY FOR ROUND " + (VisualVariableCounter+1).ToString();
         Announcer.fontSize = 40;
 
         SpawnObjects();
@@ -44,6 +48,7 @@ public class ObjectManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // Fade out text
         if (_AnnouncerTextTimer > 0)
         {
             Announcer.color = Color.Lerp(_OriginalTextColor, Color.clear, Mathf.Min(1, _AnnouncerTextTimer / 3.0f));
@@ -52,6 +57,33 @@ public class ObjectManager : MonoBehaviour
             {
                 _AnnouncerTextTimer = 0.0f;
                 Announcer.gameObject.SetActive(false);
+            }
+        }
+
+        // Flash flashing objects
+        if (_FlashingTimer > 0.0f)
+        {
+            _FlashingTimer += Time.deltaTime;
+
+            // Time to change intensity
+            if(_FlashingTimer > 0.1f)
+            {
+
+                // Reset timer
+                _FlashingTimer = Time.deltaTime;
+
+                // Loop and update intensity
+                for (int i = 0; i < Objects.Length; ++i)
+                {
+                    if (Objects[i].GetComponent<MeshRenderer>().material.color.r == 0)
+                    {
+                        Objects[i].GetComponent<MeshRenderer>().material.color = new Color(255, 255, 255);
+                    }
+                    else if (Objects[i].GetComponent<MeshRenderer>().material.color.r == 255)
+                    {
+                        Objects[i].GetComponent<MeshRenderer>().material.color = new Color(0, 0, 0);
+                    }
+                }
             }
         }
     }
@@ -80,7 +112,7 @@ public class ObjectManager : MonoBehaviour
             {
                 // Object should be highlighted, apply highlight
                 //ApplyHighlight(i, VisualVariableOrder[VisualVariableCounter]);
-                ApplyHighlight(i, 3);
+                ApplyHighlight(i, 6);
             }
             if (i == Objects.Length - 1)
                 lastObjectPositionZ = (int)Objects[i].transform.position.z;
@@ -134,21 +166,24 @@ public class ObjectManager : MonoBehaviour
 
     public void Reset()
     {
-        VisualVariableCounter++;
-
         for (int i = 0; i < Objects.Length; ++i)
         {
+            Destroy(Objects[i].GetComponent<Light>());
+            
             Objects[i].gameObject.name = "Spike";
             Objects[i].GetComponent<MeshRenderer>().material.color = Color.grey;
             Objects[i].transform.position = new Vector3(4.75f * RandomLane() , Objects[i].transform.position.y, Objects[i].transform.position.z);
             Objects[i].SetActive(true);
         }
 
+        VisualVariableCounter++;
+        _FlashingTimer = 0.0f;
+
         // Choose random objects that will be highlighted
         RandomizeObjectsForHighlight();
 
         // Announcer text reset and active
-        Announcer.text = "GET READY FOR ROUND " + VisualVariableCounter.ToString();
+        Announcer.text = "GET READY FOR ROUND " + (VisualVariableCounter+1).ToString();
         Announcer.gameObject.SetActive(true);
         _AnnouncerTextTimer += Time.deltaTime;
 
@@ -183,11 +218,21 @@ public class ObjectManager : MonoBehaviour
         else if (highlightType == 5)
             Objects[index].GetComponent<MeshRenderer>().material.color = new Color(255, 255, 255);
         else if (highlightType == 6)
-            Objects[index].GetComponent<MeshRenderer>().material.color = new Color(125, 125, 125);
+        {
+            Light tempLight = Objects[index].AddComponent<Light>();
+            tempLight.intensity = 10.0f;
+            tempLight.range = 5.0f;
+        }
+        //Objects[index].GetComponent<MeshRenderer>().material.color = new Color(125, 125, 125);
         else if (highlightType == 7)
-            Objects[index].GetComponent<MeshRenderer>().material.color = new Color(125, 125, 125);
+        {
+            Objects[index].GetComponent<MeshRenderer>().material.mainTexture = HighlightTexture;
+        }
         else if (highlightType == 8)
-            Objects[index].GetComponent<MeshRenderer>().material.color = new Color(125, 125, 125);
+        {
+            Objects[index].GetComponent<MeshRenderer>().material.color = new Color(0, 0, 0);
+            _FlashingTimer = Time.deltaTime;
+        }
     }
 
     private IEnumerator Rotator(int index)
