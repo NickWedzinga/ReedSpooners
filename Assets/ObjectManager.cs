@@ -24,6 +24,8 @@ public class ObjectManager : MonoBehaviour
     public Mesh coinMesh;
     public Texture2D HighlightTexture;
 
+    public Material LightMaterial;
+    private Material _OriginalMaterial;
     private float _FlashingTimer;
 
     // Start is called before the first frame update
@@ -35,7 +37,7 @@ public class ObjectManager : MonoBehaviour
         VisualVariableCounter = 0;
         _FlashingTimer = 0.0f;
 
-        _OriginalObjectColor = Color.gray;//Objects[0].GetComponent<MeshRenderer>().material.color;
+        _OriginalObjectColor = Color.gray;
         _OriginalTextColor = Announcer.color;
         _AnnouncerTextTimer = Time.deltaTime;
         
@@ -94,8 +96,9 @@ public class ObjectManager : MonoBehaviour
         {
             Objects[i] = GameObject.CreatePrimitive(PrimitiveType.Cube);
             Objects[i].gameObject.name = "Spike";
-            Objects[i].GetComponent<MeshRenderer>().material.color = Color.grey;
+            Objects[i].GetComponent<MeshRenderer>().material.color = Color.white;//Color.grey;
         }
+        _OriginalMaterial = Objects[0].GetComponent<MeshRenderer>().material;
 
         RandomizeObjectsForHighlight();
 
@@ -172,6 +175,7 @@ public class ObjectManager : MonoBehaviour
             
             Objects[i].gameObject.name = "Spike";
             Objects[i].GetComponent<MeshRenderer>().material.color = Color.grey;
+            Objects[i].GetComponent<MeshRenderer>().material = _OriginalMaterial;
             Objects[i].transform.position = new Vector3(4.75f * RandomLane() , Objects[i].transform.position.y, Objects[i].transform.position.z);
             Objects[i].SetActive(true);
         }
@@ -219,9 +223,10 @@ public class ObjectManager : MonoBehaviour
             Objects[index].GetComponent<MeshRenderer>().material.color = new Color(255, 255, 255);
         else if (highlightType == 6)
         {
-            Light tempLight = Objects[index].AddComponent<Light>();
-            tempLight.intensity = 10.0f;
-            tempLight.range = 5.0f;
+            Objects[index].GetComponent<MeshRenderer>().material = LightMaterial;
+            //Light tempLight = Objects[index].AddComponent<Light>();
+            //tempLight.intensity = 10.0f;
+            //tempLight.range = 5.0f;
         }
         //Objects[index].GetComponent<MeshRenderer>().material.color = new Color(125, 125, 125);
         else if (highlightType == 7)
