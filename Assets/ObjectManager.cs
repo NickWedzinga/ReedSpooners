@@ -21,7 +21,6 @@ public class ObjectManager : MonoBehaviour
 
     private System.Random _random = new System.Random();
 
-    public Mesh coinMesh;
     public Texture2D HighlightTexture;
 
     public Material LightMaterial;
@@ -94,13 +93,26 @@ public class ObjectManager : MonoBehaviour
     {
         for (int i = 0; i < Objects.Length; ++i)
         {
-            Objects[i] = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            Objects[i].gameObject.name = "Spike";
+            if(i >= 5 && i < 15)
+            {
+                Objects[i] = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+                Objects[i].transform.localScale = new Vector3(1.1f, 0.1f, 1.1f);
+                Objects[i].transform.Rotate(Vector3.right, 90.0f);
+                Objects[i].gameObject.name = "Coin";
+            }
+            else
+            {
+                Objects[i] = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                Objects[i].gameObject.name = "Spike";
+            }
+                
             Objects[i].GetComponent<MeshRenderer>().material.color = Color.white;//Color.grey;
         }
         _OriginalMaterial = Objects[0].GetComponent<MeshRenderer>().material;
 
-        RandomizeObjectsForHighlight();
+        // Randomize object array
+        ObjectShuffle();
+        //RandomizeObjectsForHighlight();
 
         // Spawn random objects
         for (int i = 0; i < Objects.Length; ++i)
@@ -114,8 +126,8 @@ public class ObjectManager : MonoBehaviour
             if (Objects[i].gameObject.name == "Coin")
             {
                 // Object should be highlighted, apply highlight
-                //ApplyHighlight(i, VisualVariableOrder[VisualVariableCounter]);
-                ApplyHighlight(i, 6);
+                ApplyHighlight(i, VisualVariableOrder[0]);
+                //ApplyHighlight(i, 6);
             }
             if (i == Objects.Length - 1)
                 lastObjectPositionZ = (int)Objects[i].transform.position.z;
@@ -134,24 +146,24 @@ public class ObjectManager : MonoBehaviour
             return 1;
     }
 
-    void RandomizeObjectsForHighlight()
-    {
-        List<int> indexList = new List<int>();
+    //void RandomizeObjectsForHighlight()
+    //{
+    //    List<int> indexList = new List<int>();
 
-        while (indexList.Count < nrOfHighlightedObjects)
-        {
-            int value = (int)(Random.value * Objects.Length);
-            if(!indexList.Contains(value) && value > 5)
-            {
-                indexList.Add(value);
-            }   
-        }
+    //    while (indexList.Count < nrOfHighlightedObjects)
+    //    {
+    //        int value = (int)(Random.value * Objects.Length);
+    //        if(!indexList.Contains(value) && value > 5)
+    //        {
+    //            indexList.Add(value);
+    //        }   
+    //    }
 
-        for (int i = 0; i < nrOfHighlightedObjects; ++i)
-        {
-            Objects[indexList[i]].gameObject.name = "Coin";
-        }
-    }
+    //    for (int i = 0; i < nrOfHighlightedObjects; ++i)
+    //    {
+    //        Objects[indexList[i]].gameObject.name = "Coin";
+    //    }
+    //}
 
     void Shuffle(int[] array)
     {
@@ -167,13 +179,76 @@ public class ObjectManager : MonoBehaviour
         }
     }
 
+    void ObjectShuffle()
+    {
+        bool shuffled = false;
+        int loopLimit = 0;
+
+        while(!shuffled && loopLimit < 100)
+        {
+            for (int i = 5; i < Objects.Length; ++i)
+            {
+                if (Objects[i].gameObject.name == "Coin")
+                {
+                    // Save coin object to temp var
+                    GameObject temp = Objects[i];
+
+                    int index = (int)(5 + Random.value * 95);
+                    print("Index " + index + " which is a object: " + Objects[index].gameObject.name);
+                    GameObject tempRandom = Objects[index];
+                    if (tempRandom.gameObject.name == "Spike")
+                    {
+                        Objects[i] = Objects[index];
+                        Objects[index] = temp;
+
+                        
+                        // make coin a spike instead, change position back to old position
+                        //Objects[i] = tempRandom;
+
+                        //print("Getting " + tempRandom.gameObject.name + " from index: " + index);
+                        //print("Coin  with position Z: " + tempZ + " became: " + Objects[i].gameObject.name + " with position Z: " + Objects[i].transform.position.z);
+
+
+                        //// chosen spike now becomes a coin
+                        //Objects[index] = temp;
+                        //Objects[index].transform.position = tempRandom.transform.position;
+
+
+                        Objects[index].transform.position = new Vector3(temp.transform.position.x, temp.transform.position.y + 3, temp.transform.position.z);
+                        Objects[i].transform.position = new Vector3(tempRandom.transform.position.x, tempRandom.transform.position.y, tempRandom.transform.position.z);
+
+                        loopLimit++;
+                    }
+                }
+            }
+
+            shuffled = true;
+            //bool previousObjectWasCoin = false;
+            //// Validation loop to check if shuffled
+            //for (int i = 0; i < Objects.Length; ++i)
+            //{
+            //    //print(Objects[i].gameObject.name);
+            //    if (Objects[i].gameObject.name == "Coin" && !previousObjectWasCoin)
+            //    {
+            //        previousObjectWasCoin = true;
+            //    }
+            //    // Two coins in a row
+            //    else if (Objects[i].gameObject.name == "Coin" && previousObjectWasCoin)
+            //    {
+            //        shuffled = false;
+            //    }
+            //    else if (previousObjectWasCoin)
+            //        previousObjectWasCoin = false;
+            //}
+        }
+    }
+
     public void Reset()
     {
         for (int i = 0; i < Objects.Length; ++i)
         {
             Destroy(Objects[i].GetComponent<Light>());
             
-            Objects[i].gameObject.name = "Spike";
             Objects[i].GetComponent<MeshRenderer>().material.color = Color.grey;
             Objects[i].GetComponent<MeshRenderer>().material = _OriginalMaterial;
             Objects[i].transform.position = new Vector3(4.75f * RandomLane() , Objects[i].transform.position.y, Objects[i].transform.position.z);
@@ -184,7 +259,8 @@ public class ObjectManager : MonoBehaviour
         _FlashingTimer = 0.0f;
 
         // Choose random objects that will be highlighted
-        RandomizeObjectsForHighlight();
+        ObjectShuffle();
+        //RandomizeObjectsForHighlight();
 
         // Announcer text reset and active
         Announcer.text = "GET READY FOR ROUND " + (VisualVariableCounter+1).ToString();
@@ -205,7 +281,8 @@ public class ObjectManager : MonoBehaviour
     {
         // V0 : Control
         if (highlightType == 0)
-            Objects[index].gameObject.GetComponent<MeshFilter>().mesh = coinMesh;
+            print("Highlight type 0: control");
+        //Objects[index].gameObject.GetComponent<MeshFilter>().mesh = CoinObject.GetComponent<MeshFilter>().mesh;
         // V1 : Hue (red)
         else if (highlightType == 1)
             Objects[index].GetComponent<MeshRenderer>().material.color = new Color(255, 0, 0);
@@ -248,5 +325,6 @@ public class ObjectManager : MonoBehaviour
             yield return null;
         }
         Objects[index].transform.localRotation = Quaternion.identity;
+        Objects[index].transform.Rotate(Vector3.right, 90.0f);
     }
 }
