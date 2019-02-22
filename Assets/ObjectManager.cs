@@ -1,24 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class ObjectManager : MonoBehaviour
 {
-    public GameObject[] Objects = new GameObject[100];
+    public HighlightableObject[] Objects = new HighlightableObject[100];
     public int lastObjectPositionZ = 0;
-    private int nrOfHighlightedObjects = 10;
-    private Color _OriginalObjectColor;
-
-    public Text Announcer;
-    private float _AnnouncerTextTimer;
-    private Color _OriginalTextColor;
-
-    public int VisualVariableCounter;
-    public int highlightType;
-
-    public int[] VisualVariableOrder = { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
-
+    public int nrOfHighlightedObjects { get; private set; } = 10;
+    private Color _OriginalObjectColor = Color.gray;
+    
     private System.Random _random = new System.Random();
 
     public Texture2D HighlightTexture;
@@ -38,28 +28,14 @@ public class ObjectManager : MonoBehaviour
 
         _OriginalObjectColor = Color.gray;
         _OriginalTextColor = Announcer.color;
-        _AnnouncerTextTimer = Time.deltaTime;
-        
-        Announcer.text = "GET READY FOR ROUND " + (VisualVariableCounter+1).ToString();
-        Announcer.fontSize = 40;
 
-        SpawnObjects();
     }
 
     // Update is called once per frame
     void Update()
     {
         // Fade out text
-        if (_AnnouncerTextTimer > 0)
-        {
-            Announcer.color = Color.Lerp(_OriginalTextColor, Color.clear, Mathf.Min(1, _AnnouncerTextTimer / 3.0f));
-            _AnnouncerTextTimer += Time.deltaTime;
-            if (_AnnouncerTextTimer > 3.0f)
-            {
-                _AnnouncerTextTimer = 0.0f;
-                Announcer.gameObject.SetActive(false);
-            }
-        }
+        
 
         // Flash flashing objects
         if (_FlashingTimer > 0.0f)
@@ -89,7 +65,7 @@ public class ObjectManager : MonoBehaviour
         }
     }
 
-    void SpawnObjects()
+    void SpawnObjects(VISUAL_VARIABLE visVar)
     {
         for (int i = 0; i < Objects.Length; ++i)
         {
@@ -262,41 +238,39 @@ public class ObjectManager : MonoBehaviour
         ObjectShuffle();
         //RandomizeObjectsForHighlight();
 
-        // Announcer text reset and active
-        Announcer.text = "GET READY FOR ROUND " + (VisualVariableCounter+1).ToString();
-        Announcer.gameObject.SetActive(true);
-        _AnnouncerTextTimer += Time.deltaTime;
-
         for (int i = 0; i < Objects.Length; ++i)
         {
-            if (Objects[i].gameObject.name == "Coin")
+
+            if (Objects[i].type == TYPE.COIN)
             {
                 // Object should be highlighted, apply highlight
-                ApplyHighlight(i, VisualVariableOrder[VisualVariableCounter]);
+                ApplyHighlight(i, visVar);
             }
+
+            if (i == Objects.Length - 1)
+                lastObjectPositionZ = (int)Objects[i].transform.position.z;
         }
     }
 
-    public virtual void ApplyHighlight(int index, int highlightType)
+    public virtual void ApplyHighlight(int index, VISUAL_VARIABLE visVar)
     {
         // V0 : Control
-        if (highlightType == 0)
-            print("Highlight type 0: control");
-        //Objects[index].gameObject.GetComponent<MeshFilter>().mesh = CoinObject.GetComponent<MeshFilter>().mesh;
+        if (visVar == VISUAL_VARIABLE.CONTROL)
+            Objects[index].gameObject.GetComponent<MeshFilter>().mesh = coinMesh;
         // V1 : Hue (red)
-        else if (highlightType == 1)
+        else if (visVar == VISUAL_VARIABLE.HUE_RED)
             Objects[index].GetComponent<MeshRenderer>().material.color = new Color(255, 0, 0);
         // V2 : Hue (blue)
-        else if (highlightType == 2)
+        else if (visVar == VISUAL_VARIABLE.HUE_BLUE)
             Objects[index].GetComponent<MeshRenderer>().material.color = new Color(0, 0, 255);
         // V3 : Motion
-        else if (highlightType == 3)
-            StartCoroutine(Rotator(index));
+        //else if (visVar == VISUAL_VARIABLE.MOTION)
+        //StartCoroutine(Rotator(index));
         // V4 : Luminance, low value
-        else if (highlightType == 4)
+        else if (visVar == VISUAL_VARIABLE.LUM_LO)
             Objects[index].GetComponent<MeshRenderer>().material.color = new Color(0, 0, 0);
         // V5 : Luminance, high value
-        else if (highlightType == 5)
+        else if (visVar == VISUAL_VARIABLE.LUM_HI)
             Objects[index].GetComponent<MeshRenderer>().material.color = new Color(255, 255, 255);
         else if (highlightType == 6)
         {
