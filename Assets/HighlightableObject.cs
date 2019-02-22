@@ -23,7 +23,8 @@ public class HighlightableObject : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        gazeAware = gameObject.GetComponent<GazeAware>();
+        gazeAware = gameObject.AddComponent<GazeAware>();
+        gazeAware.enabled = false;
         TTFF = -1;
         TFD = 0;
         fixations = 0;
@@ -48,7 +49,8 @@ public class HighlightableObject : MonoBehaviour
         // If the object collides with the player
         if(CollisionInfo.gameObject.GetComponent<InputManager>())
         {
-            owner.UpdateScore(type);
+            GameManager.instance.UpdateScore(type);
+            gameObject.SetActive(false);
         }
     }
 

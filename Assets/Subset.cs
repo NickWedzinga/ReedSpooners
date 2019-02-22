@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum TECHNIQUE
+public enum VISUAL_VARIABLE
 {
     CONTROL,
     HUE_BLUE,
@@ -10,28 +10,30 @@ public enum TECHNIQUE
     GLOW,
     MOTION,
     TEXTURE,
-    VALUE,
+    LUM_HI,
+    LUM_LO,
     FLASH,
-    TECHNIQUES,
+    VIS_VARS,
 }
 
 public class Subset : MonoBehaviour
 {
-    List<HighlightableObject> HighlightableObjects = new List<HighlightableObject>();
     public ObjectManager objectManager;
-    Tobii.Gaming.GazePoint gazePoint = new Tobii.Gaming.GazePoint();
-    new Camera camera = FindObjectOfType<Camera>();
-    bool active = false;
-    public Stats stats = new Stats();
+    new Camera camera;
+    public Stats stats;
     int objects = 10;
-    int lookingAt = -1;
-    TECHNIQUE _technique;
-    public TECHNIQUE technique { get { return _technique; } set { Reset(); _technique = value; } }
+    VISUAL_VARIABLE _visVar;
+    public VISUAL_VARIABLE visVar { get { return _visVar; } set { _visVar = value; } }
 
     // Start is called before the first frame update
     void Start()
     {
-        objectManager = gameObject.GetComponent<ObjectManager>();
+        stats = new Stats();
+        objectManager = gameObject.AddComponent<ObjectManager>();
+        objectManager.SpawnObjects(visVar);
+        Reset();
+
+        camera = FindObjectOfType<Camera>();
     }
 
     // Update is called once per frame
@@ -56,17 +58,17 @@ public class Subset : MonoBehaviour
         }
     }
 
-    public void UpdateGazeStuff(float TFD, float TTFF, int fixations, int ID)
+    public void UpdateGazeData(float TFD, float TTFF, int fixations, int ID)
     {
         stats.TFD[ID] = TFD;
         stats.TTFF[ID] = TTFF;
         stats.fixations[ID] = fixations;
     }
 
-    void Reset()
+    public void Reset()
     {
         ResetScore();
-        objectManager.Reset();
+        objectManager.ResetHighlight(visVar);
     }
 
     void ResetScore()
@@ -76,5 +78,6 @@ public class Subset : MonoBehaviour
         stats.spikes = 0;
         stats.TFD = new List<float>(new float[objects]);
         stats.TTFF = new List<float>(new float[objects]);
+        stats.fixations = new List<int>(new int[objects]);
     }
 }

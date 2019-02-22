@@ -9,22 +9,11 @@ public class InputManager : MonoBehaviour
 
     public float _approachRate { get; set; }
 
-    public int Score;
-    public Text ScoreText;
-
-
-    public ObjectManager objectManager;
-
     // Start is called before the first frame update
     void Start()
     {
         instance = this;
         print("WHY AH U RUNNING?!");
-        objectManager = gameObject.GetComponent<ObjectManager>();
-        Score = 0;
-        ScoreText.text = "Score: " + Score.ToString();
-
-        
 
         // Change to increase speed
         _approachRate = 5.0f;
@@ -46,14 +35,12 @@ public class InputManager : MonoBehaviour
             transform.Translate(-4.75f, 0, 0);
         }
         transform.Translate(0, 0, Time.deltaTime * _approachRate);
-
         _approachRate += Time.deltaTime;
     }
 
     private void Reset()
     {
-        //objectManager.Reset();
-
+        GameManager.instance.Reset();
         _approachRate = 5.0f;
         gameObject.transform.position = new Vector3(0, 1, 0.5f);
     }
@@ -65,15 +52,12 @@ public class InputManager : MonoBehaviour
             //Destroy(bigColliderBoi.gameObject);
             //bigColliderBoi.gameObject.transform.position = new Vector3(bigColliderBoi.gameObject.transform.position.x, 10, bigColliderBoi.gameObject.transform.position.z);
             bigColliderBoi.gameObject.SetActive(false);
-            Score -= 50;
         }
         if (bigColliderBoi.gameObject.name == "Coin")
         {
             //Destroy(bigColliderBoi.gameObject);
             //bigColliderBoi.gameObject.transform.position = new Vector3(bigColliderBoi.gameObject.transform.position.x, 10, bigColliderBoi.gameObject.transform.position.z);
             bigColliderBoi.gameObject.SetActive(false);
-            Score += 50;
         }
-        ScoreText.text = "Score: " + Score.ToString();
     }
 }

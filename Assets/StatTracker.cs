@@ -13,13 +13,13 @@ public struct Stats
 
 public class StatTracker
 {
-    private Dictionary<TECHNIQUE, Stats> stats;
+    private Dictionary<VISUAL_VARIABLE, Stats> stats;
 
     string filePath;
 
     public StatTracker()
     {
-        stats = new Dictionary<TECHNIQUE, Stats>();
+        stats = new Dictionary<VISUAL_VARIABLE, Stats>();
         filePath = "PlayerStatsReedSpooners.csv";
         if (!System.IO.File.Exists(filePath))
         {
@@ -27,7 +27,7 @@ public class StatTracker
         }
     }
 
-    public void AddTechnique(TECHNIQUE technique, Stats _stats)
+    public void AddTechnique(VISUAL_VARIABLE technique, Stats _stats)
     {
         stats.Add(technique, _stats);
     }
