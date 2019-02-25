@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 170076734}
-  m_IndirectSpecularColor: {r: 0.43846753, g: 0.48655313, b: 0.56682646, a: 1}
+  m_IndirectSpecularColor: {r: 0.43846732, g: 0.48655266, b: 0.56682605, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -352,6 +352,7 @@ RectTransform:
   m_Children:
   - {fileID: 1195408080}
   - {fileID: 66900527}
+  - {fileID: 497796755}
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -360,6 +361,85 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!1 &497796754
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 497796755}
+  - component: {fileID: 497796757}
+  - component: {fileID: 497796756}
+  m_Layer: 5
+  m_Name: Debug Text
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &497796755
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 497796754}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 301401752}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -200, y: 300}
+  m_SizeDelta: {x: 160, y: 30}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &497796756
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 497796754}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 708705254, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_RaycastTarget: 0
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_FontData:
+    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_FontSize: 14
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 10
+    m_MaxSize: 40
+    m_Alignment: 0
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 0
+    m_LineSpacing: 1
+  m_Text: Debug text
+--- !u!222 &497796757
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 497796754}
+  m_CullTransparentMesh: 0
 --- !u!1 &508518437
 GameObject:
   m_ObjectHideFlags: 0
@@ -370,6 +450,7 @@ GameObject:
   m_Component:
   - component: {fileID: 508518439}
   - component: {fileID: 508518438}
+  - component: {fileID: 508518440}
   m_Layer: 0
   m_Name: World
   m_TagString: Untagged
@@ -491,13 +572,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   lastObjectPositionZ: 0
-  Announcer: {fileID: 0}
-  VisualVariableCounter: 0
-  highlightType: 0
-  VisualVariableOrder: 0000000001000000020000000300000004000000050000000600000007000000
-  HighlightTexture: {fileID: 0}
-  CoinObject: {fileID: 0}
-  LightMaterial: {fileID: 0}
+  coinMesh: {fileID: 0}
 --- !u!4 &508518439
 Transform:
   m_ObjectHideFlags: 0
@@ -515,6 +590,23 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &508518440
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 508518437}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84a708cf4d0934147bcee4f6d6007c93, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  visVarOrder: 000000000100000002000000030000000400000005000000060000000700000008000000
+  Announcer: {fileID: 66900528}
+  Score: 0
+  ScoreText: {fileID: 1195408081}
+  DebugText: {fileID: 497796756}
 --- !u!1 &534669902
 GameObject:
   m_ObjectHideFlags: 0
@@ -1182,9 +1274,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66f02c0bb819df04f82448ff683d7109, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Score: 0
-  ScoreText: {fileID: 0}
-  objectManager: {fileID: 0}
 --- !u!54 &1617807072
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1337,9 +1426,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66f02c0bb819df04f82448ff683d7109, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Score: 0
-  ScoreText: {fileID: 1195408081}
-  objectManager: {fileID: 0}
 --- !u!114 &1801603285
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1458,6 +1544,4 @@ MonoBehaviour:
   VisualVariableCounter: 0
   highlightType: 0
   VisualVariableOrder: 0000000001000000020000000300000004000000050000000600000007000000
-  HighlightTexture: {fileID: 2800000, guid: b526ec8f183f1ff49aaa32ebab03ce79, type: 3}
-  CoinObject: {fileID: 0}
-  LightMaterial: {fileID: 2100000, guid: ec64cb5832ce7444dac6084d96947a88, type: 2}
+  coinMesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
