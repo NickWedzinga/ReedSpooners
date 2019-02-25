@@ -49,11 +49,11 @@ public class Subset : MonoBehaviour
         {
             case TYPE.COIN:
                 stats.coins++;
-                stats.score += 50;
+                stats.score += 100;
                 break;
             case TYPE.SPIKE:
                 stats.spikes++;
-                stats.score -= 50;
+                stats.score -= 100;
                 break;
         }
     }
@@ -68,7 +68,7 @@ public class Subset : MonoBehaviour
     public void Reset()
     {
         ResetScore();
-        objectManager.ResetHighlight(visVar);
+        objectManager.Reset(visVar);
     }
 
     void ResetScore()
