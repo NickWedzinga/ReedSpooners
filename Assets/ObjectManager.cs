@@ -67,6 +67,8 @@ public class ObjectManager : MonoBehaviour
                 Objects[i].transform.Rotate(Vector3.right, 90.0f);
                 Objects[i].gameObject.name = "Coin";
                 Objects[i].type = TYPE.COIN;
+                Rigidbody rBody = Objects[i].gameObject.AddComponent<Rigidbody>();
+                rBody.constraints = RigidbodyConstraints.FreezeRotation; // TODO; WILL TECHNIQUE 3 STILL WORK?
             }
             else
             {
@@ -74,10 +76,13 @@ public class ObjectManager : MonoBehaviour
                 Objects[i] = gObj.AddComponent<HighlightableObject>();
                 Objects[i].gameObject.name = "Spike";
                 Objects[i].type = TYPE.SPIKE;
+                Objects[i].gameObject.AddComponent<Rigidbody>();
             }
             Objects[i].transform.position = new Vector3(0, 1, (i) * 10 + i / 10 + 50);
             Objects[i].GetComponent<MeshRenderer>().material.color = Color.white;//Color.grey;
-            Objects[i].gameObject.AddComponent<Rigidbody>();
+            
+            if (Objects[i].transform.position.z > lastObjectPositionZ)
+                lastObjectPositionZ = (int)Objects[i].transform.position.z;
         }
         _OriginalMaterial = Objects[0].GetComponent<MeshRenderer>().material;
 
@@ -106,21 +111,19 @@ public class ObjectManager : MonoBehaviour
         {
             for (int i = 5; i < Objects.Length; ++i)
             {
-                if (Objects[i].gameObject.name == "Coin")
+                if (Objects[i].type == TYPE.COIN)
                 {
                     // Save coin object to temp var
                     HighlightableObject temp = Objects[i];
 
                     int index = (int)(5 + Random.value * 95);
-                    print("Index " + index + " which is a object: " + Objects[index].gameObject.name);
-                    HighlightableObject tempRandom = Objects[index];
-                    if (tempRandom.gameObject.name == "Spike")
+                    if (Objects[index].type == TYPE.SPIKE)
                     {
-                        Objects[i] = Objects[index];
-                        Objects[index] = temp;
+                        Vector3 oldCoinPos = Objects[i].transform.position;
+                        Vector3 oldSpikePos = Objects[index].transform.position;
 
-                        Objects[index].transform.position = new Vector3(temp.transform.position.x, temp.transform.position.y + 3, temp.transform.position.z);
-                        Objects[i].transform.position = new Vector3(tempRandom.transform.position.x, tempRandom.transform.position.y, tempRandom.transform.position.z);
+                        Objects[i].transform.position = oldSpikePos;
+                        Objects[index].transform.position = oldCoinPos;
 
                         loopLimit++;
                     }
@@ -132,13 +135,12 @@ public class ObjectManager : MonoBehaviour
             // Validation loop to check if shuffled
             for (int i = 0; i < Objects.Length; ++i)
             {
-                //print(Objects[i].gameObject.name);
-                if (Objects[i].gameObject.name == "Coin" && !previousObjectWasCoin)
+                if (Objects[i].type == TYPE.COIN && !previousObjectWasCoin)
                 {
                     previousObjectWasCoin = true;
                 }
                 // Two coins in a row
-                else if (Objects[i].gameObject.name == "Coin" && previousObjectWasCoin)
+                else if (Objects[i].type == TYPE.COIN && previousObjectWasCoin)
                 {
                     shuffled = false;
                 }
@@ -175,8 +177,8 @@ public class ObjectManager : MonoBehaviour
                 ApplyHighlight(i, visVar);
             }
 
-            if (i == Objects.Length - 1)
-                lastObjectPositionZ = (int)Objects[i].transform.position.z;
+            //if (i == Objects.Length - 1)
+            //    lastObjectPositionZ = (int)Objects[i].transform.position.z;
         }
     }
 
