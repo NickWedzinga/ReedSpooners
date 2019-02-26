@@ -69,6 +69,8 @@ public class ObjectManager : MonoBehaviour
                 Objects[i].transform.Rotate(Vector3.right, 90.0f);
                 Objects[i].gameObject.name = "Coin";
                 Objects[i].type = TYPE.COIN;
+                Rigidbody rBody = Objects[i].gameObject.AddComponent<Rigidbody>();
+                rBody.constraints = RigidbodyConstraints.FreezeRotationX;
             }
             else
             {
@@ -76,11 +78,12 @@ public class ObjectManager : MonoBehaviour
                 Objects[i] = gObj.AddComponent<HighlightableObject>();
                 Objects[i].gameObject.name = "Spike";
                 Objects[i].type = TYPE.SPIKE;
+                Objects[i].gameObject.AddComponent<Rigidbody>();
             }
             Objects[i].transform.position = new Vector3(0, 1, (i) * 10 + i / 10 + 50);
             Objects[i].GetComponent<MeshRenderer>().material = OriginalMaterial;
             Objects[i].GetComponent<MeshRenderer>().material.color = Color.gray;
-            Objects[i].gameObject.AddComponent<Rigidbody>();
+            
 
             if (Objects[i].transform.position.z > lastObjectPositionZ)
                 lastObjectPositionZ = (int)Objects[i].transform.position.z;
@@ -155,11 +158,9 @@ public class ObjectManager : MonoBehaviour
     {
         for (int i = 0; i < Objects.Length; ++i)
         {
-            //Destroy(Objects[i].GetComponent<Light>());
-
             Objects[i].GetComponent<MeshRenderer>().material = OriginalMaterial;
             Objects[i].GetComponent<MeshRenderer>().material.color = Color.grey;
-            Objects[i].transform.position = new Vector3(4.75f * RandomLane() , Objects[i].transform.position.y, Objects[i].transform.position.z);
+            Objects[i].transform.position = new Vector3(4.75f * RandomLane() , /*Objects[i].transform.position.y*/1, Objects[i].transform.position.z);
             Objects[i].gameObject.SetActive(true);
         }
 
@@ -174,7 +175,7 @@ public class ObjectManager : MonoBehaviour
             if (Objects[i].type == TYPE.COIN)
             {
                 // Object should be highlighted, apply highlight
-                ApplyHighlight(i, /*visVar*/VISUAL_VARIABLE.HUE_BLUE);
+                ApplyHighlight(i, /*visVar*/VISUAL_VARIABLE.CONTROL);
             }
         }
     }
