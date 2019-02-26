@@ -86,6 +86,7 @@ public class ObjectManager : MonoBehaviour
                 lastObjectPositionZ = (int)Objects[i].transform.position.z;
         }
 
+        Camera.main.GetComponent<UnityEngine.Rendering.PostProcessing.PostProcessVolume>().enabled = false;
         // Randomize object array
         ObjectShuffle();
     }
@@ -162,6 +163,7 @@ public class ObjectManager : MonoBehaviour
             Objects[i].gameObject.SetActive(true);
         }
 
+        Camera.main.GetComponent<UnityEngine.Rendering.PostProcessing.PostProcessVolume>().enabled = false;
         _FlashingTimer = 0.0f;
 
         // Choose random objects that will be highlighted
@@ -172,14 +174,13 @@ public class ObjectManager : MonoBehaviour
             if (Objects[i].type == TYPE.COIN)
             {
                 // Object should be highlighted, apply highlight
-                ApplyHighlight(i, /*visVar*/VISUAL_VARIABLE.HUE_RED);
+                ApplyHighlight(i, /*visVar*/VISUAL_VARIABLE.HUE_BLUE);
             }
         }
     }
 
     public virtual void ApplyHighlight(int index, VISUAL_VARIABLE visVar)
     {
-        Camera.main.GetComponent<UnityEngine.Rendering.PostProcessing.PostProcessVolume>().enabled = false;
         // V0 : Control
         //if (visVar == VISUAL_VARIABLE.CONTROL)
         //    print("It's time for yallers's favorite CONTROL BOI");
@@ -207,16 +208,19 @@ public class ObjectManager : MonoBehaviour
         // V5 : Luminance, high value
         else if (visVar == VISUAL_VARIABLE.LUM_HI)
             Objects[index].GetComponent<MeshRenderer>().material.color = new Color(255, 255, 255);
+        // V6 : GLOW
         else if (visVar == VISUAL_VARIABLE.GLOW)
         {
             Camera.main.GetComponent<UnityEngine.Rendering.PostProcessing.PostProcessVolume>().enabled = true;
             Objects[index].GetComponent<MeshRenderer>().material = LightMaterial;
             Objects[index].GetComponent<MeshRenderer>().material.color = Color.gray;
         }
+        // V7 : TEXTURE
         else if (visVar == VISUAL_VARIABLE.TEXTURE)
         {
             Objects[index].GetComponent<MeshRenderer>().material.mainTexture = HighlightTexture;
         }
+        // V8 : FLASHING
         else if (visVar == VISUAL_VARIABLE.FLASH)
         {
             Objects[index].GetComponent<MeshRenderer>().material.color = new Color(0, 0, 0);
