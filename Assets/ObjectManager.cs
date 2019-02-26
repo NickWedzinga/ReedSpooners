@@ -67,8 +67,6 @@ public class ObjectManager : MonoBehaviour
                 Objects[i].transform.Rotate(Vector3.right, 90.0f);
                 Objects[i].gameObject.name = "Coin";
                 Objects[i].type = TYPE.COIN;
-                Rigidbody rBody = Objects[i].gameObject.AddComponent<Rigidbody>();
-                rBody.constraints = RigidbodyConstraints.FreezeRotation; // TODO; WILL TECHNIQUE 3 STILL WORK?
             }
             else
             {
@@ -76,16 +74,16 @@ public class ObjectManager : MonoBehaviour
                 Objects[i] = gObj.AddComponent<HighlightableObject>();
                 Objects[i].gameObject.name = "Spike";
                 Objects[i].type = TYPE.SPIKE;
-                Objects[i].gameObject.AddComponent<Rigidbody>();
             }
             Objects[i].transform.position = new Vector3(0, 1, (i) * 10 + i / 10 + 50);
             Objects[i].GetComponent<MeshRenderer>().material.color = Color.white;//Color.grey;
-            
+            Objects[i].gameObject.AddComponent<Rigidbody>();
+
             if (Objects[i].transform.position.z > lastObjectPositionZ)
                 lastObjectPositionZ = (int)Objects[i].transform.position.z;
         }
         _OriginalMaterial = Objects[0].GetComponent<MeshRenderer>().material;
-
+        
         // Randomize object array
         ObjectShuffle();
     }
@@ -166,30 +164,28 @@ public class ObjectManager : MonoBehaviour
 
         // Choose random objects that will be highlighted
         ObjectShuffle();
-        //RandomizeObjectsForHighlight();
 
         for (int i = 0; i < Objects.Length; ++i)
         {
-
             if (Objects[i].type == TYPE.COIN)
             {
                 // Object should be highlighted, apply highlight
-                ApplyHighlight(i, visVar);
+                ApplyHighlight(i, /*visVar*/VISUAL_VARIABLE.HUE_RED);
             }
-
-            //if (i == Objects.Length - 1)
-            //    lastObjectPositionZ = (int)Objects[i].transform.position.z;
         }
     }
 
     public virtual void ApplyHighlight(int index, VISUAL_VARIABLE visVar)
     {
         // V0 : Control
-        if (visVar == VISUAL_VARIABLE.CONTROL)
-            print("It's time for yallers's favorite CONTROL BOI");//Objects[index].gameObject.GetComponent<MeshFilter>().mesh = coinMesh;
+        //if (visVar == VISUAL_VARIABLE.CONTROL)
+        //    print("It's time for yallers's favorite CONTROL BOI");
         // V1 : Hue (red)
-        else if (visVar == VISUAL_VARIABLE.HUE_RED)
+        /*else*/ if (visVar == VISUAL_VARIABLE.HUE_RED)
+        {
             Objects[index].GetComponent<MeshRenderer>().material.color = new Color(255, 0, 0);
+            //Objects[index].GetComponent<MeshRenderer>().material.emission
+        }
         // V2 : Hue (blue)
         else if (visVar == VISUAL_VARIABLE.HUE_BLUE)
             Objects[index].GetComponent<MeshRenderer>().material.color = new Color(0, 0, 255);
@@ -205,7 +201,7 @@ public class ObjectManager : MonoBehaviour
         else if (visVar == VISUAL_VARIABLE.GLOW)
         {
             Objects[index].GetComponent<MeshRenderer>().material = LightMaterial;
-            //Objects[index].GetComponent<MeshRenderer>().material.color = new Color(125, 125, 125);
+            Objects[index].GetComponent<MeshRenderer>().material.color = Color.gray;
         }
         else if (visVar == VISUAL_VARIABLE.TEXTURE)
         {
@@ -222,7 +218,9 @@ public class ObjectManager : MonoBehaviour
     {
         while (visVar == VISUAL_VARIABLE.MOTION)
         {
-            Objects[index].transform.Rotate(new Vector3(0, 1, 0), 20.0f);
+            float spinPerSecond = 1.0f / Time.deltaTime;
+            float anglePerSpin = spinPerSecond / 2.0f;
+            Objects[index].transform.Rotate(new Vector3(0, 0, 1), anglePerSpin);
             yield return null;
         }
         Objects[index].transform.localRotation = Quaternion.identity;
