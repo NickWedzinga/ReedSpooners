@@ -14,12 +14,14 @@ public class ObjectManager : MonoBehaviour
     public Texture2D HighlightTexture;
 
     public Material LightMaterial;
-    private Material _OriginalMaterial;
+    public Material OriginalMaterial;
+    public Material HueMaterial;
     private float _FlashingTimer;
 
     // Start is called before the first frame update
     void Start()
     {
+        
         _FlashingTimer = 0.0f;
         _OriginalObjectColor = Color.gray;
     }
@@ -76,14 +78,14 @@ public class ObjectManager : MonoBehaviour
                 Objects[i].type = TYPE.SPIKE;
             }
             Objects[i].transform.position = new Vector3(0, 1, (i) * 10 + i / 10 + 50);
-            Objects[i].GetComponent<MeshRenderer>().material.color = Color.white;//Color.grey;
+            Objects[i].GetComponent<MeshRenderer>().material = OriginalMaterial;
+            Objects[i].GetComponent<MeshRenderer>().material.color = Color.gray;
             Objects[i].gameObject.AddComponent<Rigidbody>();
 
             if (Objects[i].transform.position.z > lastObjectPositionZ)
                 lastObjectPositionZ = (int)Objects[i].transform.position.z;
         }
-        _OriginalMaterial = Objects[0].GetComponent<MeshRenderer>().material;
-        
+
         // Randomize object array
         ObjectShuffle();
     }
@@ -152,10 +154,10 @@ public class ObjectManager : MonoBehaviour
     {
         for (int i = 0; i < Objects.Length; ++i)
         {
-            Destroy(Objects[i].GetComponent<Light>());
-            
+            //Destroy(Objects[i].GetComponent<Light>());
+
+            Objects[i].GetComponent<MeshRenderer>().material = OriginalMaterial;
             Objects[i].GetComponent<MeshRenderer>().material.color = Color.grey;
-            Objects[i].GetComponent<MeshRenderer>().material = _OriginalMaterial;
             Objects[i].transform.position = new Vector3(4.75f * RandomLane() , Objects[i].transform.position.y, Objects[i].transform.position.z);
             Objects[i].gameObject.SetActive(true);
         }
@@ -177,18 +179,25 @@ public class ObjectManager : MonoBehaviour
 
     public virtual void ApplyHighlight(int index, VISUAL_VARIABLE visVar)
     {
+        Camera.main.GetComponent<UnityEngine.Rendering.PostProcessing.PostProcessVolume>().enabled = false;
         // V0 : Control
         //if (visVar == VISUAL_VARIABLE.CONTROL)
         //    print("It's time for yallers's favorite CONTROL BOI");
         // V1 : Hue (red)
-        /*else*/ if (visVar == VISUAL_VARIABLE.HUE_RED)
+        /*else*/
+        if (visVar == VISUAL_VARIABLE.HUE_RED)
         {
+            if (HueMaterial == null)
+                print("WHAT ARE YOU DOING WHY ARE YOU NULL");
+            Objects[index].GetComponent<MeshRenderer>().material = HueMaterial;
             Objects[index].GetComponent<MeshRenderer>().material.color = new Color(255, 0, 0);
-            //Objects[index].GetComponent<MeshRenderer>().material.emission
         }
         // V2 : Hue (blue)
         else if (visVar == VISUAL_VARIABLE.HUE_BLUE)
+        {
+            Objects[index].GetComponent<MeshRenderer>().material = HueMaterial;
             Objects[index].GetComponent<MeshRenderer>().material.color = new Color(0, 0, 255);
+        }
         // V3 : Motion
         else if (visVar == VISUAL_VARIABLE.MOTION)
             StartCoroutine(Rotator(index, visVar));
@@ -200,6 +209,7 @@ public class ObjectManager : MonoBehaviour
             Objects[index].GetComponent<MeshRenderer>().material.color = new Color(255, 255, 255);
         else if (visVar == VISUAL_VARIABLE.GLOW)
         {
+            Camera.main.GetComponent<UnityEngine.Rendering.PostProcessing.PostProcessVolume>().enabled = true;
             Objects[index].GetComponent<MeshRenderer>().material = LightMaterial;
             Objects[index].GetComponent<MeshRenderer>().material.color = Color.gray;
         }

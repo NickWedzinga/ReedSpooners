@@ -18,6 +18,7 @@ public enum VISUAL_VARIABLE
 
 public class Subset : MonoBehaviour
 {
+  
     public ObjectManager objectManager;
     new Camera camera;
     public Stats stats;
@@ -29,7 +30,8 @@ public class Subset : MonoBehaviour
     void Start()
     {
         stats = new Stats();
-        objectManager = gameObject.AddComponent<ObjectManager>();
+
+        objectManager = FindObjectOfType<ObjectManager>();
         objectManager.SpawnObjects(visVar);
         Reset();
 
