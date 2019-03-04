@@ -28,7 +28,7 @@ public class GameManager : MonoBehaviour
 
     public Text DebugText;
 
-    private System.Random _random = new System.Random();
+    private System.Random _random = new System.Random((int)System.DateTime.Now.Ticks);
 
     public int lastObjectPositionZ { get { if (subset) return subset.objectManager.lastObjectPositionZ; else return 0; } }
     public int nrOfHighlightedObjects { get { if (subset) return subset.objectManager.nrOfHighlightedObjects; else return 0; } }
@@ -38,7 +38,7 @@ public class GameManager : MonoBehaviour
     {
         instance = this;
         statTracker = new StatTracker();
-
+        
         round = 0;
         //RANDOMIZE VISUALORDER
         Shuffle(visVarOrder);

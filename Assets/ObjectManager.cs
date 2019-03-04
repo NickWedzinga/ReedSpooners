@@ -5,6 +5,7 @@ using UnityEngine;
 public class ObjectManager : MonoBehaviour
 {
     public HighlightableObject[] Objects = new HighlightableObject[100];
+    public Mesh SpikeMesh;
     public int lastObjectPositionZ = 0;
     public int nrOfHighlightedObjects { get; private set; } = 10;
     private Color _OriginalObjectColor = Color.gray;
@@ -21,7 +22,6 @@ public class ObjectManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
         _FlashingTimer = 0.0f;
         _OriginalObjectColor = Color.gray;
     }
@@ -29,6 +29,16 @@ public class ObjectManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // To negate velocity build up from spinning, freezeposition does not take care of this apparently.
+        for(int i = 0; i < Objects.Length; ++i)
+        {
+            if (Objects[i].type == TYPE.COIN)
+            {
+                Rigidbody rBody = Objects[i].GetComponent<Rigidbody>();
+                rBody.velocity = Vector3.zero;
+            }
+        }
+
         // Flash flashing objects
         if (_FlashingTimer > 0.0f)
         {
@@ -61,7 +71,7 @@ public class ObjectManager : MonoBehaviour
     {
         for (int i = 0; i < Objects.Length; ++i)
         {
-            if(i >= 5 && i < 15)
+            if (i >= 5 && i < 15)
             {
                 GameObject gObj = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
                 Objects[i] = gObj.AddComponent<HighlightableObject>();
@@ -70,21 +80,24 @@ public class ObjectManager : MonoBehaviour
                 Objects[i].gameObject.name = "Coin";
                 Objects[i].type = TYPE.COIN;
                 Rigidbody rBody = Objects[i].gameObject.AddComponent<Rigidbody>();
-                rBody.constraints = RigidbodyConstraints.FreezeRotationX;
+                rBody.constraints &= RigidbodyConstraints.FreezeRotationX;
+                rBody.constraints &= RigidbodyConstraints.FreezeRotationZ;
+                rBody.constraints &= ~RigidbodyConstraints.FreezePosition;
             }
             else
             {
                 GameObject gObj = GameObject.CreatePrimitive(PrimitiveType.Cube);
                 Objects[i] = gObj.AddComponent<HighlightableObject>();
+                Objects[i].gameObject.GetComponent<MeshFilter>().mesh = SpikeMesh;
                 Objects[i].gameObject.name = "Spike";
                 Objects[i].type = TYPE.SPIKE;
-                Objects[i].gameObject.AddComponent<Rigidbody>();
+                Rigidbody rBody = Objects[i].gameObject.AddComponent<Rigidbody>();
+                rBody.constraints = RigidbodyConstraints.FreezeRotation;
             }
             Objects[i].transform.position = new Vector3(0, 1, (i) * 10 + i / 10 + 50);
             Objects[i].GetComponent<MeshRenderer>().material = OriginalMaterial;
             Objects[i].GetComponent<MeshRenderer>().material.color = Color.gray;
             
-
             if (Objects[i].transform.position.z > lastObjectPositionZ)
                 lastObjectPositionZ = (int)Objects[i].transform.position.z;
         }
@@ -123,6 +136,9 @@ public class ObjectManager : MonoBehaviour
                     int index = (int)(5 + Random.value * 95);
                     if (Objects[index].type == TYPE.SPIKE)
                     {
+                        Rigidbody rBodyTemp = Objects[i].GetComponent<Rigidbody>();
+                        rBodyTemp.constraints &= ~RigidbodyConstraints.FreezePosition;
+
                         Vector3 oldCoinPos = Objects[i].transform.position;
                         Vector3 oldSpikePos = Objects[index].transform.position;
 
@@ -130,6 +146,7 @@ public class ObjectManager : MonoBehaviour
                         Objects[index].transform.position = oldCoinPos;
 
                         loopLimit++;
+                        rBodyTemp.constraints &= RigidbodyConstraints.FreezePosition;
                     }
                 }
             }
@@ -156,6 +173,8 @@ public class ObjectManager : MonoBehaviour
 
     public void Reset(VISUAL_VARIABLE visVar)
     {
+        StopAllCoroutines();
+        Random.InitState((int)visVar);
         for (int i = 0; i < Objects.Length; ++i)
         {
             Objects[i].GetComponent<MeshRenderer>().material = OriginalMaterial;
@@ -174,8 +193,10 @@ public class ObjectManager : MonoBehaviour
         {
             if (Objects[i].type == TYPE.COIN)
             {
+
+                Objects[i].transform.rotation = Quaternion.Euler(90.0f, 0, 0);
                 // Object should be highlighted, apply highlight
-                ApplyHighlight(i, /*visVar*/VISUAL_VARIABLE.CONTROL);
+                ApplyHighlight(i, /*visVar*/VISUAL_VARIABLE.MOTION);
             }
         }
     }
@@ -183,14 +204,10 @@ public class ObjectManager : MonoBehaviour
     public virtual void ApplyHighlight(int index, VISUAL_VARIABLE visVar)
     {
         // V0 : Control
-        //if (visVar == VISUAL_VARIABLE.CONTROL)
-        //    print("It's time for yallers's favorite CONTROL BOI");
+        // ~ nada
         // V1 : Hue (red)
-        /*else*/
         if (visVar == VISUAL_VARIABLE.HUE_RED)
         {
-            if (HueMaterial == null)
-                print("WHAT ARE YOU DOING WHY ARE YOU NULL");
             Objects[index].GetComponent<MeshRenderer>().material = HueMaterial;
             Objects[index].GetComponent<MeshRenderer>().material.color = new Color(255, 0, 0);
         }
@@ -238,7 +255,7 @@ public class ObjectManager : MonoBehaviour
             Objects[index].transform.Rotate(new Vector3(0, 0, 1), anglePerSpin);
             yield return null;
         }
-        Objects[index].transform.localRotation = Quaternion.identity;
-        Objects[index].transform.Rotate(Vector3.right, 90.0f);
+        //Objects[index].transform.localRotation = Quaternion.identity;
+        //Objects[index].transform.Rotate(Vector3.right, 90.0f);
     }
 }
