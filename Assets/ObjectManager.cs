@@ -193,10 +193,9 @@ public class ObjectManager : MonoBehaviour
         {
             if (Objects[i].type == TYPE.COIN)
             {
-
                 Objects[i].transform.rotation = Quaternion.Euler(90.0f, 0, 0);
                 // Object should be highlighted, apply highlight
-                ApplyHighlight(i, /*visVar*/VISUAL_VARIABLE.MOTION);
+                ApplyHighlight(i, visVar/*VISUAL_VARIABLE.MOTION*/);
             }
         }
     }
