@@ -109,7 +109,7 @@ public class Game : MonoBehaviour
             DebugText.enabled = !DebugText.enabled;
         }
 
-        Debug.Log(TobiiAPI.GetGazePoint().GUI.ToString());
+        //Debug.Log(TobiiAPI.GetGazePoint().GUI.ToString());
 
         //DebugText.text = "Visual variable: " + subset.visVar.ToString(); + Environment.NewLine + "Eye Pos (screen): " + TobiiAPI.GetGazePoint().GUI.ToString();
     }

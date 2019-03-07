@@ -493,8 +493,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e9204417440f2d4d90c56588048baa6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Name: 
-  m_EditorClassIdentifier: 
   subset: {fileID: 0}
   visVarOrder: 02000000
   Announcer: {fileID: 66900528}
@@ -513,10 +511,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b2673b8f396e834c859bd3dbd5a6ed5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Name: 
-  m_EditorClassIdentifier: 
   objectManager: {fileID: 0}
-  visVar: 0
+  _Scenario: 0
 --- !u!1 &534669902
 GameObject:
   m_ObjectHideFlags: 0
@@ -1191,8 +1187,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 836b6ebad045bc54abe11f92cd2ed2cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Name: 
-  m_EditorClassIdentifier: 
   LocalScale: {x: 1, y: 1, z: 1}
   baseStart: {x: -21.554274, y: 1.2000847, z: 21.733377}
   baseEnd: {x: -12.276876, y: 1.2000847, z: 12.607112}
@@ -1420,8 +1414,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d64a5c64fd0e9104abb16de61f1c9c7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Name: 
-  m_EditorClassIdentifier: 
   Objects:
   - {fileID: 0}
   - {fileID: 0}
@@ -1529,3 +1521,4 @@ MonoBehaviour:
   LightMaterial: {fileID: 2100000, guid: ec64cb5832ce7444dac6084d96947a88, type: 2}
   OriginalMaterial: {fileID: 2100000, guid: 5e2c89e7ff492bd4f99698d1661c9c49, type: 2}
   HueMaterial: {fileID: 2100000, guid: 3755f534595f37f4083cebb10a36d7f6, type: 2}
+  owner: {fileID: 0}

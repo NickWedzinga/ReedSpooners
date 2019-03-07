@@ -26,7 +26,7 @@ public class ObjectManager : MonoBehaviour
     {
         _FlashingTimer = 0.0f;
         _OriginalObjectColor = Color.gray;
-        owner = gameObject.GetComponent<Subset>();
+        owner = FindObjectOfType<Subset>();
     }
 
     // Update is called once per frame
@@ -70,7 +70,7 @@ public class ObjectManager : MonoBehaviour
         }
     }
 
-    public void SpawnObjects(VISUAL_VARIABLE visVar)
+    public void SpawnObjects()
     {
         for (int i = 0; i < Objects.Length; ++i)
         {

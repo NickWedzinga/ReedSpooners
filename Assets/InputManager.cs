@@ -7,8 +7,6 @@ public class InputManager : MonoBehaviour
 {
     public static InputManager instance;
 
-    private bool paused = false;
-
     public float _approachRate { get; set; }
     public LANE lane {
         get
@@ -39,7 +37,7 @@ public class InputManager : MonoBehaviour
             _approachRate = 5.0f;
         if (_approachRate > 0.0f)
         {
-            if (transform.position.z > GameManager.instance.lastObjectPositionZ + 50)
+            if (transform.position.z > Game.instance.lastObjectPositionZ + 50)
             {
                 ResetVariable();
             }
@@ -63,19 +61,11 @@ public class InputManager : MonoBehaviour
         gameObject.transform.position = new Vector3(0, 1, 0.5f);
     }
 
-    public void OnCollisionEnter(Collision bigColliderBoi)
-    {
-        if (bigColliderBoi.gameObject.name == "Spike")
-        {
-            //Destroy(bigColliderBoi.gameObject);
-            //bigColliderBoi.gameObject.transform.position = new Vector3(bigColliderBoi.gameObject.transform.position.x, 10, bigColliderBoi.gameObject.transform.position.z);
-            bigColliderBoi.gameObject.SetActive(false);
-        }
-        if (bigColliderBoi.gameObject.name == "Coin")
-        {
-            //Destroy(bigColliderBoi.gameObject);
-            //bigColliderBoi.gameObject.transform.position = new Vector3(bigColliderBoi.gameObject.transform.position.x, 10, bigColliderBoi.gameObject.transform.position.z);
-            bigColliderBoi.gameObject.SetActive(false);
-        }
-    }
+    //public void OnCollisionEnter(Collision bigColliderBoi)
+    //{
+    //    if (bigColliderBoi.gameObject.name == "Spike" || bigColliderBoi.gameObject.name == "Coin")
+    //    {
+    //        //bigColliderBoi.gameObject.SetActive(false);
+    //    }
+    //}
 }

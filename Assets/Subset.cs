@@ -41,7 +41,7 @@ public class Subset : MonoBehaviour
     {
         _Scenario = (int)(Random.value * 2);
         stats = new Stats();
-        objectManager = gameObject.AddComponent<ObjectManager>();
+        objectManager = FindObjectOfType<ObjectManager>();
 
         camera = FindObjectOfType<Camera>();
     }
