@@ -182,7 +182,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: GET READY FOR ROUND 1
+  m_Text: WELCOME
 --- !u!222 &66900529
 CanvasRenderer:
   m_ObjectHideFlags: 0

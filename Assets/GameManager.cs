@@ -63,7 +63,24 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (_AnnouncerTextTimer > 0)
+        if(InputManager.instance._approachRate == 0.0f)
+        {
+            Announcer.fontSize = 20;
+            Announcer.GetComponent<RectTransform>().anchoredPosition = new Vector3(0.0f, Screen.height/3);
+            if(subset._Scenario == 0)
+            {
+                Announcer.text = "You will be approached by SPIKES and COINS.\n The COINS will be HIGHLIGHTED in various ways.\n Your mission is to AVOID THE SPIKES AND COLLECT THE COINS.\n" +
+                    "\nInstructions: \nUse A or Left Arrow to move left\nUse D or Right Arrow to move right.";
+            }
+            else
+            {
+                Announcer.text = "You will be approached by SPIKES and COINS.\n The SPIKES will be HIGHLIGHTED in various ways.\n Your mission is to AVOID THE SPIKES AND COLLECT THE COINS.\n" +
+                    "\nInstructions: \nUse A or Left Arrow to move left\nUse D or Right Arrow to move right.";
+            }
+            
+            
+        }
+        else if (_AnnouncerTextTimer > 0)
         {
             Announcer.color = Color.Lerp(_OriginalTextColor, Color.clear, Mathf.Min(1, _AnnouncerTextTimer / 3.0f));
             _AnnouncerTextTimer += Time.deltaTime;
@@ -71,6 +88,9 @@ public class GameManager : MonoBehaviour
             {
                 _AnnouncerTextTimer = 0.0f;
                 Announcer.gameObject.SetActive(false);
+
+                Announcer.fontSize = 40;
+                Announcer.GetComponent<RectTransform>().anchoredPosition = new Vector3(0.0f, 0.0f);
             }
         }
         ScoreText.text = "Score: " + (Score + subset.stats.score).ToString();

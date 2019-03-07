@@ -174,7 +174,8 @@ public class ObjectManager : MonoBehaviour
     public void Reset(VISUAL_VARIABLE visVar, int scenario)
     {
         StopAllCoroutines();
-        Random.InitState((int)visVar);
+        //Random.InitState((int)visVar); // Comment back for seed per technique
+
         for (int i = 0; i < Objects.Length; ++i)
         {
             Objects[i].GetComponent<MeshRenderer>().material = OriginalMaterial;
