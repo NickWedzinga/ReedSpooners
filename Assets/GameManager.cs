@@ -14,7 +14,8 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
     public StatTracker statTracker { get; private set; }
 
-    public int round { get; private set; } //How many vis vars the participant has been through
+    public int round { get; set; } //How many vis vars the participant has been through
+    private bool _FirstScenario;
 
     Subset subset;
     public int[] visVarOrder = { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
@@ -40,6 +41,7 @@ public class GameManager : MonoBehaviour
         statTracker = new StatTracker();
         
         round = 0;
+        _FirstScenario = true;
         //RANDOMIZE VISUALORDER
         Shuffle(visVarOrder);
 
@@ -96,6 +98,20 @@ public class GameManager : MonoBehaviour
         ++round;
         if (round < (int)VISUAL_VARIABLE.VIS_VARS)
         {
+            SwapTechnique();
+            Announcer.text = "GET READY FOR ROUND " + (round + 1).ToString();
+            Announcer.gameObject.SetActive(true);
+            _AnnouncerTextTimer += Time.deltaTime;
+        }
+        else if (_FirstScenario)
+        {
+            _FirstScenario = false;
+            round = 0;
+            if (subset._Scenario == 1)
+                subset._Scenario = 0;
+            else
+                subset._Scenario = 1;
+
             SwapTechnique();
             Announcer.text = "GET READY FOR ROUND " + (round + 1).ToString();
             Announcer.gameObject.SetActive(true);

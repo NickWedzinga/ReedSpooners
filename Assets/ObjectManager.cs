@@ -171,7 +171,7 @@ public class ObjectManager : MonoBehaviour
         }
     }
 
-    public void Reset(VISUAL_VARIABLE visVar)
+    public void Reset(VISUAL_VARIABLE visVar, int scenario)
     {
         StopAllCoroutines();
         Random.InitState((int)visVar);
@@ -191,9 +191,15 @@ public class ObjectManager : MonoBehaviour
 
         for (int i = 0; i < Objects.Length; ++i)
         {
-            if (Objects[i].type == TYPE.COIN)
+            if (Objects[i].type == TYPE.COIN && scenario == 0)
             {
                 Objects[i].transform.rotation = Quaternion.Euler(90.0f, 0, 0);
+                // Object should be highlighted, apply highlight
+                ApplyHighlight(i, visVar/*VISUAL_VARIABLE.MOTION*/);
+            }
+            else if (Objects[i].type == TYPE.SPIKE && scenario == 1)
+            {
+                Objects[i].transform.rotation = Quaternion.Euler(0, 0, 0);
                 // Object should be highlighted, apply highlight
                 ApplyHighlight(i, visVar/*VISUAL_VARIABLE.MOTION*/);
             }
@@ -251,7 +257,10 @@ public class ObjectManager : MonoBehaviour
         {
             float spinPerSecond = 1.0f / Time.deltaTime;
             float anglePerSpin = spinPerSecond / 2.0f;
-            Objects[index].transform.Rotate(new Vector3(0, 0, 1), anglePerSpin);
+            if(Objects[index].type == TYPE.COIN)
+                Objects[index].transform.Rotate(new Vector3(0, 0, 1), anglePerSpin);
+            else if (Objects[index].type == TYPE.SPIKE)
+                Objects[index].transform.Rotate(new Vector3(0, 1, 0), anglePerSpin);
             yield return null;
         }
         //Objects[index].transform.localRotation = Quaternion.identity;

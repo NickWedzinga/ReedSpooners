@@ -23,12 +23,14 @@ public class Subset : MonoBehaviour
     new Camera camera;
     public Stats stats;
     int objects = 10;
+    public int _Scenario; 
     VISUAL_VARIABLE _visVar;
     public VISUAL_VARIABLE visVar { get { return _visVar; } set { _visVar = value; } }
 
     // Start is called before the first frame update
     void Start()
     {
+        _Scenario = (int)(Random.value * 2);
         stats = new Stats();
 
         objectManager = FindObjectOfType<ObjectManager>();
@@ -70,7 +72,9 @@ public class Subset : MonoBehaviour
     public void Reset()
     {
         ResetScore();
-        objectManager.Reset(visVar);
+        //if (GameManager.instance.round < (int)VISUAL_VARIABLE.VIS_VARS)
+        objectManager.Reset(visVar, _Scenario);
+
     }
 
     void ResetScore()
