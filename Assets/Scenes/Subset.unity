@@ -451,6 +451,7 @@ GameObject:
   - component: {fileID: 508518439}
   - component: {fileID: 508518438}
   - component: {fileID: 508518440}
+  - component: {fileID: 508518441}
   m_Layer: 0
   m_Name: World
   m_TagString: Untagged
@@ -468,6 +469,8 @@ MonoBehaviour:
   m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d64a5c64fd0e9104abb16de61f1c9c7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   m_Name: 
   m_EditorClassIdentifier: 
   Objects:
@@ -573,6 +576,7 @@ MonoBehaviour:
   - {fileID: 0}
   lastObjectPositionZ: 0
   coinMesh: {fileID: 0}
+  owner: {fileID: 0}
 --- !u!4 &508518439
 Transform:
   m_ObjectHideFlags: 0
@@ -599,14 +603,33 @@ MonoBehaviour:
   m_GameObject: {fileID: 508518437}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 84a708cf4d0934147bcee4f6d6007c93, type: 3}
+  m_Script: {fileID: 11500000, guid: 5e9204417440f2d4d90c56588048baa6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  visVarOrder: 000000000100000002000000030000000400000005000000060000000700000008000000
+  m_Name: 
+  m_EditorClassIdentifier: 
+  subset: {fileID: 0}
+  visVarOrder: 02000000
   Announcer: {fileID: 66900528}
   Score: 0
   ScoreText: {fileID: 1195408081}
   DebugText: {fileID: 497796756}
+--- !u!114 &508518441
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 508518437}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b2673b8f396e834c859bd3dbd5a6ed5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectManager: {fileID: 0}
+  visVar: 0
 --- !u!1 &534669902
 GameObject:
   m_ObjectHideFlags: 0
@@ -657,7 +680,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 30
-  field of view: 52
+  field of view: 30
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -683,7 +706,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 534669902}
   m_LocalRotation: {x: 0.10757454, y: -0, z: -0, w: 0.9941971}
-  m_LocalPosition: {x: 0, y: 2.88, z: -4.87}
+  m_LocalPosition: {x: 0, y: 2.88, z: -6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1801603282}
@@ -1133,6 +1156,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 836b6ebad045bc54abe11f92cd2ed2cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_Name: 
+  m_EditorClassIdentifier: 
   LocalScale: {x: 1, y: 1, z: 1}
   baseStart: {x: -21.554274, y: 1.2000847, z: 21.733377}
   baseEnd: {x: -12.276876, y: 1.2000847, z: 12.607112}
@@ -1312,7 +1337,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1801603278}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -5.840228, y: -1.3818083, z: 0.5167742}
+  m_LocalPosition: {x: -5.840228, y: -1.3818083, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 534669905}
@@ -1357,6 +1382,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d64a5c64fd0e9104abb16de61f1c9c7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   m_Name: 
   m_EditorClassIdentifier: 
   Objects:
@@ -1462,3 +1489,4 @@ MonoBehaviour:
   - {fileID: 0}
   lastObjectPositionZ: 0
   coinMesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+  owner: {fileID: 0}

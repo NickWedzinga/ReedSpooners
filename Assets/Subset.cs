@@ -16,22 +16,28 @@ public enum VISUAL_VARIABLE
     VIS_VARS,
 }
 
+public enum LANE
+{
+    NOT_SET,
+    LEFT,
+    MIDDLE,
+    RIGHT
+}
+
 public class Subset : MonoBehaviour
 {
     public ObjectManager objectManager;
     new Camera camera;
     public Stats stats;
     int objects = 10;
-    VISUAL_VARIABLE _visVar;
-    public VISUAL_VARIABLE visVar { get { return _visVar; } set { _visVar = value; } }
+    public VISUAL_VARIABLE visVar;
+    bool lameAssHack = true;
 
     // Start is called before the first frame update
     void Start()
     {
         stats = new Stats();
         objectManager = gameObject.AddComponent<ObjectManager>();
-        objectManager.SpawnObjects(visVar);
-        Reset();
 
         camera = FindObjectOfType<Camera>();
     }
@@ -39,11 +45,16 @@ public class Subset : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if (lameAssHack)
+        {
+            objectManager.SpawnObjects();
+            ResetRound();
+            lameAssHack = false;
+        }
     }
 
     // Updates score, called during collision in a HighlightableObject
-    public void UpdateScore(TYPE type)
+    public void UpdateScore(TYPE type, float approachRate, int ID)
     {
         switch (type)
         {
@@ -56,16 +67,26 @@ public class Subset : MonoBehaviour
                 stats.score -= 50;
                 break;
         }
+        if (type == (TYPE)Game.instance.scenario)
+            stats.approachRateHit[ID] = approachRate;
     }
 
-    public void UpdateGazeData(float TFD, float TTFF, int fixations, int ID)
+    public void UpdateGazeData()
+    {
+        objectManager.SendGazeData();
+    }
+
+    public void UpdateGazeData(float TFD, float TTFF, int fixations, float approachRateFF, LANE objectLane, LANE playerLane, int ID)
     {
         stats.TFD[ID] = TFD;
         stats.TTFF[ID] = TTFF;
         stats.fixations[ID] = fixations;
+        stats.approachRateFF[ID] = approachRateFF;
+        stats.highlightLanes[ID] = objectLane;
+        stats.playerLanes[ID] = playerLane;
     }
 
-    public void Reset()
+    public void ResetRound()
     {
         ResetScore();
         objectManager.ResetHighlight(visVar);
@@ -79,5 +100,9 @@ public class Subset : MonoBehaviour
         stats.TFD = new List<float>(new float[objects]);
         stats.TTFF = new List<float>(new float[objects]);
         stats.fixations = new List<int>(new int[objects]);
+        stats.highlightLanes = new List<LANE>(new LANE[objects]);
+        stats.playerLanes = new List<LANE>(new LANE[objects]);
+        stats.approachRateFF = new List<float>(new float[objects]);
+        stats.approachRateHit = new List<float>(new float[objects]);
     }
 }
