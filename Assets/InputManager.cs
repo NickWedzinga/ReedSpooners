@@ -7,7 +7,20 @@ public class InputManager : MonoBehaviour
 {
     public static InputManager instance;
 
+    private bool paused = false;
+
     public float _approachRate { get; set; }
+    public LANE lane {
+        get
+        {
+            if (transform.position.x > 0)
+                return LANE.RIGHT;
+            else if (transform.position.x < 0)
+                return LANE.LEFT;
+            else
+                return LANE.MIDDLE;
+        }
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -28,7 +41,7 @@ public class InputManager : MonoBehaviour
         {
             if (transform.position.z > GameManager.instance.lastObjectPositionZ + 50)
             {
-                Reset();
+                ResetVariable();
             }
             if ((Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) && transform.position.x < 1)
             {
@@ -43,9 +56,9 @@ public class InputManager : MonoBehaviour
         }
     }
 
-    private void Reset()
+    private void ResetVariable()
     {
-        GameManager.instance.Reset();
+        Game.instance.ResetVariable();
         _approachRate = 5.0f;
         gameObject.transform.position = new Vector3(0, 1, 0.5f);
     }

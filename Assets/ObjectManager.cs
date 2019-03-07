@@ -19,11 +19,14 @@ public class ObjectManager : MonoBehaviour
     public Material HueMaterial;
     private float _FlashingTimer;
 
+    public Subset owner;
+
     // Start is called before the first frame update
     void Start()
     {
         _FlashingTimer = 0.0f;
         _OriginalObjectColor = Color.gray;
+        owner = gameObject.GetComponent<Subset>();
     }
 
     // Update is called once per frame
@@ -181,6 +184,16 @@ public class ObjectManager : MonoBehaviour
             Objects[i].GetComponent<MeshRenderer>().material = OriginalMaterial;
             Objects[i].GetComponent<MeshRenderer>().material.color = Color.grey;
             Objects[i].transform.position = new Vector3(4.75f * RandomLane() , /*Objects[i].transform.position.y*/1, Objects[i].transform.position.z);
+
+            if (Objects[i].transform.position.x > 0)
+                Objects[i].lane = LANE.RIGHT;
+            else if (Objects[i].transform.position.x < 0)
+                Objects[i].lane = LANE.LEFT;
+            else
+                Objects[i].lane = LANE.MIDDLE;
+
+            Objects[i].hasEnteredView = false;
+            Objects[i].enteredViewAt = 0;
             Objects[i].gameObject.SetActive(true);
         }
 
@@ -190,6 +203,8 @@ public class ObjectManager : MonoBehaviour
         // Choose random objects that will be highlighted
         ObjectShuffle();
 
+        //RandomizeObjectsForHighlight();
+        int highlightCounter = 0;
         for (int i = 0; i < Objects.Length; ++i)
         {
             if (Objects[i].type == TYPE.COIN && scenario == 0)
@@ -201,6 +216,8 @@ public class ObjectManager : MonoBehaviour
             else if (Objects[i].type == TYPE.SPIKE && scenario == 1)
             {
                 Objects[i].transform.rotation = Quaternion.Euler(0, 0, 0);
+                Objects[i].ID = highlightCounter;
+                ++highlightCounter;
                 // Object should be highlighted, apply highlight
                 ApplyHighlight(i, visVar/*VISUAL_VARIABLE.MOTION*/);
             }
@@ -252,6 +269,27 @@ public class ObjectManager : MonoBehaviour
         }
     }
 
+    public void SendGazeData()
+    {
+        foreach (var highlighted in Objects)
+        {
+            if ((highlighted.type == TYPE.COIN && Game.instance.scenario == SCENARIO.POSITIVE) ||
+                (highlighted.type == TYPE.SPIKE && Game.instance.scenario == SCENARIO.NEGATIVE))
+            {
+                highlighted.SendGazeData();
+            }
+        }
+    }
+
+    //private IEnumerator Rotator(int index)
+    //{
+    //    while (VisualVariableOrder[VisualVariableCounter] == 3)
+    //    {
+    //        Objects[index].transform.Rotate(new Vector3(0, 1, 0), 20.0f);
+    //        yield return null;
+    //    }
+    //    Objects[index].transform.localRotation = Quaternion.identity;
+    //}
     private IEnumerator Rotator(int index, VISUAL_VARIABLE visVar)
     {
         while (visVar == VISUAL_VARIABLE.MOTION)

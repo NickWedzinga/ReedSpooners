@@ -2,23 +2,25 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Tobii.Gaming;
+using System;
 
-enum SCENARIO
+public enum SCENARIO
 {
     POSITIVE,
     NEGATIVE
 }
 
-public class GameManager : MonoBehaviour
+public class Game : MonoBehaviour
 {
-    public static GameManager instance;
+    public static Game instance;
     public StatTracker statTracker { get; private set; }
 
     public int round { get; set; } //How many vis vars the participant has been through
     private bool _FirstScenario;
 
-    Subset subset;
-    public int[] visVarOrder = { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
+    public Subset subset;
+    public int[] visVarOrder = { 2 };// { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
 
     public Text Announcer;
     private float _AnnouncerTextTimer;
@@ -29,6 +31,11 @@ public class GameManager : MonoBehaviour
 
     public Text DebugText;
 
+    private GazePoint gazePoint;
+
+    public SCENARIO scenario { get; private set; }
+
+    //private System.Random _random = new System.Random();
     private System.Random _random = new System.Random((int)System.DateTime.Now.Ticks);
 
     public int lastObjectPositionZ { get { if (subset) return subset.objectManager.lastObjectPositionZ; else return 0; } }
@@ -45,7 +52,7 @@ public class GameManager : MonoBehaviour
         //RANDOMIZE VISUALORDER
         Shuffle(visVarOrder);
 
-        subset = gameObject.AddComponent<Subset>();
+        subset = gameObject.GetComponent<Subset>();
         subset.visVar = (VISUAL_VARIABLE)visVarOrder[0];
 
         _OriginalTextColor = Announcer.color;
@@ -57,7 +64,8 @@ public class GameManager : MonoBehaviour
         ScoreText.text = "Score: " + Score;
 
         DebugText.enabled = false;
-        DebugText.text = "Visual variable: " + subset.visVar.ToString();
+
+        gazePoint = TobiiAPI.GetGazePoint();
     }
 
     // Update is called once per frame
@@ -95,28 +103,30 @@ public class GameManager : MonoBehaviour
         }
         ScoreText.text = "Score: " + (Score + subset.stats.score).ToString();
 
-        if(Input.GetKeyUp(KeyCode.F1))
+        if (Input.GetKeyUp(KeyCode.F1))
         {
             //Debug mode
             DebugText.enabled = !DebugText.enabled;
         }
+
+        Debug.Log(TobiiAPI.GetGazePoint().GUI.ToString());
+
+        //DebugText.text = "Visual variable: " + subset.visVar.ToString(); + Environment.NewLine + "Eye Pos (screen): " + TobiiAPI.GetGazePoint().GUI.ToString();
     }
 
     void SwapTechnique()
     {
         subset.visVar = (VISUAL_VARIABLE)visVarOrder[round];
-        statTracker.AddTechnique(subset.visVar, subset.stats);
-        subset.Reset();
-
-        DebugText.text = "Visual variable: " + subset.visVar.ToString();
+        statTracker.AddTechnique(subset, scenario);
+        subset.ResetRound();
     }
-    
-    public void Reset()
+
+    public void ResetVariable()
     {
         Score += subset.stats.score;
         // Announcer text reset and active
         ++round;
-        if (round < (int)VISUAL_VARIABLE.VIS_VARS)
+        if (round < visVarOrder.Length)
         {
             SwapTechnique();
             Announcer.text = "GET READY FOR ROUND " + (round + 1).ToString();
@@ -139,8 +149,13 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            statTracker.SaveStats();
+            statTracker.AddTechnique(subset, scenario);
+            statTracker.SaveStats(Score);
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#else
             Application.Quit();
+#endif
         }
     }
 
@@ -156,10 +171,5 @@ public class GameManager : MonoBehaviour
             array[randomIndex] = array[i];
             array[i] = temp;
         }
-    }
-
-    public void UpdateScore(TYPE type)
-    {
-        subset.UpdateScore(type);
     }
 }
