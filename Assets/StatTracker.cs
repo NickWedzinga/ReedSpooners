@@ -60,21 +60,21 @@ public class StatTracker
 
                 playerText += "TFD";
                 playerText += ',';
-                for (int i = 0; i < Game.instance.nrOfHighlightedObjects; ++i)
+                for (int i = 0; i < (int)scenario.Key; ++i)
                 {
                     playerText += stats.TFD[i].ToString();
                     playerText += ',';
                 }
                 playerText += "TTFF";
                 playerText += ',';
-                for (int i = 0; i < Game.instance.nrOfHighlightedObjects; ++i)
+                for (int i = 0; i < (int)scenario.Key; ++i)
                 {
                     playerText += stats.TTFF[i].ToString();
                     playerText += ',';
                 }
                 playerText += "Fixations";
                 playerText += ',';
-                for (int i = 0; i < Game.instance.nrOfHighlightedObjects; ++i)
+                for (int i = 0; i < (int)scenario.Key; ++i)
                 {
                     playerText += stats.fixations[i].ToString();
                     playerText += ',';
@@ -82,14 +82,14 @@ public class StatTracker
 
                 playerText += "Player lanes";
                 playerText += ',';
-                for (int i = 0; i < Game.instance.nrOfHighlightedObjects; ++i)
+                for (int i = 0; i < (int)scenario.Key; ++i)
                 {
                     playerText += stats.playerLanes[i].ToString();
                     playerText += ',';
                 }
                 playerText += "Object lanes";
                 playerText += ',';
-                for (int i = 0; i < Game.instance.nrOfHighlightedObjects; ++i)
+                for (int i = 0; i < (int)scenario.Key; ++i)
                 {
                     playerText += stats.highlightLanes[i].ToString();
                     playerText += ',';
@@ -97,14 +97,14 @@ public class StatTracker
 
                 playerText += "Approach rate FF";
                 playerText += ',';
-                for (int i = 0; i < Game.instance.nrOfHighlightedObjects; ++i)
+                for (int i = 0; i < (int)scenario.Key; ++i)
                 {
                     playerText += stats.approachRateFF[i].ToString();
                     playerText += ',';
                 }
                 playerText += "Approach rate hit";
                 playerText += ',';
-                for (int i = 0; i < Game.instance.nrOfHighlightedObjects; ++i)
+                for (int i = 0; i < (int)scenario.Key; ++i)
                 {
                     playerText += stats.approachRateHit[i].ToString();
                     playerText += ',';

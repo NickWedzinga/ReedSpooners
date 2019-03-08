@@ -30,7 +30,7 @@ public class Subset : MonoBehaviour
     public ObjectManager objectManager;
     new Camera camera;
     public Stats stats;
-    int objects = 10;
+    public int objects = 10;
     VISUAL_VARIABLE _visVar;
     public VISUAL_VARIABLE visVar { get { return _visVar; } set { _visVar = value; } }
     bool lameAssHack = true;
@@ -90,9 +90,12 @@ public class Subset : MonoBehaviour
 
     public void ResetRound(SCENARIO scenario)
     {
+        if (scenario == SCENARIO.NEGATIVE)
+            objects = 90;
         ResetScore();
         //if (GameManager.instance.round < (int)VISUAL_VARIABLE.VIS_VARS)
         objectManager.Reset(visVar, scenario);
+
     }
 
     void ResetScore()

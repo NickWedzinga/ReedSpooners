@@ -7,8 +7,8 @@ using System;
 
 public enum SCENARIO
 {
-    POSITIVE,
-    NEGATIVE
+    POSITIVE = 10,
+    NEGATIVE = 90
 }
 
 public class Game : MonoBehaviour
