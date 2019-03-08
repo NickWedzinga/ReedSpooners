@@ -75,7 +75,7 @@ public class Game : MonoBehaviour
         if(InputManager.instance._approachRate == 0.0f)
         {
             Announcer.fontSize = 20;
-            Announcer.GetComponent<RectTransform>().anchoredPosition = new Vector3(0.0f, Screen.height/3);
+            Announcer.GetComponent<RectTransform>().anchoredPosition = new Vector3(0.0f, Screen.height/2.8f);
             if(scenario == SCENARIO.POSITIVE)
             {
                 Announcer.text = "You will be approached by SPIKES and COINS.\n The COINS will be HIGHLIGHTED in various ways.\n Your mission is to AVOID THE SPIKES AND COLLECT THE COINS.\n" +
@@ -91,9 +91,13 @@ public class Game : MonoBehaviour
         }
         else if (_AnnouncerTextTimer > 0)
         {
-            Announcer.color = Color.Lerp(_OriginalTextColor, Color.clear, Mathf.Min(1, _AnnouncerTextTimer / 3.0f));
+            Announcer.fontSize = 60;
+            Announcer.GetComponent<RectTransform>().anchoredPosition = new Vector3(0.0f, 0.0f);
+            Announcer.text = "GET READY FOR ROUND " + (round + 1).ToString();
+
+            Announcer.color = Color.Lerp(_OriginalTextColor, Color.clear, Mathf.Min(1, _AnnouncerTextTimer / 4.0f));
             _AnnouncerTextTimer += Time.deltaTime;
-            if (_AnnouncerTextTimer > 3.0f)
+            if (_AnnouncerTextTimer > 4.0f)
             {
                 _AnnouncerTextTimer = 0.0f;
                 Announcer.gameObject.SetActive(false);
