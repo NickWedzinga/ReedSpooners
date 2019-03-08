@@ -24,7 +24,7 @@ public class InputManager : MonoBehaviour
     void Start()
     {
         instance = this;
-        print("This is a test.");
+        //print("This is a test.");
 
         // Change to increase speed
         _approachRate = 0.0f;
@@ -34,7 +34,9 @@ public class InputManager : MonoBehaviour
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space) && _approachRate == 0.0f)
-            _approachRate = 5.0f;
+        {
+            StartCoroutine(GracePeriod());
+        }
         if (_approachRate > 0.0f)
         {
             if (transform.position.z > Game.instance.lastObjectPositionZ + 50)
@@ -50,7 +52,8 @@ public class InputManager : MonoBehaviour
                 transform.Translate(-4.75f, 0, 0);
             }
             transform.Translate(0, 0, Time.deltaTime * _approachRate);
-            _approachRate += Time.deltaTime;
+            if(_approachRate < 43.0f)
+                _approachRate += Time.deltaTime * 1.5f;
         }
     }
 
@@ -59,5 +62,16 @@ public class InputManager : MonoBehaviour
         Game.instance.ResetVariable();
         _approachRate = 5.0f;
         gameObject.transform.position = new Vector3(0, 1, 0.5f);
+    }
+
+    private IEnumerator GracePeriod()
+    {
+        float timePassed = 0.0f;
+        while (timePassed < 2.0f)
+        {
+            timePassed += Time.deltaTime;
+            yield return null;
+        }
+        _approachRate = 5.0f;
     }
 }
