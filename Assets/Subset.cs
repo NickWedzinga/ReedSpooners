@@ -31,7 +31,6 @@ public class Subset : MonoBehaviour
     new Camera camera;
     public Stats stats;
     int objects = 10;
-    public int _Scenario; 
     VISUAL_VARIABLE _visVar;
     public VISUAL_VARIABLE visVar { get { return _visVar; } set { _visVar = value; } }
     bool lameAssHack = true;
@@ -39,7 +38,6 @@ public class Subset : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        _Scenario = (int)(Random.value * 2);
         stats = new Stats();
         objectManager = FindObjectOfType<ObjectManager>();
 
@@ -52,7 +50,7 @@ public class Subset : MonoBehaviour
         if (lameAssHack)
         {
             objectManager.SpawnObjects();
-            ResetRound();
+            ResetRound(Game.instance.scenario);
             lameAssHack = false;
         }
     }
@@ -90,12 +88,11 @@ public class Subset : MonoBehaviour
         stats.playerLanes[ID] = playerLane;
     }
 
-    public void ResetRound()
+    public void ResetRound(SCENARIO scenario)
     {
         ResetScore();
         //if (GameManager.instance.round < (int)VISUAL_VARIABLE.VIS_VARS)
-        objectManager.Reset(visVar, _Scenario);
-
+        objectManager.Reset(visVar, scenario);
     }
 
     void ResetScore()

@@ -24,7 +24,7 @@ public class InputManager : MonoBehaviour
     void Start()
     {
         instance = this;
-        print("WHY AH U RUNNING?!");
+        print("This is a test.");
 
         // Change to increase speed
         _approachRate = 0.0f;
@@ -60,12 +60,4 @@ public class InputManager : MonoBehaviour
         _approachRate = 5.0f;
         gameObject.transform.position = new Vector3(0, 1, 0.5f);
     }
-
-    //public void OnCollisionEnter(Collision bigColliderBoi)
-    //{
-    //    if (bigColliderBoi.gameObject.name == "Spike" || bigColliderBoi.gameObject.name == "Coin")
-    //    {
-    //        //bigColliderBoi.gameObject.SetActive(false);
-    //    }
-    //}
 }

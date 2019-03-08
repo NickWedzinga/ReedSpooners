@@ -174,7 +174,7 @@ public class ObjectManager : MonoBehaviour
         }
     }
 
-    public void Reset(VISUAL_VARIABLE visVar, int scenario)
+    public void Reset(VISUAL_VARIABLE visVar, SCENARIO scenario)
     {
         StopAllCoroutines();
         //Random.InitState((int)visVar); // Comment back for seed per technique
@@ -183,7 +183,7 @@ public class ObjectManager : MonoBehaviour
         {
             Objects[i].GetComponent<MeshRenderer>().material = OriginalMaterial;
             Objects[i].GetComponent<MeshRenderer>().material.color = Color.grey;
-            Objects[i].transform.position = new Vector3(4.75f * RandomLane() , /*Objects[i].transform.position.y*/1, Objects[i].transform.position.z);
+            Objects[i].transform.position = new Vector3(4.75f * RandomLane(), 1, Objects[i].transform.position.z);
 
             if (Objects[i].transform.position.x > 0)
                 Objects[i].lane = LANE.RIGHT;
@@ -203,17 +203,16 @@ public class ObjectManager : MonoBehaviour
         // Choose random objects that will be highlighted
         ObjectShuffle();
 
-        //RandomizeObjectsForHighlight();
         int highlightCounter = 0;
         for (int i = 0; i < Objects.Length; ++i)
         {
-            if (Objects[i].type == TYPE.COIN && scenario == 0)
+            if (Objects[i].type == TYPE.COIN && scenario == SCENARIO.POSITIVE)
             {
                 Objects[i].transform.rotation = Quaternion.Euler(90.0f, 0, 0);
                 // Object should be highlighted, apply highlight
                 ApplyHighlight(i, visVar/*VISUAL_VARIABLE.MOTION*/);
             }
-            else if (Objects[i].type == TYPE.SPIKE && scenario == 1)
+            else if (Objects[i].type == TYPE.SPIKE && scenario == SCENARIO.NEGATIVE)
             {
                 Objects[i].transform.rotation = Quaternion.Euler(0, 0, 0);
                 Objects[i].ID = highlightCounter;
@@ -281,15 +280,6 @@ public class ObjectManager : MonoBehaviour
         }
     }
 
-    //private IEnumerator Rotator(int index)
-    //{
-    //    while (VisualVariableOrder[VisualVariableCounter] == 3)
-    //    {
-    //        Objects[index].transform.Rotate(new Vector3(0, 1, 0), 20.0f);
-    //        yield return null;
-    //    }
-    //    Objects[index].transform.localRotation = Quaternion.identity;
-    //}
     private IEnumerator Rotator(int index, VISUAL_VARIABLE visVar)
     {
         while (visVar == VISUAL_VARIABLE.MOTION)
@@ -302,7 +292,5 @@ public class ObjectManager : MonoBehaviour
                 Objects[index].transform.Rotate(new Vector3(0, 1, 0), anglePerSpin);
             yield return null;
         }
-        //Objects[index].transform.localRotation = Quaternion.identity;
-        //Objects[index].transform.Rotate(Vector3.right, 90.0f);
     }
 }
