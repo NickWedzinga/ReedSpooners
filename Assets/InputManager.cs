@@ -52,7 +52,8 @@ public class InputManager : MonoBehaviour
                 transform.Translate(-4.75f, 0, 0);
             }
             transform.Translate(0, 0, Time.deltaTime * _approachRate);
-            _approachRate += Time.deltaTime;
+            if(_approachRate < 43.0f)
+                _approachRate += Time.deltaTime * 1.5f;
         }
     }
 
