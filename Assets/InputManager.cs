@@ -66,6 +66,11 @@ public class InputManager : MonoBehaviour
 
     private IEnumerator GracePeriod()
     {
+        _approachRate = Time.deltaTime;
+        Game.instance.Announcer.fontSize = 60;
+        Game.instance.Announcer.GetComponent<RectTransform>().anchoredPosition = new Vector3(0.0f, 0.0f);
+        Game.instance.Announcer.text = "GET READY FOR ROUND " + (Game.instance.round + 1).ToString();
+
         float timePassed = 0.0f;
         while (timePassed < 2.0f)
         {
