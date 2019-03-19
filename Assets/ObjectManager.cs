@@ -57,13 +57,21 @@ public class ObjectManager : MonoBehaviour
                 // Loop and update intensity
                 for (int i = 0; i < Objects.Length; ++i)
                 {
+                    //if (Objects[i].GetComponent<MeshRenderer>().material.color.r == 0.2f)
+                    //{
+                    //    Objects[i].GetComponent<MeshRenderer>().material.color = new Color(0.8f, 0.8f, 0.8f);
+                    //}
+                    //else if (Objects[i].GetComponent<MeshRenderer>().material.color.r == 0.8f)
+                    //{
+                    //    Objects[i].GetComponent<MeshRenderer>().material.color = new Color(0.2f, 0.2f, 0.2f);
+                    //}
                     if (Objects[i].GetComponent<MeshRenderer>().material.color.r == 0)
                     {
-                        Objects[i].GetComponent<MeshRenderer>().material.color = new Color(255, 255, 255);
+                        Objects[i].GetComponent<MeshRenderer>().material.color = new Color(1, 1, 1);
                     }
-                    else if (Objects[i].GetComponent<MeshRenderer>().material.color.r == 255)
+                    else if (Objects[i].GetComponent<MeshRenderer>().material.color.r == 1)
                     {
-                        Objects[i].GetComponent<MeshRenderer>().material.color = new Color(0, 0, 0);
+                        Objects[i].GetComponent<MeshRenderer>().material.color = new Color(0 , 0, 0);
                     }
                 }
             }
@@ -74,7 +82,7 @@ public class ObjectManager : MonoBehaviour
     {
         for (int i = 0; i < Objects.Length; ++i)
         {
-            if (i >= 5 && i < 15)
+            if (i >= 5 && i < 55)
             {
                 GameObject gObj = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
                 Objects[i] = gObj.AddComponent<HighlightableObject>();
@@ -206,19 +214,27 @@ public class ObjectManager : MonoBehaviour
         int highlightCounter = 0;
         for (int i = 0; i < Objects.Length; ++i)
         {
-            if (Objects[i].type == TYPE.COIN && scenario == SCENARIO.POSITIVE)
+            if (Objects[i].type == TYPE.COIN/* && scenario == SCENARIO.POSITIVE*/)
             {
                 Objects[i].transform.rotation = Quaternion.Euler(90.0f, 0, 0);
-                // Object should be highlighted, apply highlight
-                ApplyHighlight(i, visVar/*VISUAL_VARIABLE.MOTION*/);
+                if (scenario == SCENARIO.POSITIVE)
+                {
+                    Objects[i].ID = highlightCounter;
+                    ++highlightCounter;
+                    // Object should be highlighted, apply highlight
+                    ApplyHighlight(i, visVar/*VISUAL_VARIABLE.FLASH*/);
+                }                
             }
-            else if (Objects[i].type == TYPE.SPIKE && scenario == SCENARIO.NEGATIVE)
+            else if (Objects[i].type == TYPE.SPIKE/* && scenario == SCENARIO.NEGATIVE*/)
             {
                 Objects[i].transform.rotation = Quaternion.Euler(0, 0, 0);
-                Objects[i].ID = highlightCounter;
-                ++highlightCounter;
-                // Object should be highlighted, apply highlight
-                ApplyHighlight(i, visVar/*VISUAL_VARIABLE.MOTION*/);
+                if (scenario == SCENARIO.NEGATIVE)
+                {
+                    Objects[i].ID = highlightCounter;
+                    ++highlightCounter;
+                    // Object should be highlighted, apply highlight
+                    ApplyHighlight(i, visVar/*VISUAL_VARIABLE.FLASH*/);
+                }
             }
         }
     }
@@ -285,7 +301,7 @@ public class ObjectManager : MonoBehaviour
         while (visVar == VISUAL_VARIABLE.MOTION)
         {
             float spinPerSecond = 1.0f / Time.deltaTime;
-            float anglePerSpin = spinPerSecond / 2.0f;
+            float anglePerSpin = spinPerSecond / 3.0f;
             if(Objects[index].type == TYPE.COIN)
                 Objects[index].transform.Rotate(new Vector3(0, 0, 1), anglePerSpin);
             else if (Objects[index].type == TYPE.SPIKE)

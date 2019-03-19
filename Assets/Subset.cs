@@ -30,7 +30,7 @@ public class Subset : MonoBehaviour
     public ObjectManager objectManager;
     new Camera camera;
     public Stats stats;
-    int objects = 10;
+    int objects = 50;//{ get { return (int)Game.instance.scenario; } }
     VISUAL_VARIABLE _visVar;
     public VISUAL_VARIABLE visVar { get { return _visVar; } set { _visVar = value; } }
     bool lameAssHack = true;

@@ -43,17 +43,17 @@ public class InputManager : MonoBehaviour
             {
                 ResetVariable();
             }
-            if ((Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) && transform.position.x < 1)
+            if (/*(Input.GetKeyDown(KeyCode.D) || */Input.GetKeyDown(KeyCode.RightArrow) && transform.position.x < 1)
             {
                 transform.Translate(4.75f, 0, 0);
             }
-            else if ((Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) && transform.position.x > -1)
+            else if (/*(Input.GetKeyDown(KeyCode.A) || */Input.GetKeyDown(KeyCode.LeftArrow) && transform.position.x > -1)
             {
                 transform.Translate(-4.75f, 0, 0);
             }
             transform.Translate(0, 0, Time.deltaTime * _approachRate);
             if(_approachRate < 43.0f)
-                _approachRate += Time.deltaTime * 1.5f;
+                _approachRate += Time.deltaTime/* * 1.5f*/;
         }
     }
 

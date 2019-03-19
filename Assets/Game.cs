@@ -7,8 +7,9 @@ using System;
 
 public enum SCENARIO
 {
-    POSITIVE,
-    NEGATIVE
+    NEGATIVE = 90,
+    POSITIVE = 10//,
+    //NEGATIVE
 }
 
 public class Game : MonoBehaviour
@@ -20,7 +21,7 @@ public class Game : MonoBehaviour
     private bool _FirstScenario;
 
     public Subset subset;
-    public int[] visVarOrder = /*{ 2 };*/{ 0, 1, 2, 3, 4, 5, 6, 7, 8 };
+    public int[] visVarOrder = { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
 
     public Text Announcer;
     private float _AnnouncerTextTimer;
@@ -49,7 +50,7 @@ public class Game : MonoBehaviour
         
         round = 0;
         _FirstScenario = true;
-        visVarOrder = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
+        visVarOrder = new int[] { 4 };// { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
         //RANDOMIZE VISUALORDER
         Shuffle(visVarOrder);
 
@@ -79,12 +80,12 @@ public class Game : MonoBehaviour
             if(scenario == SCENARIO.POSITIVE)
             {
                 Announcer.text = "You will be approached by SPIKES and COINS.\n The COINS will be HIGHLIGHTED in various ways.\n Your mission is to AVOID THE SPIKES AND COLLECT THE COINS.\n" +
-                    "\nInstructions: \nUse A or Left Arrow to move left\nUse D or Right Arrow to move right.\n\nPress SPACE to begin.";
+                    "\nInstructions: \nUse Left Arrow to move left\nUse Right Arrow to move right.\n\nPress SPACE to begin.";
             }
             else
             {
                 Announcer.text = "You will be approached by SPIKES and COINS.\n The SPIKES will be HIGHLIGHTED in various ways.\n Your mission is to AVOID THE SPIKES AND COLLECT THE COINS.\n" +
-                    "\nInstructions: \nUse A or Left Arrow to move left\nUse D or Right Arrow to move right.\n\nPress SPACE to begin.";
+                    "\nInstructions: \nUse Left Arrow to move left\nUse Right Arrow to move right.\n\nPress SPACE to begin.";
             }
         }
         else if (_AnnouncerTextTimer > 0)
