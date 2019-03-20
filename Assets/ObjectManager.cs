@@ -73,7 +73,7 @@ public class ObjectManager : MonoBehaviour
     {
         for (int i = 0; i < Objects.Length; ++i)
         {
-            if (i >= 5 && i < 55)
+            if (i >= 5 && i < (int)SCENARIO.POSITIVE + 5)
             {
                 GameObject gObj = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
                 Objects[i] = gObj.AddComponent<HighlightableObject>();
@@ -185,7 +185,11 @@ public class ObjectManager : MonoBehaviour
             if (nrOfHighlightsChosen > 9)
                 finished = true;
 
-            int highlightIndex = (int)(Random.value * 95 + 5);
+            int highlightIndex = (int)(Random.value * 94 + 5);
+            if(highlightIndex < 0 || highlightIndex > 99)
+            {
+                print("what");
+            }
             if(Objects[highlightIndex].type == TYPE.COIN && scenario == SCENARIO.POSITIVE && Objects[highlightIndex].highlight == HIGHLIGHT.NO)
             {
                 nrOfHighlightsChosen++;
@@ -217,6 +221,7 @@ public class ObjectManager : MonoBehaviour
             else
                 Objects[i].lane = LANE.MIDDLE;
 
+            Objects[i].highlight = HIGHLIGHT.NO;
             Objects[i].hasEnteredView = false;
             Objects[i].enteredViewAt = 0;
             Objects[i].gameObject.SetActive(true);
