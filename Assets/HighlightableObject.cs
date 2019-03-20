@@ -21,6 +21,9 @@ public class HighlightableObject : MonoBehaviour
     public float approachRateFF;
     public float enteredViewAt; //timestamp
     public bool hasEnteredView = false;
+    public float timeToChangeLaneFromEnter = 0;
+    public float timeToChangeLaneFromFF = 0;
+    public Vector2 gazePos = new Vector2(0, 0);
 
     public TYPE type;
 
@@ -52,6 +55,13 @@ public class HighlightableObject : MonoBehaviour
             hasEnteredView = true;
             enteredViewAt = Time.time;
             playerLane = InputManager.instance.lane;
+            gazePos = TobiiAPI.GetGazePoint().GUI;
+        }
+
+        if(hasEnteredView && InputManager.instance.lane == lane && timeToChangeLaneFromEnter == 0)
+        {
+            timeToChangeLaneFromEnter = Time.time - enteredViewAt;
+            timeToChangeLaneFromFF = Time.time - TTFF;
         }
 
         if (gazeAware.HasGazeFocus)
@@ -81,6 +91,6 @@ public class HighlightableObject : MonoBehaviour
 
     public void SendGazeData()
     {
-        owner.UpdateGazeData(TFD, TTFF, fixations, approachRateFF, lane, playerLane, ID);
+        owner.UpdateGazeData(TFD, TTFF, fixations, approachRateFF, lane, playerLane, timeToChangeLaneFromEnter, timeToChangeLaneFromFF, ID);
     }
 }

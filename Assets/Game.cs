@@ -63,6 +63,8 @@ public class Game : MonoBehaviour
         DebugText.enabled = false;
 
         gazePoint = TobiiAPI.GetGazePoint();
+
+        scenario = SCENARIO.POSITIVE;
     }
 
     // Update is called once per frame

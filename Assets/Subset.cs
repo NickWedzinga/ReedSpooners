@@ -29,7 +29,7 @@ public class Subset : MonoBehaviour
     public ObjectManager objectManager;
     new Camera camera;
     public Stats stats;
-    int objects = 10;
+    public int objects { get { return (int)Game.instance.scenario; } }
     public VISUAL_VARIABLE visVar;
     bool lameAssHack = true;
 
@@ -76,7 +76,7 @@ public class Subset : MonoBehaviour
         objectManager.SendGazeData();
     }
 
-    public void UpdateGazeData(float TFD, float TTFF, int fixations, float approachRateFF, LANE objectLane, LANE playerLane, int ID)
+    public void UpdateGazeData(float TFD, float TTFF, int fixations, float approachRateFF, LANE objectLane, LANE playerLane, float timeToChangeFromEnter, float timeToChangeFromFF, int ID)
     {
         stats.TFD[ID] = TFD;
         stats.TTFF[ID] = TTFF;
@@ -84,6 +84,8 @@ public class Subset : MonoBehaviour
         stats.approachRateFF[ID] = approachRateFF;
         stats.highlightLanes[ID] = objectLane;
         stats.playerLanes[ID] = playerLane;
+        stats.timeToChangeFromEnter[ID] = timeToChangeFromEnter;
+        stats.timeToChangeFromFF[ID] = timeToChangeFromFF;
     }
 
     public void ResetRound()
@@ -104,5 +106,7 @@ public class Subset : MonoBehaviour
         stats.playerLanes = new List<LANE>(new LANE[objects]);
         stats.approachRateFF = new List<float>(new float[objects]);
         stats.approachRateHit = new List<float>(new float[objects]);
+        stats.timeToChangeFromEnter = new List<float>(new float[objects]);
+        stats.timeToChangeFromFF = new List<float>(new float[objects]);
     }
 }

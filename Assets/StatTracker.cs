@@ -13,6 +13,8 @@ public struct Stats
     public List<LANE> highlightLanes;
     public List<float> approachRateFF;
     public List<float> approachRateHit;
+    public List<float> timeToChangeFromEnter;
+    public List<float> timeToChangeFromFF;
 }
 
 public class StatTracker
@@ -107,6 +109,20 @@ public class StatTracker
                 for (int i = 0; i < Game.instance.nrOfHighlightedObjects; ++i)
                 {
                     playerText += stats.approachRateHit[i].ToString();
+                    playerText += ',';
+                }
+                playerText += "Time till lane change from object entering scene:";
+                playerText += ',';
+                for (int i = 0; i < (int)scenario.Key; ++i)
+                {
+                    playerText += stats.timeToChangeFromEnter[i].ToString();
+                    playerText += ',';
+                }
+                playerText += "Time till lane change from FF:";
+                playerText += ',';
+                for (int i = 0; i < (int)scenario.Key; ++i)
+                {
+                    playerText += stats.timeToChangeFromFF[i].ToString();
                     playerText += ',';
                 }
             }
