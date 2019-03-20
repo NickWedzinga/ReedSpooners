@@ -9,6 +9,13 @@ public enum TYPE
     SPIKE = 1
 }
 
+public enum HIGHLIGHT
+{
+    NO = 0,
+    HIGHLIGHTEDCOIN = 1,
+    HIGHLIGHTEDSPIKE = 2
+}
+
 public class HighlightableObject : MonoBehaviour
 {
     public int ID;
@@ -23,6 +30,7 @@ public class HighlightableObject : MonoBehaviour
     public bool hasEnteredView = false;
 
     public TYPE type;
+    public HIGHLIGHT highlight;
 
     public Subset owner;
     GazeAware gazeAware;
