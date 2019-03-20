@@ -26,10 +26,11 @@ public enum LANE
 
 public class Subset : MonoBehaviour
 {
+  
     public ObjectManager objectManager;
     new Camera camera;
     public Stats stats;
-    public int objects { get { return (int)Game.instance.scenario; } }
+    int objects = 50;//{ get { return (int)Game.instance.scenario; } }
     public VISUAL_VARIABLE visVar;
     bool lameAssHack = true;
 
@@ -37,7 +38,7 @@ public class Subset : MonoBehaviour
     void Start()
     {
         stats = new Stats();
-        objectManager = gameObject.AddComponent<ObjectManager>();
+        objectManager = FindObjectOfType<ObjectManager>();
 
         camera = FindObjectOfType<Camera>();
     }
@@ -48,7 +49,7 @@ public class Subset : MonoBehaviour
         if (lameAssHack)
         {
             objectManager.SpawnObjects();
-            ResetRound();
+            ResetRound(Game.instance.scenario);
             lameAssHack = false;
         }
     }
@@ -60,11 +61,11 @@ public class Subset : MonoBehaviour
         {
             case TYPE.COIN:
                 stats.coins++;
-                stats.score += 50;
+                stats.score += 100;
                 break;
             case TYPE.SPIKE:
                 stats.spikes++;
-                stats.score -= 50;
+                stats.score -= 100;
                 break;
         }
         if (type == (TYPE)Game.instance.scenario)
@@ -88,10 +89,11 @@ public class Subset : MonoBehaviour
         stats.timeToChangeFromFF[ID] = timeToChangeFromFF;
     }
 
-    public void ResetRound()
+    public void ResetRound(SCENARIO scenario)
     {
         ResetScore();
-        objectManager.ResetHighlight(visVar);
+        //if (GameManager.instance.round < (int)VISUAL_VARIABLE.VIS_VARS)
+        objectManager.Reset(visVar, scenario);
     }
 
     void ResetScore()

@@ -33,6 +33,7 @@ public class HighlightableObject : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        owner = FindObjectOfType<Subset>();
         gazeAware = gameObject.AddComponent<GazeAware>();
         gazeAware.runInEditMode = true;
         gazeAware.enabled = false;

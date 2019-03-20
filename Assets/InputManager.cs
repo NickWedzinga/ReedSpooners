@@ -7,8 +7,6 @@ public class InputManager : MonoBehaviour
 {
     public static InputManager instance;
 
-    private bool paused = false;
-
     public float _approachRate { get; set; }
     public LANE lane {
         get
@@ -26,37 +24,36 @@ public class InputManager : MonoBehaviour
     void Start()
     {
         instance = this;
-        print("WHY AH U RUNNING?!");
+        //print("This is a test.");
 
         // Change to increase speed
-        _approachRate = 5.0f;
+        _approachRate = 0.0f;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(!paused)
+        if (Input.GetKeyDown(KeyCode.Space) && _approachRate == 0.0f)
+        {
+            StartCoroutine(GracePeriod());
+        }
+        if (_approachRate > 0.0f)
         {
             if (transform.position.z > Game.instance.lastObjectPositionZ + 50)
             {
                 ResetVariable();
             }
-            if ((Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) && transform.position.x < 1)
+            if (/*(Input.GetKeyDown(KeyCode.D) || */Input.GetKeyDown(KeyCode.RightArrow) && transform.position.x < 1)
             {
                 transform.Translate(4.75f, 0, 0);
             }
-            else if ((Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) && transform.position.x > -1)
+            else if (/*(Input.GetKeyDown(KeyCode.A) || */Input.GetKeyDown(KeyCode.LeftArrow) && transform.position.x > -1)
             {
                 transform.Translate(-4.75f, 0, 0);
             }
             transform.Translate(0, 0, Time.deltaTime * _approachRate);
-            _approachRate += Time.deltaTime;
-        }
-        
-        if(Input.GetKey(KeyCode.K))
-        {
-            _approachRate = 0;
-            paused = true;
+            if(_approachRate < 43.0f)
+                _approachRate += Time.deltaTime/* * 1.5f*/;
         }
     }
 
@@ -67,19 +64,19 @@ public class InputManager : MonoBehaviour
         gameObject.transform.position = new Vector3(0, 1, 0.5f);
     }
 
-    public void OnCollisionEnter(Collision bigColliderBoi)
+    private IEnumerator GracePeriod()
     {
-        if (bigColliderBoi.gameObject.name == "Spike")
+        _approachRate = Time.deltaTime;
+        Game.instance.Announcer.fontSize = 60;
+        Game.instance.Announcer.GetComponent<RectTransform>().anchoredPosition = new Vector3(0.0f, 0.0f);
+        Game.instance.Announcer.text = "GET READY FOR ROUND " + (Game.instance.round + 1).ToString();
+
+        float timePassed = 0.0f;
+        while (timePassed < 2.0f)
         {
-            //Destroy(bigColliderBoi.gameObject);
-            //bigColliderBoi.gameObject.transform.position = new Vector3(bigColliderBoi.gameObject.transform.position.x, 10, bigColliderBoi.gameObject.transform.position.z);
-            bigColliderBoi.gameObject.SetActive(false);
+            timePassed += Time.deltaTime;
+            yield return null;
         }
-        if (bigColliderBoi.gameObject.name == "Coin")
-        {
-            //Destroy(bigColliderBoi.gameObject);
-            //bigColliderBoi.gameObject.transform.position = new Vector3(bigColliderBoi.gameObject.transform.position.x, 10, bigColliderBoi.gameObject.transform.position.z);
-            bigColliderBoi.gameObject.SetActive(false);
-        }
+        _approachRate = 5.0f;
     }
 }

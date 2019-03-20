@@ -7,8 +7,9 @@ using System;
 
 public enum SCENARIO
 {
-    POSITIVE,
-    NEGATIVE
+    NEGATIVE = 90,
+    POSITIVE = 10//,
+    //NEGATIVE
 }
 
 public class Game : MonoBehaviour
@@ -16,10 +17,11 @@ public class Game : MonoBehaviour
     public static Game instance;
     public StatTracker statTracker { get; private set; }
 
-    public int round { get; private set; } //How many vis vars the participant has been through
+    public int round { get; set; } //How many vis vars the participant has been through
+    private bool _FirstScenario;
 
     public Subset subset;
-    public int[] visVarOrder = { 2 };// { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
+    public int[] visVarOrder = { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
 
     public Text Announcer;
     private float _AnnouncerTextTimer;
@@ -34,7 +36,8 @@ public class Game : MonoBehaviour
 
     public SCENARIO scenario { get; private set; }
 
-    private System.Random _random = new System.Random();
+    //private System.Random _random = new System.Random();
+    private System.Random _random = new System.Random((int)System.DateTime.Now.Ticks);
 
     public int lastObjectPositionZ { get { if (subset) return subset.objectManager.lastObjectPositionZ; else return 0; } }
     public int nrOfHighlightedObjects { get { if (subset) return subset.objectManager.nrOfHighlightedObjects; else return 0; } }
@@ -44,8 +47,10 @@ public class Game : MonoBehaviour
     {
         instance = this;
         statTracker = new StatTracker();
-
+        
         round = 0;
+        _FirstScenario = true;
+        visVarOrder = new int[] { 4 };// { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
         //RANDOMIZE VISUALORDER
         Shuffle(visVarOrder);
 
@@ -70,15 +75,38 @@ public class Game : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (_AnnouncerTextTimer > 0)
+        if(InputManager.instance._approachRate == 0.0f)
         {
-            Announcer.color = Color.Lerp(_OriginalTextColor, Color.clear, Mathf.Min(1, _AnnouncerTextTimer / 3.0f));
+            Announcer.fontSize = 20;
+            Announcer.GetComponent<RectTransform>().anchoredPosition = new Vector3(0.0f, Screen.height/2.5f);
+            if(scenario == SCENARIO.POSITIVE)
+            {
+                Announcer.text = "You will be approached by SPIKES and COINS.\n The COINS will be HIGHLIGHTED in various ways.\n Your mission is to AVOID THE SPIKES AND COLLECT THE COINS.\n" +
+                    "\nInstructions: \nUse Left Arrow to move left\nUse Right Arrow to move right.\n\nPress SPACE to begin.";
+            }
+            else
+            {
+                Announcer.text = "You will be approached by SPIKES and COINS.\n The SPIKES will be HIGHLIGHTED in various ways.\n Your mission is to AVOID THE SPIKES AND COLLECT THE COINS.\n" +
+                    "\nInstructions: \nUse Left Arrow to move left\nUse Right Arrow to move right.\n\nPress SPACE to begin.";
+            }
+        }
+        else if (_AnnouncerTextTimer > 0)
+        {
             _AnnouncerTextTimer += Time.deltaTime;
-            if (_AnnouncerTextTimer > 3.0f)
+
+            if(_AnnouncerTextTimer > 2 && _AnnouncerTextTimer < 4)
+            {
+                Announcer.color = Color.Lerp(_OriginalTextColor, Color.clear, Mathf.Min(1, _AnnouncerTextTimer / 4.0f));
+            }
+            else if (_AnnouncerTextTimer >= 4.0f)
             {
                 _AnnouncerTextTimer = 0.0f;
                 Announcer.gameObject.SetActive(false);
+
+                Announcer.fontSize = 40;
+                Announcer.GetComponent<RectTransform>().anchoredPosition = new Vector3(0.0f, 0.0f);
             }
+
         }
         ScoreText.text = "Score: " + (Score + subset.stats.score).ToString();
 
@@ -88,7 +116,7 @@ public class Game : MonoBehaviour
             DebugText.enabled = !DebugText.enabled;
         }
 
-        Debug.Log(TobiiAPI.GetGazePoint().GUI.ToString());
+        //Debug.Log(TobiiAPI.GetGazePoint().GUI.ToString());
 
         //DebugText.text = "Visual variable: " + subset.visVar.ToString(); + Environment.NewLine + "Eye Pos (screen): " + TobiiAPI.GetGazePoint().GUI.ToString();
     }
@@ -97,7 +125,7 @@ public class Game : MonoBehaviour
     {
         subset.visVar = (VISUAL_VARIABLE)visVarOrder[round];
         statTracker.AddTechnique(subset, scenario);
-        subset.ResetRound();
+        subset.ResetRound(scenario);
     }
 
     public void ResetVariable()
@@ -107,6 +135,20 @@ public class Game : MonoBehaviour
         ++round;
         if (round < visVarOrder.Length)
         {
+            SwapTechnique();
+            Announcer.text = "GET READY FOR ROUND " + (round + 1).ToString();
+            Announcer.gameObject.SetActive(true);
+            _AnnouncerTextTimer += Time.deltaTime;
+        }
+        else if (_FirstScenario)
+        {
+            _FirstScenario = false;
+            round = 0;
+            if (scenario == SCENARIO.POSITIVE)
+                scenario = SCENARIO.NEGATIVE;
+            else
+                scenario = SCENARIO.POSITIVE;
+
             SwapTechnique();
             Announcer.text = "GET READY FOR ROUND " + (round + 1).ToString();
             Announcer.gameObject.SetActive(true);
