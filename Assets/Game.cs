@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Tobii.Gaming;
-using System;
+//using System;
 
 public enum SCENARIO
 {
@@ -50,6 +50,14 @@ public class Game : MonoBehaviour
         
         round = 0;
         _FirstScenario = true;
+
+        // First scenario randomized
+        int startScenario = (int)(Random.value*2.0f);
+        if (startScenario == 0)
+            scenario = SCENARIO.NEGATIVE;
+        else
+            scenario = SCENARIO.POSITIVE;
+
         visVarOrder = new int[] { 4 };// { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
         //RANDOMIZE VISUALORDER
         Shuffle(visVarOrder);

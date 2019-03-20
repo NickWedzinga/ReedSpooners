@@ -88,7 +88,7 @@ public class ObjectManager : MonoBehaviour
                 Objects[i] = gObj.AddComponent<HighlightableObject>();
                 Objects[i].transform.localScale = new Vector3(1.1f, 0.1f, 1.1f);
                 Objects[i].transform.Rotate(Vector3.right, 90.0f);
-                Objects[i].gameObject.name = "Coin";
+                //Objects[i].gameObject.name = "Coin";
                 Objects[i].type = TYPE.COIN;
                 Rigidbody rBody = Objects[i].gameObject.AddComponent<Rigidbody>();
                 rBody.constraints &= RigidbodyConstraints.FreezeRotationX;
@@ -100,10 +100,11 @@ public class ObjectManager : MonoBehaviour
                 GameObject gObj = GameObject.CreatePrimitive(PrimitiveType.Cube);
                 Objects[i] = gObj.AddComponent<HighlightableObject>();
                 Objects[i].gameObject.GetComponent<MeshFilter>().mesh = SpikeMesh;
-                Objects[i].gameObject.name = "Spike";
+                //Objects[i].gameObject.name = "Spike";
                 Objects[i].type = TYPE.SPIKE;
                 Rigidbody rBody = Objects[i].gameObject.AddComponent<Rigidbody>();
-                rBody.constraints = RigidbodyConstraints.FreezeRotation;
+                rBody.constraints &= RigidbodyConstraints.FreezeRotationX;
+                rBody.constraints &= RigidbodyConstraints.FreezeRotationZ;
             }
             Objects[i].transform.position = new Vector3(0, 1, (i) * 10 + i / 10 + 50);
             Objects[i].GetComponent<MeshRenderer>().material = OriginalMaterial;
