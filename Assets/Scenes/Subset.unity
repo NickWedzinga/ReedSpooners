@@ -494,7 +494,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   subset: {fileID: 0}
-  visVarOrder: 02000000
+  visVarOrder: 000000000100000002000000030000000400000005000000060000000700000008000000
   Announcer: {fileID: 66900528}
   Score: 0
   ScoreText: {fileID: 1195408081}
@@ -590,7 +590,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 534669902}
   m_LocalRotation: {x: 0.10757454, y: -0, z: -0, w: 0.9941971}
-  m_LocalPosition: {x: 0, y: 2.88, z: -6}
+  m_LocalPosition: {x: 0, y: 3.22, z: -7.57}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1801603282}
@@ -966,16 +966,20 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 284c05fc9e58d2f49b0502c527fac363, type: 3}
       propertyPath: m_LocalScale.x
-      value: 148.21841
+      value: 90.88605
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 284c05fc9e58d2f49b0502c527fac363, type: 3}
       propertyPath: m_LocalScale.y
-      value: 361.55377
+      value: 440.84253
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 284c05fc9e58d2f49b0502c527fac363, type: 3}
       propertyPath: m_LocalScale.z
       value: 47.364784
       objectReference: {fileID: 0}
+    - target: {fileID: 2300000, guid: 284c05fc9e58d2f49b0502c527fac363, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: b29df80193bf0f847a59914bb74b4f8e, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 284c05fc9e58d2f49b0502c527fac363, type: 3}
 --- !u!43 &1469542948
@@ -1187,10 +1191,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LocalScale: {x: 1, y: 1, z: 1}
-  baseStart: {x: -21.554274, y: 1.2000847, z: 21.733377}
-  baseEnd: {x: -12.276876, y: 1.2000847, z: 12.607112}
-  height: 11.647118
-  sizing: 0
+  baseStart: {x: 0, y: 0, z: 0}
+  baseEnd: {x: 0, y: 0, z: 0}
+  height: 0
+  sizing: 1
 --- !u!23 &1617807069
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1514,12 +1518,12 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  SpikeMesh: {fileID: 4300000, guid: 04b72010bc36e8846a385f31656217cf, type: 3}
+  SpikeMesh: {fileID: 0}
   lastObjectPositionZ: 0
-  HighlightTexture: {fileID: 2800000, guid: b526ec8f183f1ff49aaa32ebab03ce79, type: 3}
-  LightMaterial: {fileID: 2100000, guid: ec64cb5832ce7444dac6084d96947a88, type: 2}
-  OriginalMaterial: {fileID: 2100000, guid: 5e2c89e7ff492bd4f99698d1661c9c49, type: 2}
-  HueMaterial: {fileID: 2100000, guid: 3755f534595f37f4083cebb10a36d7f6, type: 2}
+  HighlightTexture: {fileID: 0}
+  LightMaterial: {fileID: 0}
+  OriginalMaterial: {fileID: 0}
+  HueMaterial: {fileID: 0}
   owner: {fileID: 0}
 --- !u!1 &1986385471
 GameObject:
