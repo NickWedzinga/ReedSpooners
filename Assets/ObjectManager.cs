@@ -41,7 +41,11 @@ public class ObjectManager : MonoBehaviour
                 Rigidbody rBody = Objects[i].GetComponent<Rigidbody>();
                 rBody.velocity = Vector3.zero;
             }
-            //Objects[i].transform.position = new Vector3(Objects[i].transform.position.x, 1, Objects[i].transform.position.z);
+            else
+            {
+                Objects[i].transform.rotation = Quaternion.Euler(0, 0, 0);
+                Objects[i].transform.position = new Vector3(Objects[i].transform.position.x, 1, Objects[i].transform.position.z);
+            }
         }
 
         // Flash flashing objects
