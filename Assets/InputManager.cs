@@ -61,7 +61,7 @@ public class InputManager : MonoBehaviour
     {
         Game.instance.ResetVariable();
         _approachRate = 5.0f;
-        gameObject.transform.position = new Vector3(0, 1, 0.5f);
+        gameObject.transform.position = new Vector3(0, gameObject.transform.position.y, 0.5f);
     }
 
     private IEnumerator GracePeriod()

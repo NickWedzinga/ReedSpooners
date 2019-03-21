@@ -41,6 +41,7 @@ public class ObjectManager : MonoBehaviour
                 Rigidbody rBody = Objects[i].GetComponent<Rigidbody>();
                 rBody.velocity = Vector3.zero;
             }
+            //Objects[i].transform.position = new Vector3(Objects[i].transform.position.x, 1, Objects[i].transform.position.z);
         }
 
         // Flash flashing objects
@@ -75,7 +76,7 @@ public class ObjectManager : MonoBehaviour
         for (int i = 0; i < Objects.Length; ++i)
         {
             if ((i >= 5 && i < 15 && Game.instance.scenario == SCENARIO.POSITIVE) || 
-                (i >= 5 && i < 95 && Game.instance.scenario == SCENARIO.NEGATIVE))
+                (i < 90 && Game.instance.scenario == SCENARIO.NEGATIVE))
             {
                 GameObject gObj = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
                 Objects[i] = gObj.AddComponent<HighlightableObject>();
@@ -213,22 +214,24 @@ public class ObjectManager : MonoBehaviour
             {
                 Objects[i].gameObject.GetComponent<MeshFilter>().mesh = SpikeMesh;
                 Objects[i].type = TYPE.SPIKE;
-                
+
                 Objects[i].transform.localScale = new Vector3(1, 1, 1);
                 Objects[i].transform.rotation = Quaternion.Euler(0, 0, 0);
+                Objects[i].gameObject.transform.position = new Vector3(Objects[i].gameObject.transform.position.x, 1, Objects[i].gameObject.transform.position.z);
 
                 Rigidbody rBody = Objects[i].gameObject.GetComponent<Rigidbody>();
                 rBody.constraints = RigidbodyConstraints.FreezeRotationX;
                 rBody.constraints &= RigidbodyConstraints.FreezeRotationZ;
 
             }
-            else if(Objects[i].type == TYPE.SPIKE)
+            else if (Objects[i].type == TYPE.SPIKE)
             {
                 Objects[i].GetComponent<MeshFilter>().mesh = CoinMesh;
                 Objects[i].type = TYPE.COIN;
 
                 Objects[i].transform.localScale = new Vector3(1.1f, 0.1f, 1.1f);
                 Objects[i].transform.Rotate(Vector3.right, 90.0f);
+                //Objects[i].gameObject.transform.position = new Vector3(Objects[i].gameObject.transform.position.x, -5, Objects[i].gameObject.transform.position.z);
 
                 Rigidbody rBody = Objects[i].gameObject.GetComponent<Rigidbody>();
                 rBody.constraints = RigidbodyConstraints.FreezeRotationX;

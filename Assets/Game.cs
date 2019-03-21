@@ -157,6 +157,7 @@ public class Game : MonoBehaviour
             ObjectManager objectManager = FindObjectOfType<ObjectManager>();
             objectManager.SwitchScenarioObjects();
             SwapTechnique();
+
             Announcer.text = "GET READY FOR ROUND " + (round + 1).ToString();
             Announcer.gameObject.SetActive(true);
             _AnnouncerTextTimer += Time.deltaTime;
