@@ -8,8 +8,7 @@ using Tobii.Gaming;
 public enum SCENARIO
 {
     NEGATIVE = 90,
-    POSITIVE = 10//,
-    //NEGATIVE
+    POSITIVE = 10
 }
 
 public class Game : MonoBehaviour
@@ -155,6 +154,8 @@ public class Game : MonoBehaviour
             else
                 scenario = SCENARIO.POSITIVE;
 
+            ObjectManager objectManager = FindObjectOfType<ObjectManager>();
+            objectManager.SwitchScenarioObjects();
             SwapTechnique();
             Announcer.text = "GET READY FOR ROUND " + (round + 1).ToString();
             Announcer.gameObject.SetActive(true);

@@ -6,6 +6,7 @@ public class ObjectManager : MonoBehaviour
 {
     public HighlightableObject[] Objects = new HighlightableObject[100];
     public Mesh SpikeMesh;
+    private Mesh CoinMesh;
     public int lastObjectPositionZ = 0;
     public int nrOfHighlightedObjects { get; private set; } = 10;
     private Color _OriginalObjectColor = Color.gray;
@@ -73,7 +74,8 @@ public class ObjectManager : MonoBehaviour
     {
         for (int i = 0; i < Objects.Length; ++i)
         {
-            if (i >= 5 && i < (int)SCENARIO.POSITIVE + 5)
+            if ((i >= 5 && i < 15 && Game.instance.scenario == SCENARIO.POSITIVE) || 
+                (i >= 5 && i < 95 && Game.instance.scenario == SCENARIO.NEGATIVE))
             {
                 GameObject gObj = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
                 Objects[i] = gObj.AddComponent<HighlightableObject>();
@@ -100,12 +102,12 @@ public class ObjectManager : MonoBehaviour
             Objects[i].transform.position = new Vector3(0, 1, (i) * 10 + i / 10 + 50);
             Objects[i].GetComponent<MeshRenderer>().material = OriginalMaterial;
             Objects[i].GetComponent<MeshRenderer>().material.color = Color.gray;
-            Objects[i].highlight = HIGHLIGHT.NO;
+            //Objects[i].highlight = HIGHLIGHT.NO;
             
             if (Objects[i].transform.position.z > lastObjectPositionZ)
                 lastObjectPositionZ = (int)Objects[i].transform.position.z;
         }
-
+        CoinMesh = Objects[5].gameObject.GetComponent<MeshFilter>().mesh;
         Camera.main.GetComponent<UnityEngine.Rendering.PostProcessing.PostProcessVolume>().enabled = false;
         // Randomize object array
         ObjectShuffle();
@@ -175,30 +177,63 @@ public class ObjectManager : MonoBehaviour
         }
     }
 
-    void SelectObjectsForHighlight(SCENARIO scenario)
+    //void SelectObjectsForHighlight(SCENARIO scenario)
+    //{
+    //    bool finished = false;
+    //    int nrOfHighlightsChosen = 0;
+
+    //    while (!finished)
+    //    {
+    //        if (nrOfHighlightsChosen > 9)
+    //            finished = true;
+
+    //        int highlightIndex = (int)(Random.value * 94 + 5);
+    //        if(highlightIndex < 0 || highlightIndex > 99)
+    //        {
+    //            print("what");
+    //        }
+    //        if(Objects[highlightIndex].type == TYPE.COIN && scenario == SCENARIO.POSITIVE && Objects[highlightIndex].highlight == HIGHLIGHT.NO)
+    //        {
+    //            nrOfHighlightsChosen++;
+    //            Objects[highlightIndex].highlight = HIGHLIGHT.HIGHLIGHTEDCOIN;
+    //        }
+    //        else if (Objects[highlightIndex].type == TYPE.SPIKE && scenario == SCENARIO.NEGATIVE && Objects[highlightIndex].highlight == HIGHLIGHT.NO)
+    //        {
+    //            nrOfHighlightsChosen++;
+    //            Objects[highlightIndex].highlight = HIGHLIGHT.HIGHLIGHTEDSPIKE;
+    //        }
+    //    }
+    //}
+
+    public void SwitchScenarioObjects()
     {
-        bool finished = false;
-        int nrOfHighlightsChosen = 0;
-
-        while (!finished)
+        for (int i = 0; i < Objects.Length; ++i)
         {
-            if (nrOfHighlightsChosen > 9)
-                finished = true;
+            if (Objects[i].type == TYPE.COIN)
+            {
+                Objects[i].gameObject.GetComponent<MeshFilter>().mesh = SpikeMesh;
+                Objects[i].type = TYPE.SPIKE;
+                
+                Objects[i].transform.localScale = new Vector3(1, 1, 1);
+                Objects[i].transform.rotation = Quaternion.Euler(0, 0, 0);
 
-            int highlightIndex = (int)(Random.value * 94 + 5);
-            if(highlightIndex < 0 || highlightIndex > 99)
-            {
-                print("what");
+                Rigidbody rBody = Objects[i].gameObject.GetComponent<Rigidbody>();
+                rBody.constraints = RigidbodyConstraints.FreezeRotationX;
+                rBody.constraints &= RigidbodyConstraints.FreezeRotationZ;
+
             }
-            if(Objects[highlightIndex].type == TYPE.COIN && scenario == SCENARIO.POSITIVE && Objects[highlightIndex].highlight == HIGHLIGHT.NO)
+            else if(Objects[i].type == TYPE.SPIKE)
             {
-                nrOfHighlightsChosen++;
-                Objects[highlightIndex].highlight = HIGHLIGHT.HIGHLIGHTEDCOIN;
-            }
-            else if (Objects[highlightIndex].type == TYPE.SPIKE && scenario == SCENARIO.NEGATIVE && Objects[highlightIndex].highlight == HIGHLIGHT.NO)
-            {
-                nrOfHighlightsChosen++;
-                Objects[highlightIndex].highlight = HIGHLIGHT.HIGHLIGHTEDSPIKE;
+                Objects[i].GetComponent<MeshFilter>().mesh = CoinMesh;
+                Objects[i].type = TYPE.COIN;
+
+                Objects[i].transform.localScale = new Vector3(1.1f, 0.1f, 1.1f);
+                Objects[i].transform.Rotate(Vector3.right, 90.0f);
+
+                Rigidbody rBody = Objects[i].gameObject.GetComponent<Rigidbody>();
+                rBody.constraints = RigidbodyConstraints.FreezeRotationX;
+                rBody.constraints &= RigidbodyConstraints.FreezeRotationZ;
+                rBody.constraints &= ~RigidbodyConstraints.FreezePosition;
             }
         }
     }
@@ -221,7 +256,7 @@ public class ObjectManager : MonoBehaviour
             else
                 Objects[i].lane = LANE.MIDDLE;
 
-            Objects[i].highlight = HIGHLIGHT.NO;
+            //Objects[i].highlight = HIGHLIGHT.NO;
             Objects[i].hasEnteredView = false;
             Objects[i].enteredViewAt = 0;
             Objects[i].gameObject.SetActive(true);
@@ -231,7 +266,7 @@ public class ObjectManager : MonoBehaviour
         _FlashingTimer = 0.0f;
 
         // Choose random objects that will be highlighted
-        SelectObjectsForHighlight(scenario);
+        //SelectObjectsForHighlight(scenario);
         ObjectShuffle();
 
         int highlightCounter = 0;
@@ -240,7 +275,7 @@ public class ObjectManager : MonoBehaviour
             if (Objects[i].type == TYPE.COIN/* && scenario == SCENARIO.POSITIVE*/)
             {
                 Objects[i].transform.rotation = Quaternion.Euler(90.0f, 0, 0);
-                if (scenario == SCENARIO.POSITIVE && Objects[i].highlight != HIGHLIGHT.NO)
+                if (scenario == SCENARIO.POSITIVE /*&& Objects[i].highlight != HIGHLIGHT.NO*/)
                 {
                     Objects[i].ID = highlightCounter;
                     ++highlightCounter;
@@ -251,7 +286,7 @@ public class ObjectManager : MonoBehaviour
             else if (Objects[i].type == TYPE.SPIKE/* && scenario == SCENARIO.NEGATIVE*/)
             {
                 Objects[i].transform.rotation = Quaternion.Euler(0, 0, 0);
-                if (scenario == SCENARIO.NEGATIVE && Objects[i].highlight != HIGHLIGHT.NO)
+                if (scenario == SCENARIO.NEGATIVE /*&& Objects[i].highlight != HIGHLIGHT.NO*/)
                 {
                     Objects[i].ID = highlightCounter;
                     ++highlightCounter;
