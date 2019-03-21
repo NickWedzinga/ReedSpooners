@@ -50,21 +50,12 @@ public class ObjectManager : MonoBehaviour
             // Time to change intensity
             if(_FlashingTimer > 0.1f)
             {
-
                 // Reset timer
                 _FlashingTimer = Time.deltaTime;
 
                 // Loop and update intensity
                 for (int i = 0; i < Objects.Length; ++i)
                 {
-                    //if (Objects[i].GetComponent<MeshRenderer>().material.color.r == 0.2f)
-                    //{
-                    //    Objects[i].GetComponent<MeshRenderer>().material.color = new Color(0.8f, 0.8f, 0.8f);
-                    //}
-                    //else if (Objects[i].GetComponent<MeshRenderer>().material.color.r == 0.8f)
-                    //{
-                    //    Objects[i].GetComponent<MeshRenderer>().material.color = new Color(0.2f, 0.2f, 0.2f);
-                    //}
                     if (Objects[i].GetComponent<MeshRenderer>().material.color.r == 0)
                     {
                         Objects[i].GetComponent<MeshRenderer>().material.color = new Color(1, 1, 1);
@@ -88,7 +79,7 @@ public class ObjectManager : MonoBehaviour
                 Objects[i] = gObj.AddComponent<HighlightableObject>();
                 Objects[i].transform.localScale = new Vector3(1.1f, 0.1f, 1.1f);
                 Objects[i].transform.Rotate(Vector3.right, 90.0f);
-                Objects[i].gameObject.name = "Coin";
+                //Objects[i].gameObject.name = "Coin";
                 Objects[i].type = TYPE.COIN;
                 Rigidbody rBody = Objects[i].gameObject.AddComponent<Rigidbody>();
                 rBody.constraints &= RigidbodyConstraints.FreezeRotationX;
@@ -100,14 +91,16 @@ public class ObjectManager : MonoBehaviour
                 GameObject gObj = GameObject.CreatePrimitive(PrimitiveType.Cube);
                 Objects[i] = gObj.AddComponent<HighlightableObject>();
                 Objects[i].gameObject.GetComponent<MeshFilter>().mesh = SpikeMesh;
-                Objects[i].gameObject.name = "Spike";
+                //Objects[i].gameObject.name = "Spike";
                 Objects[i].type = TYPE.SPIKE;
                 Rigidbody rBody = Objects[i].gameObject.AddComponent<Rigidbody>();
-                rBody.constraints = RigidbodyConstraints.FreezeRotation;
+                rBody.constraints &= RigidbodyConstraints.FreezeRotationX;
+                rBody.constraints &= RigidbodyConstraints.FreezeRotationZ;
             }
             Objects[i].transform.position = new Vector3(0, 1, (i) * 10 + i / 10 + 50);
             Objects[i].GetComponent<MeshRenderer>().material = OriginalMaterial;
             Objects[i].GetComponent<MeshRenderer>().material.color = Color.gray;
+            Objects[i].highlight = HIGHLIGHT.NO;
             
             if (Objects[i].transform.position.z > lastObjectPositionZ)
                 lastObjectPositionZ = (int)Objects[i].transform.position.z;
@@ -182,6 +175,30 @@ public class ObjectManager : MonoBehaviour
         }
     }
 
+    void SelectObjectsForHighlight(SCENARIO scenario)
+    {
+        bool finished = false;
+        int nrOfHighlightsChosen = 0;
+
+        while (!finished)
+        {
+            if (nrOfHighlightsChosen > 9)
+                finished = true;
+
+            int highlightIndex = (int)(Random.value * 95 + 5);
+            if(Objects[highlightIndex].type == TYPE.COIN && scenario == SCENARIO.POSITIVE && Objects[highlightIndex].highlight == HIGHLIGHT.NO)
+            {
+                nrOfHighlightsChosen++;
+                Objects[highlightIndex].highlight = HIGHLIGHT.HIGHLIGHTEDCOIN;
+            }
+            else if (Objects[highlightIndex].type == TYPE.SPIKE && scenario == SCENARIO.NEGATIVE && Objects[highlightIndex].highlight == HIGHLIGHT.NO)
+            {
+                nrOfHighlightsChosen++;
+                Objects[highlightIndex].highlight = HIGHLIGHT.HIGHLIGHTEDSPIKE;
+            }
+        }
+    }
+
     public void Reset(VISUAL_VARIABLE visVar, SCENARIO scenario)
     {
         StopAllCoroutines();
@@ -209,18 +226,15 @@ public class ObjectManager : MonoBehaviour
         _FlashingTimer = 0.0f;
 
         // Choose random objects that will be highlighted
+        SelectObjectsForHighlight(scenario);
         ObjectShuffle();
-
-        int highlightCounter = 0;
         for (int i = 0; i < Objects.Length; ++i)
         {
             if (Objects[i].type == TYPE.COIN/* && scenario == SCENARIO.POSITIVE*/)
             {
                 Objects[i].transform.rotation = Quaternion.Euler(90.0f, 0, 0);
-                if (scenario == SCENARIO.POSITIVE)
+                if (scenario == SCENARIO.POSITIVE && Objects[i].highlight != HIGHLIGHT.NO)
                 {
-                    Objects[i].ID = highlightCounter;
-                    ++highlightCounter;
                     // Object should be highlighted, apply highlight
                     ApplyHighlight(i, visVar/*VISUAL_VARIABLE.FLASH*/);
                 }                
@@ -228,10 +242,8 @@ public class ObjectManager : MonoBehaviour
             else if (Objects[i].type == TYPE.SPIKE/* && scenario == SCENARIO.NEGATIVE*/)
             {
                 Objects[i].transform.rotation = Quaternion.Euler(0, 0, 0);
-                if (scenario == SCENARIO.NEGATIVE)
+                if (scenario == SCENARIO.NEGATIVE && Objects[i].highlight != HIGHLIGHT.NO)
                 {
-                    Objects[i].ID = highlightCounter;
-                    ++highlightCounter;
                     // Object should be highlighted, apply highlight
                     ApplyHighlight(i, visVar/*VISUAL_VARIABLE.FLASH*/);
                 }

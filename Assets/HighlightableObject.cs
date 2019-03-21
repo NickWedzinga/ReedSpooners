@@ -9,23 +9,69 @@ public enum TYPE
     SPIKE = 1
 }
 
+public enum HIGHLIGHT
+{
+    NO = 0,
+    HIGHLIGHTEDCOIN = 1,
+    HIGHLIGHTEDSPIKE = 2
+}
+
+public struct ObjectStats
+{
+    public LANE lane;
+    public LANE playerLane;
+
+    public float TFD;
+    public float TTFF;
+    public int   fixations;
+
+    public float approachRateFF;
+    public float approachRateHit;
+
+    public float timeToChangeFromFF;
+    public float timeToChangeFromEnter;
+
+    public override string ToString()
+    {
+        string output = "";
+
+        output += lane.ToString();
+        output += ",";
+        output += playerLane.ToString();
+        output += ",";
+
+        output += TFD.ToString();
+        output += ",";
+        output += TTFF.ToString();
+        output += ",";
+        output += fixations.ToString();
+        output += ",";
+
+        output += approachRateFF.ToString();
+        output += ",";
+        output += approachRateHit.ToString();
+        output += ",";
+
+        output += timeToChangeFromFF.ToString();
+        output += ",";
+        output += timeToChangeFromEnter.ToString();
+        output += ",";
+
+        return output;
+    }
+}
+
 public class HighlightableObject : MonoBehaviour
 {
-    public int ID;
+    public ObjectStats stats;
+    public LANE lane { get { return stats.lane; } set { stats.lane = value; } }
 
-    public float TTFF;
-    public float TFD;
-    public int fixations;
-    public LANE lane = LANE.NOT_SET;
-    public LANE playerLane = LANE.NOT_SET;
-    public float approachRateFF;
     public float enteredViewAt; //timestamp
     public bool hasEnteredView = false;
-    public float timeToChangeLaneFromEnter = 0;
-    public float timeToChangeLaneFromFF = 0;
     public Vector2 gazePos = new Vector2(0, 0);
 
     public TYPE type;
+    public HIGHLIGHT highlight;
 
     public Subset owner;
     GazeAware gazeAware;
@@ -37,10 +83,13 @@ public class HighlightableObject : MonoBehaviour
         gazeAware = gameObject.AddComponent<GazeAware>();
         gazeAware.runInEditMode = true;
         gazeAware.enabled = false;
-        TTFF = -1;
-        TFD = 0;
-        fixations = 0;
-        approachRateFF = 0;
+
+        stats.TTFF = -1;
+        stats.TFD = 0;
+        stats.fixations = 0;
+        stats.approachRateFF = 0;
+        stats.lane = LANE.NOT_SET;
+        stats.playerLane = LANE.NOT_SET;
 
         if (type == TYPE.COIN)
         {
@@ -51,31 +100,34 @@ public class HighlightableObject : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if ((transform.position.z - InputManager.instance.transform.position.z) < 27.05 && !hasEnteredView)
+        if (highlight != HIGHLIGHT.NO)
         {
-            hasEnteredView = true;
-            enteredViewAt = Time.time;
-            playerLane = InputManager.instance.lane;
-            gazePos = TobiiAPI.GetGazePoint().GUI;
-        }
-
-        if(hasEnteredView && InputManager.instance.lane == lane && timeToChangeLaneFromEnter == 0)
-        {
-            timeToChangeLaneFromEnter = Time.time - enteredViewAt;
-            timeToChangeLaneFromFF = Time.time - TTFF;
-        }
-
-        if (gazeAware.HasGazeFocus)
-        {
-            fixations++;
-
-            if (TTFF < 0)
+            if ((transform.position.z - InputManager.instance.transform.position.z) < 27.05 && !hasEnteredView)
             {
-                TTFF = Time.time - enteredViewAt;
-                approachRateFF = InputManager.instance._approachRate;
+                hasEnteredView = true;
+                enteredViewAt = Time.time;
+                stats.playerLane = InputManager.instance.lane;
+                gazePos = TobiiAPI.GetGazePoint().GUI;
             }
-            
-            TFD += Time.deltaTime;
+
+            if (hasEnteredView && InputManager.instance.lane == stats.lane && stats.timeToChangeFromEnter == 0)
+            {
+                stats.timeToChangeFromEnter = Time.time - enteredViewAt;
+                stats.timeToChangeFromFF = Time.time - stats.TTFF;
+            }
+
+            if (gazeAware.HasGazeFocus)
+            {
+                stats.fixations++;
+
+                if (stats.TTFF < 0)
+                {
+                    stats.TTFF = Time.time - enteredViewAt;
+                    stats.approachRateFF = InputManager.instance._approachRate;
+                }
+
+                stats.TFD += Time.deltaTime;
+            }
         }
     }
 
@@ -85,13 +137,15 @@ public class HighlightableObject : MonoBehaviour
         // If the object collides with the player
         if (inputManager)
         {
-            owner.UpdateScore(type, inputManager._approachRate, ID);
+            owner.UpdateScore(type, inputManager._approachRate, highlight);
             gameObject.SetActive(false);
+            stats.approachRateHit = inputManager._approachRate;
         }
     }
 
     public void SendGazeData()
     {
-        owner.UpdateGazeData(TFD, TTFF, fixations, approachRateFF, lane, playerLane, timeToChangeLaneFromEnter, timeToChangeLaneFromFF, ID);
+        if(highlight != HIGHLIGHT.NO)
+            owner.UpdateGazeData(stats);
     }
 }

@@ -7,14 +7,25 @@ using System.Threading.Tasks;
 public struct Stats
 {
     public int score, coins, spikes;
-    public List<float> TFD, TTFF;
-    public List<int> fixations;
-    public List<LANE> playerLanes;
-    public List<LANE> highlightLanes;
-    public List<float> approachRateFF;
-    public List<float> approachRateHit;
-    public List<float> timeToChangeFromEnter;
-    public List<float> timeToChangeFromFF;
+    public List<ObjectStats> objects;
+
+    public override string ToString()
+    {
+        string output = "";
+
+        output += score.ToString();
+        output += ",";
+        output += coins.ToString();
+        output += ",";
+        output += spikes.ToString();
+        output += ",";
+        foreach (var obj in objects)
+        {
+            output += obj.ToString();
+        }
+
+        return output;
+    }
 }
 
 public class StatTracker
@@ -52,79 +63,7 @@ public class StatTracker
             {
                 playerText += visVar.Key.ToString();
                 playerText += ',';
-                var stats = visVar.Value;
-                playerText += stats.score.ToString();
-                playerText += ',';
-                playerText += (stats.coins / 2).ToString();
-                playerText += ',';
-                playerText += (stats.spikes / 2).ToString();
-                playerText += ',';
-
-                playerText += "TFD";
-                playerText += ',';
-                for (int i = 0; i < Game.instance.nrOfHighlightedObjects; ++i)
-                {
-                    playerText += stats.TFD[i].ToString();
-                    playerText += ',';
-                }
-                playerText += "TTFF";
-                playerText += ',';
-                for (int i = 0; i < Game.instance.nrOfHighlightedObjects; ++i)
-                {
-                    playerText += stats.TTFF[i].ToString();
-                    playerText += ',';
-                }
-                playerText += "Fixations";
-                playerText += ',';
-                for (int i = 0; i < Game.instance.nrOfHighlightedObjects; ++i)
-                {
-                    playerText += stats.fixations[i].ToString();
-                    playerText += ',';
-                }
-
-                playerText += "Player lanes";
-                playerText += ',';
-                for (int i = 0; i < Game.instance.nrOfHighlightedObjects; ++i)
-                {
-                    playerText += stats.playerLanes[i].ToString();
-                    playerText += ',';
-                }
-                playerText += "Object lanes";
-                playerText += ',';
-                for (int i = 0; i < Game.instance.nrOfHighlightedObjects; ++i)
-                {
-                    playerText += stats.highlightLanes[i].ToString();
-                    playerText += ',';
-                }
-
-                playerText += "Approach rate FF";
-                playerText += ',';
-                for (int i = 0; i < Game.instance.nrOfHighlightedObjects; ++i)
-                {
-                    playerText += stats.approachRateFF[i].ToString();
-                    playerText += ',';
-                }
-                playerText += "Approach rate hit";
-                playerText += ',';
-                for (int i = 0; i < Game.instance.nrOfHighlightedObjects; ++i)
-                {
-                    playerText += stats.approachRateHit[i].ToString();
-                    playerText += ',';
-                }
-                playerText += "Time till lane change from object entering scene:";
-                playerText += ',';
-                for (int i = 0; i < (int)scenario.Key; ++i)
-                {
-                    playerText += stats.timeToChangeFromEnter[i].ToString();
-                    playerText += ',';
-                }
-                playerText += "Time till lane change from FF:";
-                playerText += ',';
-                for (int i = 0; i < (int)scenario.Key; ++i)
-                {
-                    playerText += stats.timeToChangeFromFF[i].ToString();
-                    playerText += ',';
-                }
+                playerText += visVar.Value.ToString();
             }
         }
         playerText += '\n';
