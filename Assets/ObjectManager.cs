@@ -41,10 +41,14 @@ public class ObjectManager : MonoBehaviour
                 Rigidbody rBody = Objects[i].GetComponent<Rigidbody>();
                 rBody.velocity = Vector3.zero;
             }
+            else if(InputManager.instance.transform.position.z < 10)
+            {
+                Objects[i].transform.position = new Vector3(Objects[i].transform.position.x, 1, Objects[i].transform.position.z);
+                Objects[i].transform.rotation = Quaternion.Euler(0, 0, 0);
+            }
             else
             {
-                Objects[i].transform.rotation = Quaternion.Euler(0, 0, 0);
-                Objects[i].transform.position = new Vector3(Objects[i].transform.position.x, 1, Objects[i].transform.position.z);
+                int test = 0;
             }
         }
 
@@ -220,7 +224,7 @@ public class ObjectManager : MonoBehaviour
                 Objects[i].type = TYPE.SPIKE;
 
                 Objects[i].transform.localScale = new Vector3(1, 1, 1);
-                Objects[i].transform.rotation = Quaternion.Euler(0, 0, 0);
+                Objects[i].transform.rotation = Quaternion.identity;
                 Objects[i].gameObject.transform.position = new Vector3(Objects[i].gameObject.transform.position.x, 1, Objects[i].gameObject.transform.position.z);
 
                 Rigidbody rBody = Objects[i].gameObject.GetComponent<Rigidbody>();
@@ -234,12 +238,13 @@ public class ObjectManager : MonoBehaviour
                 Objects[i].type = TYPE.COIN;
 
                 Objects[i].transform.localScale = new Vector3(1.1f, 0.1f, 1.1f);
+                Objects[i].transform.rotation = Quaternion.identity;
                 Objects[i].transform.Rotate(Vector3.right, 90.0f);
                 //Objects[i].gameObject.transform.position = new Vector3(Objects[i].gameObject.transform.position.x, -5, Objects[i].gameObject.transform.position.z);
 
                 Rigidbody rBody = Objects[i].gameObject.GetComponent<Rigidbody>();
                 rBody.constraints = RigidbodyConstraints.FreezeRotationX;
-                rBody.constraints &= RigidbodyConstraints.FreezeRotationZ;
+                rBody.constraints &= RigidbodyConstraints.FreezeRotationY;
                 rBody.constraints &= ~RigidbodyConstraints.FreezePosition;
             }
         }
@@ -363,14 +368,22 @@ public class ObjectManager : MonoBehaviour
 
     private IEnumerator Rotator(int index, VISUAL_VARIABLE visVar)
     {
+        int test;
         while (visVar == VISUAL_VARIABLE.MOTION)
         {
             float spinPerSecond = 1.0f / Time.deltaTime;
             float anglePerSpin = spinPerSecond / 3.0f;
-            if(Objects[index].type == TYPE.COIN)
+            if (Objects[index].type == TYPE.COIN)
                 Objects[index].transform.Rotate(new Vector3(0, 0, 1), anglePerSpin);
             else if (Objects[index].type == TYPE.SPIKE)
+            {
+                //Objects[index].transform.rotation = Quaternion.Euler(0, Objects[index].transform.rotation.y, 0);
                 Objects[index].transform.Rotate(new Vector3(0, 1, 0), anglePerSpin);
+                //Objects[index].transform.position = new Vector3(Objects[index].transform.position.x, 1, Objects[index].transform.position.z);
+            }
+                //test = index;
+                //Objects[index].transform.rotation = Quaternion.Euler(0, Objects[index].transform.rotation.y + anglePerSpin, 0);
+                //Objects[index].transform.Rotate(new Vector3(0, 1, 0), anglePerSpin);
             yield return null;
         }
     }

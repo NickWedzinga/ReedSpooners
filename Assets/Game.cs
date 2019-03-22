@@ -101,12 +101,13 @@ public class Game : MonoBehaviour
 
             if(_AnnouncerTextTimer > 2 && _AnnouncerTextTimer < 4)
             {
-                Announcer.color = Color.Lerp(_OriginalTextColor, Color.clear, Mathf.Min(1, _AnnouncerTextTimer / 4.0f));
+                Announcer.color = Color.Lerp(_OriginalTextColor, Color.clear, Mathf.Min(1, (_AnnouncerTextTimer-2.0f) / 2.0f));
             }
             else if (_AnnouncerTextTimer >= 4.0f)
             {
                 _AnnouncerTextTimer = 0.0f;
                 Announcer.gameObject.SetActive(false);
+                Announcer.color = _OriginalTextColor;
 
                 Announcer.fontSize = 40;
                 Announcer.GetComponent<RectTransform>().anchoredPosition = new Vector3(0.0f, 0.0f);

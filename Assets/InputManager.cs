@@ -60,7 +60,7 @@ public class InputManager : MonoBehaviour
     private void ResetVariable()
     {
         Game.instance.ResetVariable();
-        _approachRate = 5.0f;
+        _approachRate = 0.0f;
         gameObject.transform.position = new Vector3(0, gameObject.transform.position.y, 0.5f);
     }
 
