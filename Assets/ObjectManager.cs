@@ -7,6 +7,9 @@ public class ObjectManager : MonoBehaviour
     public HighlightableObject[] Objects = new HighlightableObject[100];
     public Mesh SpikeMesh;
     private Mesh CoinMesh;
+    private CapsuleCollider CoinCollider;
+    private BoxCollider SpikeCollider;
+
     public int lastObjectPositionZ = 0;
     public int nrOfHighlightedObjects { get; private set; } = 10;
     private Color _OriginalObjectColor = Color.gray;
@@ -41,14 +44,12 @@ public class ObjectManager : MonoBehaviour
                 Rigidbody rBody = Objects[i].GetComponent<Rigidbody>();
                 rBody.velocity = Vector3.zero;
             }
-            else if(InputManager.instance.transform.position.z < 10)
+            else if(InputManager.instance.transform.position.z < 1000)
             {
-                Objects[i].transform.position = new Vector3(Objects[i].transform.position.x, 1, Objects[i].transform.position.z);
-                Objects[i].transform.rotation = Quaternion.Euler(0, 0, 0);
-            }
-            else
-            {
-                int test = 0;
+                //Rigidbody rBody = Objects[i].GetComponent<Rigidbody>();
+                //rBody.position = new Vector3(Objects[i].transform.position.x, 1, Objects[i].transform.position.z);
+                ////Objects[i].rigidbody.position = new Vector3(Objects[i].transform.position.x, 1, Objects[i].transform.position.z);
+                //Objects[i].transform.rotation = Quaternion.Euler(0, 0, 0);
             }
         }
 
@@ -90,23 +91,27 @@ public class ObjectManager : MonoBehaviour
                 Objects[i] = gObj.AddComponent<HighlightableObject>();
                 Objects[i].transform.localScale = new Vector3(1.1f, 0.1f, 1.1f);
                 Objects[i].transform.Rotate(Vector3.right, 90.0f);
-                //Objects[i].gameObject.name = "Coin";
                 Objects[i].type = TYPE.COIN;
+
                 Rigidbody rBody = Objects[i].gameObject.AddComponent<Rigidbody>();
                 rBody.constraints &= RigidbodyConstraints.FreezeRotationX;
                 rBody.constraints &= RigidbodyConstraints.FreezeRotationZ;
                 rBody.constraints &= ~RigidbodyConstraints.FreezePosition;
+
+                CoinCollider = gObj.GetComponent<CapsuleCollider>();
             }
             else
             {
                 GameObject gObj = GameObject.CreatePrimitive(PrimitiveType.Cube);
                 Objects[i] = gObj.AddComponent<HighlightableObject>();
                 Objects[i].gameObject.GetComponent<MeshFilter>().mesh = SpikeMesh;
-                //Objects[i].gameObject.name = "Spike";
                 Objects[i].type = TYPE.SPIKE;
+
                 Rigidbody rBody = Objects[i].gameObject.AddComponent<Rigidbody>();
                 rBody.constraints &= RigidbodyConstraints.FreezeRotationX;
                 rBody.constraints &= RigidbodyConstraints.FreezeRotationZ;
+
+                SpikeCollider = gObj.GetComponent<BoxCollider>();
             }
             Objects[i].transform.position = new Vector3(0, 1, (i) * 10 + i / 10 + 50);
             Objects[i].GetComponent<MeshRenderer>().material = OriginalMaterial;
@@ -220,32 +225,73 @@ public class ObjectManager : MonoBehaviour
         {
             if (Objects[i].type == TYPE.COIN)
             {
+                //Objects[i].gameObject.GetComponent<MeshFilter>().mesh = SpikeMesh;
+                //Objects[i].type = TYPE.SPIKE;
+
+                //Objects[i].transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+                //Objects[i].transform.rotation = Quaternion.identity;
+                //Rigidbody rBody = Objects[i].GetComponent<Rigidbody>();
+                ////Objects[i].gameObject.transform.position = new Vector3(Objects[i].gameObject.transform.position.x, 1, Objects[i].gameObject.transform.position.z);
+
+                ////Rigidbody rBody = Objects[i].gameObject.GetComponent<Rigidbody>();
+                //rBody.constraints = RigidbodyConstraints.FreezeRotationX;
+                //rBody.constraints &= RigidbodyConstraints.FreezeRotationZ;
+                ////rBody.constraints &= RigidbodyConstraints.FreezePosition;
+
+
+
+
+                GameObject gObj = GameObject.CreatePrimitive(PrimitiveType.Cube);
                 Objects[i].gameObject.GetComponent<MeshFilter>().mesh = SpikeMesh;
                 Objects[i].type = TYPE.SPIKE;
 
+                Destroy(Objects[i].gameObject.GetComponent<CapsuleCollider>());
+                Objects[i].gameObject.AddComponent<BoxCollider>();
+                Objects[i].gameObject.GetComponent<BoxCollider>().size = Vector3.one;
+
                 Objects[i].transform.localScale = new Vector3(1, 1, 1);
                 Objects[i].transform.rotation = Quaternion.identity;
-                Objects[i].gameObject.transform.position = new Vector3(Objects[i].gameObject.transform.position.x, 1, Objects[i].gameObject.transform.position.z);
+                
 
                 Rigidbody rBody = Objects[i].gameObject.GetComponent<Rigidbody>();
-                rBody.constraints = RigidbodyConstraints.FreezeRotationX;
+                rBody.constraints &= RigidbodyConstraints.FreezeRotationX;
                 rBody.constraints &= RigidbodyConstraints.FreezeRotationZ;
 
             }
             else if (Objects[i].type == TYPE.SPIKE)
             {
-                Objects[i].GetComponent<MeshFilter>().mesh = CoinMesh;
+                //Objects[i].GetComponent<MeshFilter>().mesh = CoinMesh;
+                //Objects[i].type = TYPE.COIN;
+
+                //Objects[i].transform.localScale = new Vector3(1.1f, 0.1f, 1.1f);
+                //Objects[i].transform.rotation = Quaternion.identity;
+                //Objects[i].transform.Rotate(Vector3.right, 90.0f);
+                ////Objects[i].gameObject.transform.position = new Vector3(Objects[i].gameObject.transform.position.x, -5, Objects[i].gameObject.transform.position.z);
+
+                //Rigidbody rBody = Objects[i].gameObject.GetComponent<Rigidbody>();
+                //rBody.constraints = RigidbodyConstraints.FreezeRotationX;
+                //rBody.constraints &= RigidbodyConstraints.FreezeRotationZ;
+                //rBody.constraints &= ~RigidbodyConstraints.FreezePosition;
+
+
+
+                GameObject gObj = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
                 Objects[i].type = TYPE.COIN;
+                Objects[i].GetComponent<MeshFilter>().mesh = CoinMesh;
+                Destroy(Objects[i].gameObject.GetComponent<BoxCollider>());
+                Objects[i].gameObject.AddComponent<CapsuleCollider>();
+                Objects[i].gameObject.GetComponent<CapsuleCollider>().radius = 0.5f;
+                Objects[i].gameObject.GetComponent<CapsuleCollider>().height = 2;
 
                 Objects[i].transform.localScale = new Vector3(1.1f, 0.1f, 1.1f);
                 Objects[i].transform.rotation = Quaternion.identity;
                 Objects[i].transform.Rotate(Vector3.right, 90.0f);
-                //Objects[i].gameObject.transform.position = new Vector3(Objects[i].gameObject.transform.position.x, -5, Objects[i].gameObject.transform.position.z);
 
                 Rigidbody rBody = Objects[i].gameObject.GetComponent<Rigidbody>();
-                rBody.constraints = RigidbodyConstraints.FreezeRotationX;
-                rBody.constraints &= RigidbodyConstraints.FreezeRotationY;
+                rBody.constraints &= RigidbodyConstraints.FreezeRotationX;
+                rBody.constraints &= RigidbodyConstraints.FreezeRotationZ;
                 rBody.constraints &= ~RigidbodyConstraints.FreezePosition;
+                rBody.angularVelocity = Vector3.zero;
             }
         }
     }
@@ -368,7 +414,6 @@ public class ObjectManager : MonoBehaviour
 
     private IEnumerator Rotator(int index, VISUAL_VARIABLE visVar)
     {
-        int test;
         while (visVar == VISUAL_VARIABLE.MOTION)
         {
             float spinPerSecond = 1.0f / Time.deltaTime;
@@ -377,13 +422,9 @@ public class ObjectManager : MonoBehaviour
                 Objects[index].transform.Rotate(new Vector3(0, 0, 1), anglePerSpin);
             else if (Objects[index].type == TYPE.SPIKE)
             {
-                //Objects[index].transform.rotation = Quaternion.Euler(0, Objects[index].transform.rotation.y, 0);
-                Objects[index].transform.Rotate(new Vector3(0, 1, 0), anglePerSpin);
-                //Objects[index].transform.position = new Vector3(Objects[index].transform.position.x, 1, Objects[index].transform.position.z);
+                Objects[index].transform.Rotate(Vector3.up, anglePerSpin);
+                //Objects[index].transform.RotateAround(Vector3.up, anglePerSpin);
             }
-                //test = index;
-                //Objects[index].transform.rotation = Quaternion.Euler(0, Objects[index].transform.rotation.y + anglePerSpin, 0);
-                //Objects[index].transform.Rotate(new Vector3(0, 1, 0), anglePerSpin);
             yield return null;
         }
     }
