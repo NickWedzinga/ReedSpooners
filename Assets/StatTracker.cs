@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using Tobii.Gaming;
+using UnityEngine;
 
 public struct Stats
 {
@@ -32,17 +30,23 @@ public class StatTracker
 {
     private Dictionary<SCENARIO, Dictionary<VISUAL_VARIABLE, Stats>> playerStats;
 
-    string filePath;
+    string statFilePath;
+    string gazeFilePath;
 
     public StatTracker()
     {
         playerStats = new Dictionary<SCENARIO, Dictionary<VISUAL_VARIABLE, Stats>>();
         playerStats.Add(SCENARIO.POSITIVE, new Dictionary<VISUAL_VARIABLE, Stats>());
         playerStats.Add(SCENARIO.NEGATIVE, new Dictionary<VISUAL_VARIABLE, Stats>());
-        filePath = "PlayerStatsReedSpooners.csv";
-        if (!System.IO.File.Exists(filePath))
+        statFilePath = "PlayerStatsReedSpooners.csv";
+        if (!System.IO.File.Exists(statFilePath))
         {
-            System.IO.File.Create(filePath);
+            System.IO.File.Create(statFilePath);
+        }
+        gazeFilePath = "GazeTrackReedSpooners.csv";
+        if (!System.IO.File.Exists(gazeFilePath))
+        {
+            System.IO.File.Create(gazeFilePath);
         }
     }
 
@@ -53,24 +57,46 @@ public class StatTracker
             playerStats[scenario].Add(subset.visVar, subset.stats);
     }
 
-    public void SaveStats(int score)
+    public void SaveStats(int score, List<Vector2> gazePoints)
     {
-        string playerText = score.ToString();
-        playerText += ',';
+        //Total score
+        string statText = score.ToString();
+        statText += ',';
+
         foreach (var scenario in playerStats)
         {
+            //Scenario
+            statText += scenario.Key.ToString();
+            statText += ',';
+
             foreach (var visVar in scenario.Value)
             {
-                playerText += visVar.Key.ToString();
-                playerText += ',';
-                playerText += visVar.Value.ToString();
+                //Variable
+                statText += visVar.Key.ToString();
+                statText += ',';
+                //Stats per highlighted object
+                statText += visVar.Value.ToString();
             }
         }
-        playerText += '\n';
+        statText += '\n';
 
-        using (System.IO.StreamWriter sw = System.IO.File.AppendText(filePath))
+        using (System.IO.StreamWriter sw = System.IO.File.AppendText(statFilePath))
         {
-            sw.Write(playerText);
+            sw.Write(statText);
+        }
+
+        string gazeText = "";
+
+        for (int i = 0; i < gazePoints.Count; ++i)
+        {
+            gazeText += gazePoints[i].x.ToString();
+            gazeText += ',';
+            gazeText += gazePoints[i].y.ToString();
+            gazeText += ',';
+        }
+        using (System.IO.StreamWriter sw = System.IO.File.AppendText(gazeFilePath))
+        {
+            sw.Write(gazeText);
         }
     }
 }

@@ -79,8 +79,11 @@ public class Subset : MonoBehaviour
 
     public void UpdateGazeData(ObjectStats objectStats)
     {
-        stats.objects[storageCounter] = objectStats;
-        ++storageCounter;
+        if(storageCounter < objects)
+        {
+            stats.objects[storageCounter] = objectStats;
+            ++storageCounter;
+        }
     }
 
     public void ResetRound(SCENARIO scenario)
@@ -96,6 +99,6 @@ public class Subset : MonoBehaviour
         stats.score = 0;
         stats.coins = 0;
         stats.spikes = 0;
-        stats.objects = new List<ObjectStats>(new ObjectStats[10]);
+        stats.objects = new List<ObjectStats>(new ObjectStats[objects]);
     }
 }

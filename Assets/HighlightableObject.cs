@@ -20,6 +20,7 @@ public struct ObjectStats
 {
     public LANE lane;
     public LANE playerLane;
+    public LANE FFLane;
 
     public float TFD;
     public float TTFF;
@@ -38,6 +39,8 @@ public struct ObjectStats
         output += lane.ToString();
         output += ",";
         output += playerLane.ToString();
+        output += ",";
+        output += FFLane.ToString();
         output += ",";
 
         output += TFD.ToString();
@@ -64,7 +67,6 @@ public struct ObjectStats
 public class HighlightableObject : MonoBehaviour
 {
     public ObjectStats stats;
-    public LANE lane { get { return stats.lane; } set { stats.lane = value; } }
 
     public float enteredViewAt; //timestamp
     public bool hasEnteredView = false;
@@ -124,6 +126,7 @@ public class HighlightableObject : MonoBehaviour
                 {
                     stats.TTFF = Time.time - enteredViewAt;
                     stats.approachRateFF = InputManager.instance._approachRate;
+                    stats.FFLane = InputManager.instance.lane;
                 }
 
                 stats.TFD += Time.deltaTime;
@@ -145,7 +148,15 @@ public class HighlightableObject : MonoBehaviour
 
     public void SendGazeData()
     {
-        if(highlight != HIGHLIGHT.NO)
+        if (highlight != HIGHLIGHT.NO)
+        {
+            if (transform.position.x > 0)
+                stats.lane = LANE.RIGHT;
+            else if (transform.position.x < 0)
+                stats.lane = LANE.LEFT;
+            else
+                stats.lane = LANE.MIDDLE;
             owner.UpdateGazeData(stats);
+        }
     }
 }

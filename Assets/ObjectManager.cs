@@ -210,12 +210,6 @@ public class ObjectManager : MonoBehaviour
             Objects[i].GetComponent<MeshRenderer>().material.color = Color.grey;
             Objects[i].transform.position = new Vector3(4.75f * RandomLane(), 1, Objects[i].transform.position.z);
 
-            if (Objects[i].transform.position.x > 0)
-                Objects[i].lane = LANE.RIGHT;
-            else if (Objects[i].transform.position.x < 0)
-                Objects[i].lane = LANE.LEFT;
-            else
-                Objects[i].lane = LANE.MIDDLE;
 
             Objects[i].hasEnteredView = false;
             Objects[i].enteredViewAt = 0;
