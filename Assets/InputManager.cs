@@ -39,6 +39,9 @@ public class InputManager : MonoBehaviour
         }
         if (_approachRate > 0.0f)
         {
+            if (_approachRate < 43.0f)
+                _approachRate += Time.deltaTime/* * 1.5f*/;
+
             if (transform.position.z > Game.instance.lastObjectPositionZ + 50)
             {
                 ResetVariable();
@@ -52,8 +55,6 @@ public class InputManager : MonoBehaviour
                 transform.Translate(-4.75f, 0, 0);
             }
             transform.Translate(0, 0, Time.deltaTime * _approachRate);
-            if(_approachRate < 43.0f)
-                _approachRate += Time.deltaTime/* * 1.5f*/;
         }
     }
 
