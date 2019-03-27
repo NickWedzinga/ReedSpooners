@@ -307,12 +307,6 @@ public class ObjectManager : MonoBehaviour
             Objects[i].GetComponent<MeshRenderer>().material.color = Color.grey;
             Objects[i].transform.position = new Vector3(4.75f * RandomLane(), 1, Objects[i].transform.position.z);
 
-            if (Objects[i].transform.position.x > 0)
-                Objects[i].lane = LANE.RIGHT;
-            else if (Objects[i].transform.position.x < 0)
-                Objects[i].lane = LANE.LEFT;
-            else
-                Objects[i].lane = LANE.MIDDLE;
 
             //Objects[i].highlight = HIGHLIGHT.NO;
             Objects[i].hasEnteredView = false;
@@ -326,8 +320,6 @@ public class ObjectManager : MonoBehaviour
         // Choose random objects that will be highlighted
         //SelectObjectsForHighlight(scenario);
         ObjectShuffle();
-
-        int highlightCounter = 0;
         for (int i = 0; i < Objects.Length; ++i)
         {
             if (Objects[i].type == TYPE.COIN/* && scenario == SCENARIO.POSITIVE*/)
@@ -335,8 +327,6 @@ public class ObjectManager : MonoBehaviour
                 Objects[i].transform.rotation = Quaternion.Euler(90.0f, 0, 0);
                 if (scenario == SCENARIO.POSITIVE /*&& Objects[i].highlight != HIGHLIGHT.NO*/)
                 {
-                    Objects[i].ID = highlightCounter;
-                    ++highlightCounter;
                     // Object should be highlighted, apply highlight
                     ApplyHighlight(i, visVar/*VISUAL_VARIABLE.FLASH*/);
                 }                
@@ -346,8 +336,6 @@ public class ObjectManager : MonoBehaviour
                 Objects[i].transform.rotation = Quaternion.Euler(0, 0, 0);
                 if (scenario == SCENARIO.NEGATIVE /*&& Objects[i].highlight != HIGHLIGHT.NO*/)
                 {
-                    Objects[i].ID = highlightCounter;
-                    ++highlightCounter;
                     // Object should be highlighted, apply highlight
                     ApplyHighlight(i, visVar/*VISUAL_VARIABLE.FLASH*/);
                 }

@@ -7,8 +7,8 @@ using Tobii.Gaming;
 
 public enum SCENARIO
 {
-    NEGATIVE = 90,
-    POSITIVE = 10
+    POSITIVE,
+    NEGATIVE
 }
 
 public class Game : MonoBehaviour
@@ -31,7 +31,7 @@ public class Game : MonoBehaviour
 
     public Text DebugText;
 
-    private GazePoint gazePoint;
+    private List<Vector2> gazePoints;
 
     public SCENARIO scenario { get; private set; }
 
@@ -46,6 +46,7 @@ public class Game : MonoBehaviour
     {
         instance = this;
         statTracker = new StatTracker();
+        gazePoints = new List<Vector2>();
         
         round = 0;
         _FirstScenario = true;
@@ -74,7 +75,9 @@ public class Game : MonoBehaviour
 
         DebugText.enabled = false;
 
-        gazePoint = TobiiAPI.GetGazePoint();
+        TobiiAPI.GetGazePoint();
+
+        scenario = SCENARIO.POSITIVE;
     }
 
     // Update is called once per frame
@@ -125,23 +128,25 @@ public class Game : MonoBehaviour
         //Debug.Log(TobiiAPI.GetGazePoint().GUI.ToString());
 
         //DebugText.text = "Visual variable: " + subset.visVar.ToString(); + Environment.NewLine + "Eye Pos (screen): " + TobiiAPI.GetGazePoint().GUI.ToString();
+
+        gazePoints.Add(TobiiAPI.GetGazePoint().GUI);
     }
 
     void SwapTechnique()
     {
-        subset.visVar = (VISUAL_VARIABLE)visVarOrder[round];
-        statTracker.AddTechnique(subset, scenario);
-        subset.ResetRound(scenario);
     }
 
     public void ResetVariable()
     {
+        statTracker.AddTechnique(subset, scenario);
         Score += subset.stats.score;
         // Announcer text reset and active
         ++round;
         if (round < visVarOrder.Length)
         {
-            SwapTechnique();
+            subset.visVar = (VISUAL_VARIABLE)visVarOrder[round];
+            subset.ResetRound(scenario);
+
             Announcer.text = "GET READY FOR ROUND " + (round + 1).ToString();
             Announcer.gameObject.SetActive(true);
             _AnnouncerTextTimer += Time.deltaTime;
@@ -149,7 +154,10 @@ public class Game : MonoBehaviour
         else if (_FirstScenario)
         {
             _FirstScenario = false;
+
             round = 0;
+            subset.visVar = (VISUAL_VARIABLE)visVarOrder[round];
+
             if (scenario == SCENARIO.POSITIVE)
                 scenario = SCENARIO.NEGATIVE;
             else
@@ -157,16 +165,16 @@ public class Game : MonoBehaviour
 
             ObjectManager objectManager = FindObjectOfType<ObjectManager>();
             objectManager.SwitchScenarioObjects();
-            SwapTechnique();
+            //SwapTechnique();
 
+            subset.ResetRound(scenario);
             Announcer.text = "GET READY FOR ROUND " + (round + 1).ToString();
             Announcer.gameObject.SetActive(true);
             _AnnouncerTextTimer += Time.deltaTime;
         }
         else
         {
-            statTracker.AddTechnique(subset, scenario);
-            statTracker.SaveStats(Score);
+            statTracker.SaveStats(Score, gazePoints);
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
 #else
