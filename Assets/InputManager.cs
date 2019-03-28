@@ -39,33 +39,39 @@ public class InputManager : MonoBehaviour
         }
         if (_approachRate > 0.0f)
         {
+            if (_approachRate < 43.0f)
+                _approachRate += Time.deltaTime/* * 1.5f*/;
+
             if (transform.position.z > Game.instance.lastObjectPositionZ + 50)
             {
                 ResetVariable();
             }
-            if ((Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) && transform.position.x < 1)
+            if (/*(Input.GetKeyDown(KeyCode.D) || */Input.GetKeyDown(KeyCode.RightArrow) && transform.position.x < 1)
             {
                 transform.Translate(4.75f, 0, 0);
             }
-            else if ((Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) && transform.position.x > -1)
+            else if (/*(Input.GetKeyDown(KeyCode.A) || */Input.GetKeyDown(KeyCode.LeftArrow) && transform.position.x > -1)
             {
                 transform.Translate(-4.75f, 0, 0);
             }
             transform.Translate(0, 0, Time.deltaTime * _approachRate);
-            if(_approachRate < 43.0f)
-                _approachRate += Time.deltaTime * 1.5f;
         }
     }
 
     private void ResetVariable()
     {
         Game.instance.ResetVariable();
-        _approachRate = 5.0f;
-        gameObject.transform.position = new Vector3(0, 1, 0.5f);
+        _approachRate = 0.0f;
+        gameObject.transform.position = new Vector3(0, gameObject.transform.position.y, 0.5f);
     }
 
     private IEnumerator GracePeriod()
     {
+        _approachRate = Time.deltaTime;
+        Game.instance.Announcer.fontSize = 60;
+        Game.instance.Announcer.GetComponent<RectTransform>().anchoredPosition = new Vector3(0.0f, 0.0f);
+        Game.instance.Announcer.text = "GET READY FOR ROUND " + (Game.instance.round + 1).ToString();
+
         float timePassed = 0.0f;
         while (timePassed < 2.0f)
         {

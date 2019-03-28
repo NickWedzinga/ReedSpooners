@@ -6,6 +6,10 @@ public class ObjectManager : MonoBehaviour
 {
     public HighlightableObject[] Objects = new HighlightableObject[100];
     public Mesh SpikeMesh;
+    private Mesh CoinMesh;
+    private CapsuleCollider CoinCollider;
+    private BoxCollider SpikeCollider;
+
     public int lastObjectPositionZ = 0;
     public int nrOfHighlightedObjects { get; private set; } = 10;
     private Color _OriginalObjectColor = Color.gray;
@@ -40,6 +44,13 @@ public class ObjectManager : MonoBehaviour
                 Rigidbody rBody = Objects[i].GetComponent<Rigidbody>();
                 rBody.velocity = Vector3.zero;
             }
+            else if(InputManager.instance.transform.position.z < 1000)
+            {
+                //Rigidbody rBody = Objects[i].GetComponent<Rigidbody>();
+                //rBody.position = new Vector3(Objects[i].transform.position.x, 1, Objects[i].transform.position.z);
+                ////Objects[i].rigidbody.position = new Vector3(Objects[i].transform.position.x, 1, Objects[i].transform.position.z);
+                //Objects[i].transform.rotation = Quaternion.Euler(0, 0, 0);
+            }
         }
 
         // Flash flashing objects
@@ -50,7 +61,6 @@ public class ObjectManager : MonoBehaviour
             // Time to change intensity
             if(_FlashingTimer > 0.1f)
             {
-
                 // Reset timer
                 _FlashingTimer = Time.deltaTime;
 
@@ -59,11 +69,11 @@ public class ObjectManager : MonoBehaviour
                 {
                     if (Objects[i].GetComponent<MeshRenderer>().material.color.r == 0)
                     {
-                        Objects[i].GetComponent<MeshRenderer>().material.color = new Color(255, 255, 255);
+                        Objects[i].GetComponent<MeshRenderer>().material.color = new Color(1, 1, 1);
                     }
-                    else if (Objects[i].GetComponent<MeshRenderer>().material.color.r == 255)
+                    else if (Objects[i].GetComponent<MeshRenderer>().material.color.r == 1)
                     {
-                        Objects[i].GetComponent<MeshRenderer>().material.color = new Color(0, 0, 0);
+                        Objects[i].GetComponent<MeshRenderer>().material.color = new Color(0 , 0, 0);
                     }
                 }
             }
@@ -74,37 +84,44 @@ public class ObjectManager : MonoBehaviour
     {
         for (int i = 0; i < Objects.Length; ++i)
         {
-            if (i >= 5 && i < 15)
+            if ((i >= 5 && i < 15 && Game.instance.scenario == SCENARIO.POSITIVE) || 
+                (i < 90 && Game.instance.scenario == SCENARIO.NEGATIVE))
             {
                 GameObject gObj = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
                 Objects[i] = gObj.AddComponent<HighlightableObject>();
                 Objects[i].transform.localScale = new Vector3(1.1f, 0.1f, 1.1f);
                 Objects[i].transform.Rotate(Vector3.right, 90.0f);
-                Objects[i].gameObject.name = "Coin";
                 Objects[i].type = TYPE.COIN;
+
                 Rigidbody rBody = Objects[i].gameObject.AddComponent<Rigidbody>();
                 rBody.constraints &= RigidbodyConstraints.FreezeRotationX;
                 rBody.constraints &= RigidbodyConstraints.FreezeRotationZ;
                 rBody.constraints &= ~RigidbodyConstraints.FreezePosition;
+
+                CoinCollider = gObj.GetComponent<CapsuleCollider>();
             }
             else
             {
                 GameObject gObj = GameObject.CreatePrimitive(PrimitiveType.Cube);
                 Objects[i] = gObj.AddComponent<HighlightableObject>();
                 Objects[i].gameObject.GetComponent<MeshFilter>().mesh = SpikeMesh;
-                Objects[i].gameObject.name = "Spike";
                 Objects[i].type = TYPE.SPIKE;
+
                 Rigidbody rBody = Objects[i].gameObject.AddComponent<Rigidbody>();
-                rBody.constraints = RigidbodyConstraints.FreezeRotation;
+                rBody.constraints &= RigidbodyConstraints.FreezeRotationX;
+                rBody.constraints &= RigidbodyConstraints.FreezeRotationZ;
+
+                SpikeCollider = gObj.GetComponent<BoxCollider>();
             }
             Objects[i].transform.position = new Vector3(0, 1, (i) * 10 + i / 10 + 50);
             Objects[i].GetComponent<MeshRenderer>().material = OriginalMaterial;
             Objects[i].GetComponent<MeshRenderer>().material.color = Color.gray;
+            //Objects[i].highlight = HIGHLIGHT.NO;
             
             if (Objects[i].transform.position.z > lastObjectPositionZ)
                 lastObjectPositionZ = (int)Objects[i].transform.position.z;
         }
-
+        CoinMesh = Objects[5].gameObject.GetComponent<MeshFilter>().mesh;
         Camera.main.GetComponent<UnityEngine.Rendering.PostProcessing.PostProcessVolume>().enabled = false;
         // Randomize object array
         ObjectShuffle();
@@ -174,6 +191,111 @@ public class ObjectManager : MonoBehaviour
         }
     }
 
+    //void SelectObjectsForHighlight(SCENARIO scenario)
+    //{
+    //    bool finished = false;
+    //    int nrOfHighlightsChosen = 0;
+
+    //    while (!finished)
+    //    {
+    //        if (nrOfHighlightsChosen > 9)
+    //            finished = true;
+
+    //        int highlightIndex = (int)(Random.value * 94 + 5);
+    //        if(highlightIndex < 0 || highlightIndex > 99)
+    //        {
+    //            print("what");
+    //        }
+    //        if(Objects[highlightIndex].type == TYPE.COIN && scenario == SCENARIO.POSITIVE && Objects[highlightIndex].highlight == HIGHLIGHT.NO)
+    //        {
+    //            nrOfHighlightsChosen++;
+    //            Objects[highlightIndex].highlight = HIGHLIGHT.HIGHLIGHTEDCOIN;
+    //        }
+    //        else if (Objects[highlightIndex].type == TYPE.SPIKE && scenario == SCENARIO.NEGATIVE && Objects[highlightIndex].highlight == HIGHLIGHT.NO)
+    //        {
+    //            nrOfHighlightsChosen++;
+    //            Objects[highlightIndex].highlight = HIGHLIGHT.HIGHLIGHTEDSPIKE;
+    //        }
+    //    }
+    //}
+
+    public void SwitchScenarioObjects()
+    {
+        for (int i = 0; i < Objects.Length; ++i)
+        {
+            if (Objects[i].type == TYPE.COIN)
+            {
+                //Objects[i].gameObject.GetComponent<MeshFilter>().mesh = SpikeMesh;
+                //Objects[i].type = TYPE.SPIKE;
+
+                //Objects[i].transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+                //Objects[i].transform.rotation = Quaternion.identity;
+                //Rigidbody rBody = Objects[i].GetComponent<Rigidbody>();
+                ////Objects[i].gameObject.transform.position = new Vector3(Objects[i].gameObject.transform.position.x, 1, Objects[i].gameObject.transform.position.z);
+
+                ////Rigidbody rBody = Objects[i].gameObject.GetComponent<Rigidbody>();
+                //rBody.constraints = RigidbodyConstraints.FreezeRotationX;
+                //rBody.constraints &= RigidbodyConstraints.FreezeRotationZ;
+                ////rBody.constraints &= RigidbodyConstraints.FreezePosition;
+
+
+
+
+                GameObject gObj = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                Objects[i].gameObject.GetComponent<MeshFilter>().mesh = SpikeMesh;
+                Objects[i].type = TYPE.SPIKE;
+
+                Destroy(Objects[i].gameObject.GetComponent<CapsuleCollider>());
+                Objects[i].gameObject.AddComponent<BoxCollider>();
+                Objects[i].gameObject.GetComponent<BoxCollider>().size = Vector3.one;
+
+                Objects[i].transform.localScale = new Vector3(1, 1, 1);
+                Objects[i].transform.rotation = Quaternion.identity;
+                
+
+                Rigidbody rBody = Objects[i].gameObject.GetComponent<Rigidbody>();
+                rBody.constraints &= RigidbodyConstraints.FreezeRotationX;
+                rBody.constraints &= RigidbodyConstraints.FreezeRotationZ;
+
+            }
+            else if (Objects[i].type == TYPE.SPIKE)
+            {
+                //Objects[i].GetComponent<MeshFilter>().mesh = CoinMesh;
+                //Objects[i].type = TYPE.COIN;
+
+                //Objects[i].transform.localScale = new Vector3(1.1f, 0.1f, 1.1f);
+                //Objects[i].transform.rotation = Quaternion.identity;
+                //Objects[i].transform.Rotate(Vector3.right, 90.0f);
+                ////Objects[i].gameObject.transform.position = new Vector3(Objects[i].gameObject.transform.position.x, -5, Objects[i].gameObject.transform.position.z);
+
+                //Rigidbody rBody = Objects[i].gameObject.GetComponent<Rigidbody>();
+                //rBody.constraints = RigidbodyConstraints.FreezeRotationX;
+                //rBody.constraints &= RigidbodyConstraints.FreezeRotationZ;
+                //rBody.constraints &= ~RigidbodyConstraints.FreezePosition;
+
+
+
+                GameObject gObj = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+                Objects[i].type = TYPE.COIN;
+                Objects[i].GetComponent<MeshFilter>().mesh = CoinMesh;
+                Destroy(Objects[i].gameObject.GetComponent<BoxCollider>());
+                Objects[i].gameObject.AddComponent<CapsuleCollider>();
+                Objects[i].gameObject.GetComponent<CapsuleCollider>().radius = 0.5f;
+                Objects[i].gameObject.GetComponent<CapsuleCollider>().height = 2;
+
+                Objects[i].transform.localScale = new Vector3(1.1f, 0.1f, 1.1f);
+                Objects[i].transform.rotation = Quaternion.identity;
+                Objects[i].transform.Rotate(Vector3.right, 90.0f);
+
+                Rigidbody rBody = Objects[i].gameObject.GetComponent<Rigidbody>();
+                rBody.constraints &= RigidbodyConstraints.FreezeRotationX;
+                rBody.constraints &= RigidbodyConstraints.FreezeRotationZ;
+                rBody.constraints &= ~RigidbodyConstraints.FreezePosition;
+                rBody.angularVelocity = Vector3.zero;
+            }
+        }
+    }
+
     public void Reset(VISUAL_VARIABLE visVar, SCENARIO scenario)
     {
         StopAllCoroutines();
@@ -185,13 +307,8 @@ public class ObjectManager : MonoBehaviour
             Objects[i].GetComponent<MeshRenderer>().material.color = Color.grey;
             Objects[i].transform.position = new Vector3(4.75f * RandomLane(), 1, Objects[i].transform.position.z);
 
-            if (Objects[i].transform.position.x > 0)
-                Objects[i].lane = LANE.RIGHT;
-            else if (Objects[i].transform.position.x < 0)
-                Objects[i].lane = LANE.LEFT;
-            else
-                Objects[i].lane = LANE.MIDDLE;
 
+            //Objects[i].highlight = HIGHLIGHT.NO;
             Objects[i].hasEnteredView = false;
             Objects[i].enteredViewAt = 0;
             Objects[i].gameObject.SetActive(true);
@@ -201,24 +318,27 @@ public class ObjectManager : MonoBehaviour
         _FlashingTimer = 0.0f;
 
         // Choose random objects that will be highlighted
+        //SelectObjectsForHighlight(scenario);
         ObjectShuffle();
-
-        int highlightCounter = 0;
         for (int i = 0; i < Objects.Length; ++i)
         {
-            if (Objects[i].type == TYPE.COIN && scenario == SCENARIO.POSITIVE)
+            if (Objects[i].type == TYPE.COIN/* && scenario == SCENARIO.POSITIVE*/)
             {
                 Objects[i].transform.rotation = Quaternion.Euler(90.0f, 0, 0);
-                // Object should be highlighted, apply highlight
-                ApplyHighlight(i, visVar/*VISUAL_VARIABLE.MOTION*/);
+                if (scenario == SCENARIO.POSITIVE /*&& Objects[i].highlight != HIGHLIGHT.NO*/)
+                {
+                    // Object should be highlighted, apply highlight
+                    ApplyHighlight(i, visVar/*VISUAL_VARIABLE.FLASH*/);
+                }                
             }
-            else if (Objects[i].type == TYPE.SPIKE && scenario == SCENARIO.NEGATIVE)
+            else if (Objects[i].type == TYPE.SPIKE/* && scenario == SCENARIO.NEGATIVE*/)
             {
                 Objects[i].transform.rotation = Quaternion.Euler(0, 0, 0);
-                Objects[i].ID = highlightCounter;
-                ++highlightCounter;
-                // Object should be highlighted, apply highlight
-                ApplyHighlight(i, visVar/*VISUAL_VARIABLE.MOTION*/);
+                if (scenario == SCENARIO.NEGATIVE /*&& Objects[i].highlight != HIGHLIGHT.NO*/)
+                {
+                    // Object should be highlighted, apply highlight
+                    ApplyHighlight(i, visVar/*VISUAL_VARIABLE.FLASH*/);
+                }
             }
         }
     }
@@ -285,11 +405,14 @@ public class ObjectManager : MonoBehaviour
         while (visVar == VISUAL_VARIABLE.MOTION)
         {
             float spinPerSecond = 1.0f / Time.deltaTime;
-            float anglePerSpin = spinPerSecond / 2.0f;
-            if(Objects[index].type == TYPE.COIN)
+            float anglePerSpin = spinPerSecond / 3.0f;
+            if (Objects[index].type == TYPE.COIN)
                 Objects[index].transform.Rotate(new Vector3(0, 0, 1), anglePerSpin);
             else if (Objects[index].type == TYPE.SPIKE)
-                Objects[index].transform.Rotate(new Vector3(0, 1, 0), anglePerSpin);
+            {
+                Objects[index].transform.Rotate(Vector3.up, anglePerSpin);
+                //Objects[index].transform.RotateAround(Vector3.up, anglePerSpin);
+            }
             yield return null;
         }
     }

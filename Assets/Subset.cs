@@ -30,10 +30,11 @@ public class Subset : MonoBehaviour
     public ObjectManager objectManager;
     new Camera camera;
     public Stats stats;
-    public int objects = 10;
-    VISUAL_VARIABLE _visVar;
-    public VISUAL_VARIABLE visVar { get { return _visVar; } set { _visVar = value; } }
+    int objects = 10;   
+    public VISUAL_VARIABLE visVar;
     bool lameAssHack = true;
+
+    int storageCounter = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -56,7 +57,7 @@ public class Subset : MonoBehaviour
     }
 
     // Updates score, called during collision in a HighlightableObject
-    public void UpdateScore(TYPE type, float approachRate, int ID)
+    public void UpdateScore(TYPE type, float approachRate)
     {
         switch (type)
         {
@@ -69,8 +70,6 @@ public class Subset : MonoBehaviour
                 stats.score -= 100;
                 break;
         }
-        if (type == (TYPE)Game.instance.scenario)
-            stats.approachRateHit[ID] = approachRate;
     }
 
     public void UpdateGazeData()
@@ -78,37 +77,28 @@ public class Subset : MonoBehaviour
         objectManager.SendGazeData();
     }
 
-    public void UpdateGazeData(float TFD, float TTFF, int fixations, float approachRateFF, LANE objectLane, LANE playerLane, int ID)
+    public void UpdateGazeData(ObjectStats objectStats)
     {
-        stats.TFD[ID] = TFD;
-        stats.TTFF[ID] = TTFF;
-        stats.fixations[ID] = fixations;
-        stats.approachRateFF[ID] = approachRateFF;
-        stats.highlightLanes[ID] = objectLane;
-        stats.playerLanes[ID] = playerLane;
+        if(storageCounter < objects)
+        {
+            stats.objects[storageCounter] = objectStats;
+            ++storageCounter;
+        }
     }
 
     public void ResetRound(SCENARIO scenario)
     {
-        if (scenario == SCENARIO.NEGATIVE)
-            objects = 90;
         ResetScore();
         //if (GameManager.instance.round < (int)VISUAL_VARIABLE.VIS_VARS)
         objectManager.Reset(visVar, scenario);
-
     }
 
     void ResetScore()
     {
+        storageCounter = 0;
         stats.score = 0;
         stats.coins = 0;
         stats.spikes = 0;
-        stats.TFD = new List<float>(new float[objects]);
-        stats.TTFF = new List<float>(new float[objects]);
-        stats.fixations = new List<int>(new int[objects]);
-        stats.highlightLanes = new List<LANE>(new LANE[objects]);
-        stats.playerLanes = new List<LANE>(new LANE[objects]);
-        stats.approachRateFF = new List<float>(new float[objects]);
-        stats.approachRateHit = new List<float>(new float[objects]);
+        stats.objects = new List<ObjectStats>(new ObjectStats[objects]);
     }
 }

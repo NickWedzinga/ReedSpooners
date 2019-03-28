@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Tobii.Gaming;
-using System;
+//using System;
 
 public enum SCENARIO
 {
@@ -20,7 +20,7 @@ public class Game : MonoBehaviour
     private bool _FirstScenario;
 
     public Subset subset;
-    public int[] visVarOrder = /*{ 2 };*/{ 0, 1, 2, 3, 4, 5, 6, 7, 8 };
+    public int[] visVarOrder = { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
 
     public Text Announcer;
     private float _AnnouncerTextTimer;
@@ -31,7 +31,7 @@ public class Game : MonoBehaviour
 
     public Text DebugText;
 
-    private GazePoint gazePoint;
+    private List<Vector2> gazePoints;
 
     public SCENARIO scenario { get; private set; }
 
@@ -46,10 +46,19 @@ public class Game : MonoBehaviour
     {
         instance = this;
         statTracker = new StatTracker();
+        gazePoints = new List<Vector2>();
         
         round = 0;
         _FirstScenario = true;
-        visVarOrder = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
+
+        // First scenario randomized
+        int startScenario = (int)(Random.value*2.0f);
+        if (startScenario == 0)
+            scenario = SCENARIO.NEGATIVE;
+        else
+            scenario = SCENARIO.POSITIVE;
+
+        visVarOrder = new int[] /*{ 4 };*/{ 0, 1, 2, 3, 4, 5, 6, 7, 8 };
         //RANDOMIZE VISUALORDER
         Shuffle(visVarOrder);
 
@@ -66,7 +75,9 @@ public class Game : MonoBehaviour
 
         DebugText.enabled = false;
 
-        gazePoint = TobiiAPI.GetGazePoint();
+        TobiiAPI.GetGazePoint();
+
+        scenario = SCENARIO.POSITIVE;
     }
 
     // Update is called once per frame
@@ -79,30 +90,32 @@ public class Game : MonoBehaviour
             if(scenario == SCENARIO.POSITIVE)
             {
                 Announcer.text = "You will be approached by SPIKES and COINS.\n The COINS will be HIGHLIGHTED in various ways.\n Your mission is to AVOID THE SPIKES AND COLLECT THE COINS.\n" +
-                    "\nInstructions: \nUse A or Left Arrow to move left\nUse D or Right Arrow to move right.\n\nPress SPACE to begin.";
+                    "\nInstructions: \nUse Left Arrow to move left\nUse Right Arrow to move right.\n\nPress SPACE to begin.";
             }
             else
             {
                 Announcer.text = "You will be approached by SPIKES and COINS.\n The SPIKES will be HIGHLIGHTED in various ways.\n Your mission is to AVOID THE SPIKES AND COLLECT THE COINS.\n" +
-                    "\nInstructions: \nUse A or Left Arrow to move left\nUse D or Right Arrow to move right.\n\nPress SPACE to begin.";
+                    "\nInstructions: \nUse Left Arrow to move left\nUse Right Arrow to move right.\n\nPress SPACE to begin.";
             }
         }
         else if (_AnnouncerTextTimer > 0)
         {
-            Announcer.fontSize = 60;
-            Announcer.GetComponent<RectTransform>().anchoredPosition = new Vector3(0.0f, 0.0f);
-            Announcer.text = "GET READY FOR ROUND " + (round + 1).ToString();
-
-            Announcer.color = Color.Lerp(_OriginalTextColor, Color.clear, Mathf.Min(1, _AnnouncerTextTimer / 4.0f));
             _AnnouncerTextTimer += Time.deltaTime;
-            if (_AnnouncerTextTimer > 4.0f)
+
+            if(_AnnouncerTextTimer > 2 && _AnnouncerTextTimer < 4)
+            {
+                Announcer.color = Color.Lerp(_OriginalTextColor, Color.clear, Mathf.Min(1, (_AnnouncerTextTimer-2.0f) / 2.0f));
+            }
+            else if (_AnnouncerTextTimer >= 4.0f)
             {
                 _AnnouncerTextTimer = 0.0f;
                 Announcer.gameObject.SetActive(false);
+                Announcer.color = _OriginalTextColor;
 
                 Announcer.fontSize = 40;
                 Announcer.GetComponent<RectTransform>().anchoredPosition = new Vector3(0.0f, 0.0f);
             }
+
         }
         ScoreText.text = "Score: " + (Score + subset.stats.score).ToString();
 
@@ -115,23 +128,25 @@ public class Game : MonoBehaviour
         //Debug.Log(TobiiAPI.GetGazePoint().GUI.ToString());
 
         //DebugText.text = "Visual variable: " + subset.visVar.ToString(); + Environment.NewLine + "Eye Pos (screen): " + TobiiAPI.GetGazePoint().GUI.ToString();
+
+        gazePoints.Add(TobiiAPI.GetGazePoint().GUI);
     }
 
     void SwapTechnique()
     {
-        subset.visVar = (VISUAL_VARIABLE)visVarOrder[round];
-        statTracker.AddTechnique(subset, scenario);
-        subset.ResetRound(scenario);
     }
 
     public void ResetVariable()
     {
+        statTracker.AddTechnique(subset, scenario);
         Score += subset.stats.score;
         // Announcer text reset and active
         ++round;
         if (round < visVarOrder.Length)
         {
-            SwapTechnique();
+            subset.visVar = (VISUAL_VARIABLE)visVarOrder[round];
+            subset.ResetRound(scenario);
+
             Announcer.text = "GET READY FOR ROUND " + (round + 1).ToString();
             Announcer.gameObject.SetActive(true);
             _AnnouncerTextTimer += Time.deltaTime;
@@ -139,21 +154,27 @@ public class Game : MonoBehaviour
         else if (_FirstScenario)
         {
             _FirstScenario = false;
+
             round = 0;
+            subset.visVar = (VISUAL_VARIABLE)visVarOrder[round];
+
             if (scenario == SCENARIO.POSITIVE)
                 scenario = SCENARIO.NEGATIVE;
             else
                 scenario = SCENARIO.POSITIVE;
 
-            SwapTechnique();
+            ObjectManager objectManager = FindObjectOfType<ObjectManager>();
+            objectManager.SwitchScenarioObjects();
+            //SwapTechnique();
+
+            subset.ResetRound(scenario);
             Announcer.text = "GET READY FOR ROUND " + (round + 1).ToString();
             Announcer.gameObject.SetActive(true);
             _AnnouncerTextTimer += Time.deltaTime;
         }
         else
         {
-            statTracker.AddTechnique(subset, scenario);
-            statTracker.SaveStats(Score);
+            statTracker.SaveStats(Score, gazePoints);
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
 #else
