@@ -8,6 +8,8 @@ public class InputManager : MonoBehaviour
     public static InputManager instance;
 
     public float _approachRate { get; set; }
+
+    private Camera camera;
     public LANE lane {
         get
         {
@@ -28,6 +30,8 @@ public class InputManager : MonoBehaviour
 
         // Change to increase speed
         _approachRate = 0.0f;
+
+        camera = FindObjectOfType<Camera>();
     }
 
     // Update is called once per frame
@@ -56,6 +60,8 @@ public class InputManager : MonoBehaviour
             }
             transform.Translate(0, 0, Time.deltaTime * _approachRate);
         }
+
+        camera.transform.position = new Vector3(camera.transform.position.x, camera.transform.position.y, this.transform.position.z -9.5f);//-8.4f);
     }
 
     private void ResetVariable()
