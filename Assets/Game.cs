@@ -163,8 +163,8 @@ public class Game : MonoBehaviour
             else
                 scenario = SCENARIO.POSITIVE;
 
-            ObjectManager objectManager = FindObjectOfType<ObjectManager>();
-            objectManager.SwitchScenarioObjects();
+            //ObjectManager objectManager = FindObjectOfType<ObjectManager>();
+            //objectManager.SwitchScenarioObjects();
             //SwapTechnique();
 
             subset.ResetRound(scenario);

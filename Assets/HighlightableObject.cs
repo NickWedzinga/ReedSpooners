@@ -9,12 +9,12 @@ public enum TYPE
     SPIKE
 }
 
-//public enum HIGHLIGHT
-//{
-//    NO = 0,
-//    HIGHLIGHTEDCOIN = 1,
-//    HIGHLIGHTEDSPIKE = 2
-//}
+public enum HIGHLIGHT
+{
+    NO = 0,
+    HIGHLIGHTEDCOIN = 1,
+    HIGHLIGHTEDSPIKE = 2
+}
 
 public struct ObjectStats
 {
@@ -73,11 +73,11 @@ public class HighlightableObject : MonoBehaviour
     public Vector2 gazePos = new Vector2(0, 0);
 
     public TYPE type;
-    //public HIGHLIGHT highlight;
+    public HIGHLIGHT highlight;
 
     public Subset owner;
     GazeAware gazeAware;
-    bool highlighted { get { return (type == (TYPE)Game.instance.scenario); } }
+    //bool highlighted { get { return (type == (TYPE)Game.instance.scenario); } }
 
     // Start is called before the first frame update
     void Start()
@@ -103,7 +103,7 @@ public class HighlightableObject : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (highlighted)
+        if (/*highlighted*/highlight != HIGHLIGHT.NO)
         {
             if ((transform.position.z - InputManager.instance.transform.position.z) < 27.05 && !hasEnteredView)
             {
@@ -149,7 +149,7 @@ public class HighlightableObject : MonoBehaviour
 
     public void SendGazeData()
     {
-        if (highlighted)
+        if (/*highlighted*/highlight != HIGHLIGHT.NO)
         {
             if (transform.position.x > 0)
                 stats.lane = LANE.RIGHT;
