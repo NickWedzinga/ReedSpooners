@@ -61,7 +61,7 @@ public class InputManager : MonoBehaviour
     private void ResetVariable()
     {
         Game.instance.ResetVariable();
-        _approachRate = 0.0f;
+        _approachRate = Time.deltaTime;
         gameObject.transform.position = new Vector3(0, gameObject.transform.position.y, 0.5f);
     }
 

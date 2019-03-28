@@ -89,12 +89,12 @@ public class Game : MonoBehaviour
             Announcer.GetComponent<RectTransform>().anchoredPosition = new Vector3(0.0f, Screen.height/2.5f);
             if(scenario == SCENARIO.POSITIVE)
             {
-                Announcer.text = "You will be approached by SPIKES and COINS.\n The COINS will be HIGHLIGHTED in various ways.\n Your mission is to AVOID THE SPIKES AND COLLECT THE COINS.\n" +
+                Announcer.text = "You will be approached by SPIKES and COINS.\n Some of the COINS will be HIGHLIGHTED in various ways.\n Your mission is to AVOID THE SPIKES AND COLLECT ALL COINS.\n" +
                     "\nInstructions: \nUse Left Arrow to move left\nUse Right Arrow to move right.\n\nPress SPACE to begin.";
             }
             else
             {
-                Announcer.text = "You will be approached by SPIKES and COINS.\n The SPIKES will be HIGHLIGHTED in various ways.\n Your mission is to AVOID THE SPIKES AND COLLECT THE COINS.\n" +
+                Announcer.text = "You will be approached by SPIKES and COINS.\n Some of the SPIKES will be HIGHLIGHTED in various ways.\n Your mission is to AVOID THE SPIKES AND COLLECT ALL COINS.\n" +
                     "\nInstructions: \nUse Left Arrow to move left\nUse Right Arrow to move right.\n\nPress SPACE to begin.";
             }
         }
@@ -168,6 +168,7 @@ public class Game : MonoBehaviour
             //SwapTechnique();
 
             subset.ResetRound(scenario);
+            InputManager.instance._approachRate = 0.0f;
             Announcer.text = "GET READY FOR ROUND " + (round + 1).ToString();
             Announcer.gameObject.SetActive(true);
             _AnnouncerTextTimer += Time.deltaTime;
