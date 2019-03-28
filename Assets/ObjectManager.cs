@@ -39,18 +39,20 @@ public class ObjectManager : MonoBehaviour
         // To negate velocity build up from spinning, freezeposition does not take care of this apparently.
         for(int i = 0; i < Objects.Length; ++i)
         {
-            if (Objects[i].type == TYPE.COIN)
-            {
-                Rigidbody rBody = Objects[i].GetComponent<Rigidbody>();
-                rBody.velocity = Vector3.zero;
-            }
-            else if(InputManager.instance.transform.position.z < 1000)
-            {
-                //Rigidbody rBody = Objects[i].GetComponent<Rigidbody>();
-                //rBody.position = new Vector3(Objects[i].transform.position.x, 1, Objects[i].transform.position.z);
-                ////Objects[i].rigidbody.position = new Vector3(Objects[i].transform.position.x, 1, Objects[i].transform.position.z);
-                //Objects[i].transform.rotation = Quaternion.Euler(0, 0, 0);
-            }
+            Rigidbody rBody = Objects[i].GetComponent<Rigidbody>();
+            rBody.velocity = Vector3.zero;
+            //if (Objects[i].type == TYPE.COIN)
+            //{
+            //    Rigidbody rBody = Objects[i].GetComponent<Rigidbody>();
+            //    rBody.velocity = Vector3.zero;
+            //}
+            //else if(InputManager.instance.transform.position.z < 1000)
+            //{
+            //    //Rigidbody rBody = Objects[i].GetComponent<Rigidbody>();
+            //    //rBody.position = new Vector3(Objects[i].transform.position.x, 1, Objects[i].transform.position.z);
+            //    ////Objects[i].rigidbody.position = new Vector3(Objects[i].transform.position.x, 1, Objects[i].transform.position.z);
+            //    //Objects[i].transform.rotation = Quaternion.Euler(0, 0, 0);
+            //}
         }
 
         // Flash flashing objects
@@ -84,8 +86,9 @@ public class ObjectManager : MonoBehaviour
     {
         for (int i = 0; i < Objects.Length; ++i)
         {
-            if ((i >= 5 && i < 15 && Game.instance.scenario == SCENARIO.POSITIVE) || 
-                (i < 90 && Game.instance.scenario == SCENARIO.NEGATIVE))
+            if(i >= 5 && i < 55)
+            //if ((i >= 5 && i < 15 && Game.instance.scenario == SCENARIO.POSITIVE) || 
+            //    (i < 90 && Game.instance.scenario == SCENARIO.NEGATIVE))
             {
                 GameObject gObj = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
                 Objects[i] = gObj.AddComponent<HighlightableObject>();
@@ -191,110 +194,110 @@ public class ObjectManager : MonoBehaviour
         }
     }
 
-    //void SelectObjectsForHighlight(SCENARIO scenario)
-    //{
-    //    bool finished = false;
-    //    int nrOfHighlightsChosen = 0;
-
-    //    while (!finished)
-    //    {
-    //        if (nrOfHighlightsChosen > 9)
-    //            finished = true;
-
-    //        int highlightIndex = (int)(Random.value * 94 + 5);
-    //        if(highlightIndex < 0 || highlightIndex > 99)
-    //        {
-    //            print("what");
-    //        }
-    //        if(Objects[highlightIndex].type == TYPE.COIN && scenario == SCENARIO.POSITIVE && Objects[highlightIndex].highlight == HIGHLIGHT.NO)
-    //        {
-    //            nrOfHighlightsChosen++;
-    //            Objects[highlightIndex].highlight = HIGHLIGHT.HIGHLIGHTEDCOIN;
-    //        }
-    //        else if (Objects[highlightIndex].type == TYPE.SPIKE && scenario == SCENARIO.NEGATIVE && Objects[highlightIndex].highlight == HIGHLIGHT.NO)
-    //        {
-    //            nrOfHighlightsChosen++;
-    //            Objects[highlightIndex].highlight = HIGHLIGHT.HIGHLIGHTEDSPIKE;
-    //        }
-    //    }
-    //}
-
-    public void SwitchScenarioObjects()
+    void SelectObjectsForHighlight(SCENARIO scenario)
     {
-        for (int i = 0; i < Objects.Length; ++i)
+        bool finished = false;
+        int nrOfHighlightsChosen = 0;
+
+        while (!finished)
         {
-            if (Objects[i].type == TYPE.COIN)
+            if (nrOfHighlightsChosen > 24)
+                finished = true;
+
+            int highlightIndex = (int)(Random.value * 94 + 5);
+            if (highlightIndex < 0 || highlightIndex > 99)
             {
-                //Objects[i].gameObject.GetComponent<MeshFilter>().mesh = SpikeMesh;
-                //Objects[i].type = TYPE.SPIKE;
-
-                //Objects[i].transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
-                //Objects[i].transform.rotation = Quaternion.identity;
-                //Rigidbody rBody = Objects[i].GetComponent<Rigidbody>();
-                ////Objects[i].gameObject.transform.position = new Vector3(Objects[i].gameObject.transform.position.x, 1, Objects[i].gameObject.transform.position.z);
-
-                ////Rigidbody rBody = Objects[i].gameObject.GetComponent<Rigidbody>();
-                //rBody.constraints = RigidbodyConstraints.FreezeRotationX;
-                //rBody.constraints &= RigidbodyConstraints.FreezeRotationZ;
-                ////rBody.constraints &= RigidbodyConstraints.FreezePosition;
-
-
-
-
-                GameObject gObj = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                Objects[i].gameObject.GetComponent<MeshFilter>().mesh = SpikeMesh;
-                Objects[i].type = TYPE.SPIKE;
-
-                Destroy(Objects[i].gameObject.GetComponent<CapsuleCollider>());
-                Objects[i].gameObject.AddComponent<BoxCollider>();
-                Objects[i].gameObject.GetComponent<BoxCollider>().size = Vector3.one;
-
-                Objects[i].transform.localScale = new Vector3(1, 1, 1);
-                Objects[i].transform.rotation = Quaternion.identity;
-                
-
-                Rigidbody rBody = Objects[i].gameObject.GetComponent<Rigidbody>();
-                rBody.constraints &= RigidbodyConstraints.FreezeRotationX;
-                rBody.constraints &= RigidbodyConstraints.FreezeRotationZ;
-
+                print("what");
             }
-            else if (Objects[i].type == TYPE.SPIKE)
+            if (Objects[highlightIndex].type == TYPE.COIN && scenario == SCENARIO.POSITIVE && Objects[highlightIndex].highlight == HIGHLIGHT.NO)
             {
-                //Objects[i].GetComponent<MeshFilter>().mesh = CoinMesh;
-                //Objects[i].type = TYPE.COIN;
-
-                //Objects[i].transform.localScale = new Vector3(1.1f, 0.1f, 1.1f);
-                //Objects[i].transform.rotation = Quaternion.identity;
-                //Objects[i].transform.Rotate(Vector3.right, 90.0f);
-                ////Objects[i].gameObject.transform.position = new Vector3(Objects[i].gameObject.transform.position.x, -5, Objects[i].gameObject.transform.position.z);
-
-                //Rigidbody rBody = Objects[i].gameObject.GetComponent<Rigidbody>();
-                //rBody.constraints = RigidbodyConstraints.FreezeRotationX;
-                //rBody.constraints &= RigidbodyConstraints.FreezeRotationZ;
-                //rBody.constraints &= ~RigidbodyConstraints.FreezePosition;
-
-
-
-                GameObject gObj = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-                Objects[i].type = TYPE.COIN;
-                Objects[i].GetComponent<MeshFilter>().mesh = CoinMesh;
-                Destroy(Objects[i].gameObject.GetComponent<BoxCollider>());
-                Objects[i].gameObject.AddComponent<CapsuleCollider>();
-                Objects[i].gameObject.GetComponent<CapsuleCollider>().radius = 0.5f;
-                Objects[i].gameObject.GetComponent<CapsuleCollider>().height = 2;
-
-                Objects[i].transform.localScale = new Vector3(1.1f, 0.1f, 1.1f);
-                Objects[i].transform.rotation = Quaternion.identity;
-                Objects[i].transform.Rotate(Vector3.right, 90.0f);
-
-                Rigidbody rBody = Objects[i].gameObject.GetComponent<Rigidbody>();
-                rBody.constraints &= RigidbodyConstraints.FreezeRotationX;
-                rBody.constraints &= RigidbodyConstraints.FreezeRotationZ;
-                rBody.constraints &= ~RigidbodyConstraints.FreezePosition;
-                rBody.angularVelocity = Vector3.zero;
+                nrOfHighlightsChosen++;
+                Objects[highlightIndex].highlight = HIGHLIGHT.HIGHLIGHTEDCOIN;
+            }
+            else if (Objects[highlightIndex].type == TYPE.SPIKE && scenario == SCENARIO.NEGATIVE && Objects[highlightIndex].highlight == HIGHLIGHT.NO)
+            {
+                nrOfHighlightsChosen++;
+                Objects[highlightIndex].highlight = HIGHLIGHT.HIGHLIGHTEDSPIKE;
             }
         }
     }
+
+    //public void SwitchScenarioObjects()
+    //{
+    //    for (int i = 0; i < Objects.Length; ++i)
+    //    {
+    //        if (Objects[i].type == TYPE.COIN)
+    //        {
+    //            //Objects[i].gameObject.GetComponent<MeshFilter>().mesh = SpikeMesh;
+    //            //Objects[i].type = TYPE.SPIKE;
+
+    //            //Objects[i].transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+    //            //Objects[i].transform.rotation = Quaternion.identity;
+    //            //Rigidbody rBody = Objects[i].GetComponent<Rigidbody>();
+    //            ////Objects[i].gameObject.transform.position = new Vector3(Objects[i].gameObject.transform.position.x, 1, Objects[i].gameObject.transform.position.z);
+
+    //            ////Rigidbody rBody = Objects[i].gameObject.GetComponent<Rigidbody>();
+    //            //rBody.constraints = RigidbodyConstraints.FreezeRotationX;
+    //            //rBody.constraints &= RigidbodyConstraints.FreezeRotationZ;
+    //            ////rBody.constraints &= RigidbodyConstraints.FreezePosition;
+
+
+
+
+    //            GameObject gObj = GameObject.CreatePrimitive(PrimitiveType.Cube);
+    //            Objects[i].gameObject.GetComponent<MeshFilter>().mesh = SpikeMesh;
+    //            Objects[i].type = TYPE.SPIKE;
+
+    //            Destroy(Objects[i].gameObject.GetComponent<CapsuleCollider>());
+    //            Objects[i].gameObject.AddComponent<BoxCollider>();
+    //            Objects[i].gameObject.GetComponent<BoxCollider>().size = Vector3.one;
+
+    //            Objects[i].transform.localScale = new Vector3(1, 1, 1);
+    //            Objects[i].transform.rotation = Quaternion.identity;
+
+
+    //            Rigidbody rBody = Objects[i].gameObject.GetComponent<Rigidbody>();
+    //            rBody.constraints &= RigidbodyConstraints.FreezeRotationX;
+    //            rBody.constraints &= RigidbodyConstraints.FreezeRotationZ;
+
+    //        }
+    //        else if (Objects[i].type == TYPE.SPIKE)
+    //        {
+    //            //Objects[i].GetComponent<MeshFilter>().mesh = CoinMesh;
+    //            //Objects[i].type = TYPE.COIN;
+
+    //            //Objects[i].transform.localScale = new Vector3(1.1f, 0.1f, 1.1f);
+    //            //Objects[i].transform.rotation = Quaternion.identity;
+    //            //Objects[i].transform.Rotate(Vector3.right, 90.0f);
+    //            ////Objects[i].gameObject.transform.position = new Vector3(Objects[i].gameObject.transform.position.x, -5, Objects[i].gameObject.transform.position.z);
+
+    //            //Rigidbody rBody = Objects[i].gameObject.GetComponent<Rigidbody>();
+    //            //rBody.constraints = RigidbodyConstraints.FreezeRotationX;
+    //            //rBody.constraints &= RigidbodyConstraints.FreezeRotationZ;
+    //            //rBody.constraints &= ~RigidbodyConstraints.FreezePosition;
+
+
+
+    //            GameObject gObj = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+    //            Objects[i].type = TYPE.COIN;
+    //            Objects[i].GetComponent<MeshFilter>().mesh = CoinMesh;
+    //            Destroy(Objects[i].gameObject.GetComponent<BoxCollider>());
+    //            Objects[i].gameObject.AddComponent<CapsuleCollider>();
+    //            Objects[i].gameObject.GetComponent<CapsuleCollider>().radius = 0.5f;
+    //            Objects[i].gameObject.GetComponent<CapsuleCollider>().height = 2;
+
+    //            Objects[i].transform.localScale = new Vector3(1.1f, 0.1f, 1.1f);
+    //            Objects[i].transform.rotation = Quaternion.identity;
+    //            Objects[i].transform.Rotate(Vector3.right, 90.0f);
+
+    //            Rigidbody rBody = Objects[i].gameObject.GetComponent<Rigidbody>();
+    //            rBody.constraints &= RigidbodyConstraints.FreezeRotationX;
+    //            rBody.constraints &= RigidbodyConstraints.FreezeRotationZ;
+    //            rBody.constraints &= ~RigidbodyConstraints.FreezePosition;
+    //            rBody.angularVelocity = Vector3.zero;
+    //        }
+    //    }
+    //}
 
     public void Reset(VISUAL_VARIABLE visVar, SCENARIO scenario)
     {
@@ -307,34 +310,37 @@ public class ObjectManager : MonoBehaviour
             Objects[i].GetComponent<MeshRenderer>().material.color = Color.grey;
             Objects[i].transform.position = new Vector3(4.75f * RandomLane(), 1, Objects[i].transform.position.z);
 
-
-            //Objects[i].highlight = HIGHLIGHT.NO;
+            Objects[i].highlight = HIGHLIGHT.NO;
             Objects[i].hasEnteredView = false;
             Objects[i].enteredViewAt = 0;
             Objects[i].gameObject.SetActive(true);
+
+            Rigidbody rBody = Objects[i].GetComponent<Rigidbody>();
+            rBody.angularVelocity = Vector3.zero;
+            rBody.velocity = Vector3.zero;
         }
 
         Camera.main.GetComponent<UnityEngine.Rendering.PostProcessing.PostProcessVolume>().enabled = false;
         _FlashingTimer = 0.0f;
 
         // Choose random objects that will be highlighted
-        //SelectObjectsForHighlight(scenario);
+        SelectObjectsForHighlight(scenario);
         ObjectShuffle();
         for (int i = 0; i < Objects.Length; ++i)
         {
-            if (Objects[i].type == TYPE.COIN/* && scenario == SCENARIO.POSITIVE*/)
+            if (Objects[i].type == TYPE.COIN && scenario == SCENARIO.POSITIVE)
             {
                 Objects[i].transform.rotation = Quaternion.Euler(90.0f, 0, 0);
-                if (scenario == SCENARIO.POSITIVE /*&& Objects[i].highlight != HIGHLIGHT.NO*/)
+                if (scenario == SCENARIO.POSITIVE && Objects[i].highlight != HIGHLIGHT.NO)
                 {
                     // Object should be highlighted, apply highlight
                     ApplyHighlight(i, visVar/*VISUAL_VARIABLE.FLASH*/);
                 }                
             }
-            else if (Objects[i].type == TYPE.SPIKE/* && scenario == SCENARIO.NEGATIVE*/)
+            else if (Objects[i].type == TYPE.SPIKE && scenario == SCENARIO.NEGATIVE)
             {
                 Objects[i].transform.rotation = Quaternion.Euler(0, 0, 0);
-                if (scenario == SCENARIO.NEGATIVE /*&& Objects[i].highlight != HIGHLIGHT.NO*/)
+                if (scenario == SCENARIO.NEGATIVE && Objects[i].highlight != HIGHLIGHT.NO)
                 {
                     // Object should be highlighted, apply highlight
                     ApplyHighlight(i, visVar/*VISUAL_VARIABLE.FLASH*/);
