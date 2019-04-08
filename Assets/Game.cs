@@ -58,7 +58,7 @@ public class Game : MonoBehaviour
         else
             scenario = SCENARIO.POSITIVE;
 
-        visVarOrder = new int[] /*{ 4 };*/{ 0, 1, 2, 3, 4, 5, 6, 7, 8 };
+        visVarOrder = new int[] { 5 };//{ 0, 1, 2, 3, 4, 5, 6, 7, 8 };
         //RANDOMIZE VISUALORDER
         Shuffle(visVarOrder);
 
@@ -76,8 +76,6 @@ public class Game : MonoBehaviour
         DebugText.enabled = false;
 
         TobiiAPI.GetGazePoint();
-
-        scenario = SCENARIO.POSITIVE;
     }
 
     // Update is called once per frame

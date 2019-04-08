@@ -16,7 +16,8 @@ public class ObjectManager : MonoBehaviour
     
     private System.Random _random = new System.Random();
 
-    public Texture2D HighlightTexture;
+    public Texture2D HighlightTextureCoin;
+    public Texture2D HighlightTextureSpike;
 
     public Material LightMaterial;
     public Material OriginalMaterial;
@@ -108,6 +109,7 @@ public class ObjectManager : MonoBehaviour
                 GameObject gObj = GameObject.CreatePrimitive(PrimitiveType.Cube);
                 Objects[i] = gObj.AddComponent<HighlightableObject>();
                 Objects[i].gameObject.GetComponent<MeshFilter>().mesh = SpikeMesh;
+                Objects[i].transform.Rotate(Vector3.up, 180.0f);
                 Objects[i].type = TYPE.SPIKE;
 
                 Rigidbody rBody = Objects[i].gameObject.AddComponent<Rigidbody>();
@@ -339,7 +341,7 @@ public class ObjectManager : MonoBehaviour
             }
             else if (Objects[i].type == TYPE.SPIKE && scenario == SCENARIO.NEGATIVE)
             {
-                Objects[i].transform.rotation = Quaternion.Euler(0, 0, 0);
+                Objects[i].transform.rotation = Quaternion.Euler(0, 180.0f, 0);
                 if (scenario == SCENARIO.NEGATIVE && Objects[i].highlight != HIGHLIGHT.NO)
                 {
                     // Object should be highlighted, apply highlight
@@ -384,7 +386,10 @@ public class ObjectManager : MonoBehaviour
         // V7 : TEXTURE
         else if (visVar == VISUAL_VARIABLE.TEXTURE)
         {
-            Objects[index].GetComponent<MeshRenderer>().material.mainTexture = HighlightTexture;
+            if (Objects[index].type == TYPE.COIN)
+                Objects[index].GetComponent<MeshRenderer>().material.mainTexture = HighlightTextureCoin;
+            else
+                Objects[index].GetComponent<MeshRenderer>().material.mainTexture = HighlightTextureSpike;
         }
         // V8 : FLASHING
         else if (visVar == VISUAL_VARIABLE.FLASH)
