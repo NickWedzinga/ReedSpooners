@@ -9,12 +9,12 @@ public enum TYPE
     SPIKE
 }
 
-//public enum HIGHLIGHT
-//{
-//    NO = 0,
-//    HIGHLIGHTEDCOIN = 1,
-//    HIGHLIGHTEDSPIKE = 2
-//}
+public enum HIGHLIGHT
+{
+    NO = 0,
+    HIGHLIGHTEDCOIN = 1,
+    HIGHLIGHTEDSPIKE = 2
+}
 
 public struct ObjectStats
 {
@@ -73,7 +73,7 @@ public class HighlightableObject : MonoBehaviour
     public Vector2 gazePos = new Vector2(0, 0);
 
     public TYPE type;
-    //public HIGHLIGHT highlight;
+    public HIGHLIGHT highlight;
 
     public Subset owner;
     GazeAware gazeAware;

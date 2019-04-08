@@ -53,12 +53,12 @@ public class Game : MonoBehaviour
 
         // First scenario randomized
         int startScenario = (int)(Random.value*2.0f);
-        if (startScenario == 0)
-            scenario = SCENARIO.NEGATIVE;
-        else
+        //if (startScenario == 0)
+        //    scenario = SCENARIO.NEGATIVE;
+        //else
             scenario = SCENARIO.POSITIVE;
 
-        visVarOrder = new int[] /*{ 4 };*/{ 0, 1, 2, 3, 4, 5, 6, 7, 8 };
+        visVarOrder = new int[] /*{ 1 };*/{ 0, 1, 2, 3, 4, 5, 6, 7, 8 };
         //RANDOMIZE VISUALORDER
         Shuffle(visVarOrder);
 
@@ -130,6 +130,11 @@ public class Game : MonoBehaviour
         //DebugText.text = "Visual variable: " + subset.visVar.ToString(); + Environment.NewLine + "Eye Pos (screen): " + TobiiAPI.GetGazePoint().GUI.ToString();
 
         gazePoints.Add(TobiiAPI.GetGazePoint().GUI);
+
+        if(Input.GetKeyUp(KeyCode.K))
+        {
+            ResetVariable();
+        }
     }
 
     void SwapTechnique()

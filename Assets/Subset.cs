@@ -30,7 +30,7 @@ public class Subset : MonoBehaviour
     public ObjectManager objectManager;
     new Camera camera;
     public Stats stats;
-    int objects = 10;   
+    int objects = 25;   
     public VISUAL_VARIABLE visVar;
     bool lameAssHack = true;
 

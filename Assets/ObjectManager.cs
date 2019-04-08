@@ -191,42 +191,53 @@ public class ObjectManager : MonoBehaviour
         }
     }
 
-    //void SelectObjectsForHighlight(SCENARIO scenario)
-    //{
-    //    bool finished = false;
-    //    int nrOfHighlightsChosen = 0;
-
-    //    while (!finished)
-    //    {
-    //        if (nrOfHighlightsChosen > 9)
-    //            finished = true;
-
-    //        int highlightIndex = (int)(Random.value * 94 + 5);
-    //        if(highlightIndex < 0 || highlightIndex > 99)
-    //        {
-    //            print("what");
-    //        }
-    //        if(Objects[highlightIndex].type == TYPE.COIN && scenario == SCENARIO.POSITIVE && Objects[highlightIndex].highlight == HIGHLIGHT.NO)
-    //        {
-    //            nrOfHighlightsChosen++;
-    //            Objects[highlightIndex].highlight = HIGHLIGHT.HIGHLIGHTEDCOIN;
-    //        }
-    //        else if (Objects[highlightIndex].type == TYPE.SPIKE && scenario == SCENARIO.NEGATIVE && Objects[highlightIndex].highlight == HIGHLIGHT.NO)
-    //        {
-    //            nrOfHighlightsChosen++;
-    //            Objects[highlightIndex].highlight = HIGHLIGHT.HIGHLIGHTEDSPIKE;
-    //        }
-    //    }
-    //}
-
-    public void SwitchScenarioObjects()
+    void SelectObjectsForHighlight(SCENARIO scenario)
     {
-        for (int i = 0; i < Objects.Length; ++i)
+        bool first = true;
+        bool finished = false;
+        int nrOfHighlightsChosen = 0;
+
+        while (!finished)
         {
-            if (Objects[i].type == TYPE.COIN)
+            if (nrOfHighlightsChosen > 24)
+                finished = true;
+
+            int highlightIndex = (int)(Random.value * 94 + 5);
+            if (highlightIndex < 0 || highlightIndex > 99)
             {
-                //Objects[i].gameObject.GetComponent<MeshFilter>().mesh = SpikeMesh;
-                //Objects[i].type = TYPE.SPIKE;
+                print("what");
+            }
+            if (Objects[highlightIndex].type == TYPE.COIN && scenario == SCENARIO.POSITIVE && Objects[highlightIndex].highlight == HIGHLIGHT.NO)
+            {
+                nrOfHighlightsChosen++;
+                Objects[highlightIndex].highlight = HIGHLIGHT.HIGHLIGHTEDCOIN;
+                if (first)
+                {
+                    Objects[highlightIndex].transform.position = InputManager.instance.transform.position + new Vector3(0, 0, 10);
+                    first = false;
+                }
+            }
+            else if (Objects[highlightIndex].type == TYPE.SPIKE && scenario == SCENARIO.NEGATIVE && Objects[highlightIndex].highlight == HIGHLIGHT.NO)
+            {
+                nrOfHighlightsChosen++;
+                Objects[highlightIndex].highlight = HIGHLIGHT.HIGHLIGHTEDSPIKE;
+                if (first)
+                {
+                    Objects[highlightIndex].transform.position = InputManager.instance.transform.position + new Vector3(0, 0, 10);
+                    first = false;
+                }
+            }
+        }
+    }
+
+    //public void SwitchScenarioObjects()
+    //{
+    //    for (int i = 0; i < Objects.Length; ++i)
+    //    {
+    //        if (Objects[i].type == TYPE.COIN)
+    //        {
+    //            //Objects[i].gameObject.GetComponent<MeshFilter>().mesh = SpikeMesh;
+    //            //Objects[i].type = TYPE.SPIKE;
 
                 //Objects[i].transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
                 //Objects[i].transform.rotation = Quaternion.identity;
@@ -305,7 +316,7 @@ public class ObjectManager : MonoBehaviour
         {
             Objects[i].GetComponent<MeshRenderer>().material = OriginalMaterial;
             Objects[i].GetComponent<MeshRenderer>().material.color = Color.grey;
-            Objects[i].transform.position = new Vector3(4.75f * RandomLane(), 1, Objects[i].transform.position.z);
+            Objects[i].transform.position = new Vector3(4.75f * RandomLane(), 1, 30 + 10 * i);
 
 
             //Objects[i].highlight = HIGHLIGHT.NO;
@@ -318,8 +329,8 @@ public class ObjectManager : MonoBehaviour
         _FlashingTimer = 0.0f;
 
         // Choose random objects that will be highlighted
-        //SelectObjectsForHighlight(scenario);
-        ObjectShuffle();
+        SelectObjectsForHighlight(scenario);
+        //ObjectShuffle();
         for (int i = 0; i < Objects.Length; ++i)
         {
             if (Objects[i].type == TYPE.COIN/* && scenario == SCENARIO.POSITIVE*/)
