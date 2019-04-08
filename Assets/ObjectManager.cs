@@ -109,6 +109,7 @@ public class ObjectManager : MonoBehaviour
                 GameObject gObj = GameObject.CreatePrimitive(PrimitiveType.Cube);
                 Objects[i] = gObj.AddComponent<HighlightableObject>();
                 Objects[i].gameObject.GetComponent<MeshFilter>().mesh = SpikeMesh;
+                Objects[i].transform.localScale = new Vector3(0.8f, 0.8f, 0.8f);
                 Objects[i].transform.Rotate(Vector3.up, 180.0f);
                 Objects[i].type = TYPE.SPIKE;
 
