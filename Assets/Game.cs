@@ -31,8 +31,6 @@ public class Game : MonoBehaviour
 
     public Text DebugText;
 
-    private List<Vector2> gazePoints;
-
     public SCENARIO scenario { get; private set; }
 
     //private System.Random _random = new System.Random();
@@ -46,7 +44,6 @@ public class Game : MonoBehaviour
     {
         instance = this;
         statTracker = new StatTracker();
-        gazePoints = new List<Vector2>();
         
         round = 0;
         _FirstScenario = true;
@@ -126,8 +123,6 @@ public class Game : MonoBehaviour
         //Debug.Log(TobiiAPI.GetGazePoint().GUI.ToString());
 
         //DebugText.text = "Visual variable: " + subset.visVar.ToString(); + Environment.NewLine + "Eye Pos (screen): " + TobiiAPI.GetGazePoint().GUI.ToString();
-
-        gazePoints.Add(TobiiAPI.GetGazePoint().GUI);
     }
 
     void SwapTechnique()
@@ -173,7 +168,7 @@ public class Game : MonoBehaviour
         }
         else
         {
-            statTracker.SaveStats(Score, gazePoints);
+            statTracker.SaveStats(Score);
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
 #else

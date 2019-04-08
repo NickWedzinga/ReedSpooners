@@ -57,7 +57,7 @@ public class StatTracker
             playerStats[scenario].Add(subset.visVar, subset.stats);
     }
 
-    public void SaveStats(int score, List<Vector2> gazePoints)
+    public void SaveStats(int score)
     {
         //Total score
         string statText = score.ToString();
@@ -83,20 +83,6 @@ public class StatTracker
         using (System.IO.StreamWriter sw = System.IO.File.AppendText(statFilePath))
         {
             sw.Write(statText);
-        }
-
-        string gazeText = "";
-
-        for (int i = 0; i < gazePoints.Count; ++i)
-        {
-            gazeText += gazePoints[i].x.ToString();
-            gazeText += ',';
-            gazeText += gazePoints[i].y.ToString();
-            gazeText += ',';
-        }
-        using (System.IO.StreamWriter sw = System.IO.File.AppendText(gazeFilePath))
-        {
-            sw.Write(gazeText);
         }
     }
 }
