@@ -29,8 +29,6 @@ public class Game : MonoBehaviour
     public int Score;
     public Text ScoreText;
 
-    public Text DebugText;
-
     public SCENARIO scenario { get; private set; }
 
     //private System.Random _random = new System.Random();
@@ -69,8 +67,6 @@ public class Game : MonoBehaviour
 
         Score = 0;
         ScoreText.text = "Score: " + Score;
-
-        DebugText.enabled = false;
 
         TobiiAPI.GetGazePoint();
     }
@@ -113,13 +109,6 @@ public class Game : MonoBehaviour
 
         }
         ScoreText.text = "Score: " + (Score + subset.stats.score).ToString();
-
-        if (Input.GetKeyUp(KeyCode.F1))
-        {
-            //Debug mode
-            DebugText.enabled = !DebugText.enabled;
-        }
-
         //Debug.Log(TobiiAPI.GetGazePoint().GUI.ToString());
 
         //DebugText.text = "Visual variable: " + subset.visVar.ToString(); + Environment.NewLine + "Eye Pos (screen): " + TobiiAPI.GetGazePoint().GUI.ToString();

@@ -7,8 +7,8 @@ public class ObjectManager : MonoBehaviour
     public HighlightableObject[] Objects = new HighlightableObject[100];
     public Mesh SpikeMesh;
     private Mesh CoinMesh;
-    private CapsuleCollider CoinCollider;
-    private BoxCollider SpikeCollider;
+    //private CapsuleCollider CoinCollider;
+    //private BoxCollider Collider;
 
     public int lastObjectPositionZ = 0;
     public int nrOfHighlightedObjects { get; private set; } = 10;
@@ -32,6 +32,8 @@ public class ObjectManager : MonoBehaviour
         _FlashingTimer = 0.0f;
         _OriginalObjectColor = Color.gray;
         owner = FindObjectOfType<Subset>();
+
+        //Collider.size = new Vector3(2.5f, 2.5f, 1f);
     }
 
     // Update is called once per frame
@@ -102,7 +104,13 @@ public class ObjectManager : MonoBehaviour
                 rBody.constraints &= RigidbodyConstraints.FreezeRotationZ;
                 rBody.constraints &= ~RigidbodyConstraints.FreezePosition;
 
-                CoinCollider = gObj.GetComponent<CapsuleCollider>();
+                Destroy(gObj.GetComponent<CapsuleCollider>());
+
+                BoxCollider collider = gObj.AddComponent<BoxCollider>();
+                collider.center = new Vector3(0, 0, -0.3f);
+                collider.size = new Vector3(2f, 8f, 1.75f/1.1f);
+
+                //CoinCollider = gObj.GetComponent<BoxCollider>();
             }
             else
             {
@@ -117,7 +125,10 @@ public class ObjectManager : MonoBehaviour
                 rBody.constraints &= RigidbodyConstraints.FreezeRotationX;
                 rBody.constraints &= RigidbodyConstraints.FreezeRotationZ;
 
-                SpikeCollider = gObj.GetComponent<BoxCollider>();
+                //SpikeCollider = gObj.GetComponent<BoxCollider>();
+                BoxCollider collider = gObj.GetComponent<BoxCollider>();
+                collider.center = new Vector3(0, 0.375f, 0);
+                collider.size = new Vector3(2.5f, 1.75f, 1f);
             }
             Objects[i].transform.position = new Vector3(0, 1, (i) * 10 + i / 10 + 50);
             Objects[i].GetComponent<MeshRenderer>().material = OriginalMaterial;
@@ -338,7 +349,7 @@ public class ObjectManager : MonoBehaviour
                 {
                     // Object should be highlighted, apply highlight
                     ApplyHighlight(i, visVar/*VISUAL_VARIABLE.FLASH*/);
-                }                
+                }
             }
             else if (Objects[i].type == TYPE.SPIKE && scenario == SCENARIO.NEGATIVE)
             {
