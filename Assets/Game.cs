@@ -18,6 +18,7 @@ public class Game : MonoBehaviour
 
     public int round { get; set; } //How many vis vars the participant has been through
     private bool _FirstScenario;
+    public bool _GameOver;
 
     public Subset subset;
     public int[] visVarOrder = { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
@@ -47,6 +48,7 @@ public class Game : MonoBehaviour
         
         round = 0;
         _FirstScenario = true;
+        _GameOver = false;
 
         // First scenario randomized
         int startScenario = (int)(Random.value*2.0f);
@@ -78,7 +80,7 @@ public class Game : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(InputManager.instance._approachRate == 0.0f)
+        if(InputManager.instance._approachRate == 0.0f && !_GameOver)
         {
             Announcer.fontSize = 20;
             Announcer.GetComponent<RectTransform>().anchoredPosition = new Vector3(0.0f, Screen.height/2.5f);
@@ -114,6 +116,16 @@ public class Game : MonoBehaviour
         }
         ScoreText.text = "Score: " + (Score + subset.stats.score).ToString();
 
+        if (Input.GetKey(KeyCode.Return) && _GameOver)
+        {
+                statTracker.SaveStats(Score);
+#if UNITY_EDITOR
+                UnityEditor.EditorApplication.isPlaying = false;
+#else
+            Application.Quit();
+#endif
+           
+        }
         if (Input.GetKeyUp(KeyCode.F1))
         {
             //Debug mode
@@ -168,12 +180,13 @@ public class Game : MonoBehaviour
         }
         else
         {
-            statTracker.SaveStats(Score);
-#if UNITY_EDITOR
-            UnityEditor.EditorApplication.isPlaying = false;
-#else
-            Application.Quit();
-#endif
+            Announcer.fontSize = 60;
+            Announcer.GetComponent<RectTransform>().anchoredPosition = new Vector3(0.0f, Screen.height / 2.5f);
+            Announcer.text = "Thank you for participating!.\nPress ENTER to exit.";
+            Announcer.gameObject.SetActive(true);
+
+            _GameOver = true;
+            InputManager.instance._approachRate = 0.0f;
         }
     }
 
@@ -190,4 +203,5 @@ public class Game : MonoBehaviour
             array[i] = temp;
         }
     }
+
 }

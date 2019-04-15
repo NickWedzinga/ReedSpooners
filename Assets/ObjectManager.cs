@@ -331,7 +331,7 @@ public class ObjectManager : MonoBehaviour
         ObjectShuffle();
         for (int i = 0; i < Objects.Length; ++i)
         {
-            if (Objects[i].type == TYPE.COIN && scenario == SCENARIO.POSITIVE)
+            if (Objects[i].type == TYPE.COIN /*&& scenario == SCENARIO.POSITIVE*/)
             {
                 Objects[i].transform.rotation = Quaternion.Euler(90.0f, 0, 0);
                 if (scenario == SCENARIO.POSITIVE && Objects[i].highlight != HIGHLIGHT.NO)
@@ -340,7 +340,7 @@ public class ObjectManager : MonoBehaviour
                     ApplyHighlight(i, visVar/*VISUAL_VARIABLE.FLASH*/);
                 }                
             }
-            else if (Objects[i].type == TYPE.SPIKE && scenario == SCENARIO.NEGATIVE)
+            else if (Objects[i].type == TYPE.SPIKE /*&& scenario == SCENARIO.NEGATIVE*/)
             {
                 Objects[i].transform.rotation = Quaternion.Euler(0, 180.0f, 0);
                 if (scenario == SCENARIO.NEGATIVE && Objects[i].highlight != HIGHLIGHT.NO)
@@ -421,10 +421,7 @@ public class ObjectManager : MonoBehaviour
             if (Objects[index].type == TYPE.COIN)
                 Objects[index].transform.Rotate(new Vector3(0, 0, 1), anglePerSpin);
             else if (Objects[index].type == TYPE.SPIKE)
-            {
                 Objects[index].transform.Rotate(Vector3.up, anglePerSpin);
-                //Objects[index].transform.RotateAround(Vector3.up, anglePerSpin);
-            }
             yield return null;
         }
     }
