@@ -43,21 +43,21 @@ public struct ObjectStats
         output += FFLane.ToString();
         output += ",";
 
-        output += TFD.ToString();
+        output += TFD.ToString("0.000000", System.Globalization.CultureInfo.InvariantCulture);
         output += ",";
-        output += TTFF.ToString();
+        output += TTFF.ToString("0.000000", System.Globalization.CultureInfo.InvariantCulture);
         output += ",";
         output += fixations.ToString();
         output += ",";
 
-        output += approachRateFF.ToString();
+        output += approachRateFF.ToString("0.000000", System.Globalization.CultureInfo.InvariantCulture);
         output += ",";
-        output += approachRateHit.ToString();
+        output += approachRateHit.ToString("0.000000", System.Globalization.CultureInfo.InvariantCulture);
         output += ",";
 
-        output += timeToChangeFromFF.ToString();
+        output += timeToChangeFromFF.ToString("0.000000", System.Globalization.CultureInfo.InvariantCulture);
         output += ",";
-        output += timeToChangeFromEnter.ToString();
+        output += timeToChangeFromEnter.ToString("0.000000", System.Globalization.CultureInfo.InvariantCulture);
         output += ",";
 
         return output;

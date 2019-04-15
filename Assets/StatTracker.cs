@@ -31,7 +31,6 @@ public class StatTracker
     private Dictionary<SCENARIO, Dictionary<VISUAL_VARIABLE, Stats>> playerStats;
 
     string statFilePath;
-    string gazeFilePath;
 
     public StatTracker()
     {
@@ -42,11 +41,6 @@ public class StatTracker
         if (!System.IO.File.Exists(statFilePath))
         {
             System.IO.File.Create(statFilePath);
-        }
-        gazeFilePath = "GazeTrackReedSpooners.csv";
-        if (!System.IO.File.Exists(gazeFilePath))
-        {
-            System.IO.File.Create(gazeFilePath);
         }
     }
 
