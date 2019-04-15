@@ -84,7 +84,9 @@ public class HighlightableObject : MonoBehaviour
     {
         owner = FindObjectOfType<Subset>();
         gazeAware = gameObject.AddComponent<GazeAware>();
+#if UNITY_EDITOR
         gazeAware.runInEditMode = true;
+#endif
         gazeAware.enabled = false;
 
         stats.TTFF = -1;

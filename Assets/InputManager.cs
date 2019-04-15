@@ -44,9 +44,9 @@ public class InputManager : MonoBehaviour
         if (_approachRate > 0.0f)
         {
             if (_approachRate < 43.0f)
-                _approachRate += Time.deltaTime/* * 1.5f*/;
+                _approachRate += Time.deltaTime /** 10.0f*/;
 
-            if (transform.position.z > Game.instance.lastObjectPositionZ + 50)
+            if (transform.position.z > Game.instance.lastObjectPositionZ + 50 && !Game.instance._GameOver)
             {
                 ResetVariable();
             }
@@ -66,8 +66,8 @@ public class InputManager : MonoBehaviour
 
     private void ResetVariable()
     {
-        Game.instance.ResetVariable();
         _approachRate = Time.deltaTime;
+        Game.instance.ResetVariable();
         gameObject.transform.position = new Vector3(0, gameObject.transform.position.y, 0.5f);
     }
 
