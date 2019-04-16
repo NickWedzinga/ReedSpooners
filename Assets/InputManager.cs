@@ -34,7 +34,7 @@ public class InputManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && _approachRate == 0.0f)
+        if (Input.GetKeyDown(KeyCode.Space) && _approachRate == 0.0f && !Game.instance._GameOver)
         {
             StartCoroutine(GracePeriod());
         }
