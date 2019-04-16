@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Tobii.Gaming;
-//using System;
 
 public enum SCENARIO
 {
@@ -54,8 +53,9 @@ public class Game : MonoBehaviour
         else
             scenario = SCENARIO.POSITIVE;
 
-        visVarOrder = new int[] { 5 };//{ 0, 1, 2, 3, 4, 5, 6, 7, 8 };
-        //Randomize order
+        visVarOrder = new int[] /*{ 4 };*/{ 0, 1, 2, 3, 4, 5, 6, 7, 8 };
+
+        //Randomize variable order
         Shuffle(visVarOrder);
 
         subset = gameObject.GetComponent<Subset>();
@@ -75,6 +75,7 @@ public class Game : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        #region Announcer text
         if(InputManager.instance._approachRate == 0.0f && !_GameOver)
         {
             Announcer.fontSize = 20;
@@ -110,6 +111,7 @@ public class Game : MonoBehaviour
 
         }
         ScoreText.text = "Score: " + (Score + subset.stats.score).ToString();
+        #endregion
 
         if (Input.GetKey(KeyCode.Return) && _GameOver)
         {
@@ -121,10 +123,6 @@ public class Game : MonoBehaviour
 #endif
            
         }
-    }
-
-    void SwapTechnique()
-    {
     }
 
     public void ResetVariable()

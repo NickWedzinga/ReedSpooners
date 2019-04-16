@@ -26,9 +26,6 @@ public class InputManager : MonoBehaviour
     void Start()
     {
         instance = this;
-        //print("This is a test.");
-
-        // Change to increase speed
         _approachRate = 0.0f;
 
         camera = FindObjectOfType<Camera>();
@@ -44,24 +41,23 @@ public class InputManager : MonoBehaviour
         if (_approachRate > 0.0f)
         {
             if (_approachRate < 43.0f)
-                _approachRate += Time.deltaTime /** 10.0f*/;
+                _approachRate += Time.deltaTime;
 
             if (transform.position.z > Game.instance.lastObjectPositionZ + 50 && !Game.instance._GameOver)
             {
                 ResetVariable();
             }
-            if (/*(Input.GetKeyDown(KeyCode.D) || */Input.GetKeyDown(KeyCode.RightArrow) && transform.position.x < 1)
+            if (Input.GetKeyDown(KeyCode.RightArrow) && transform.position.x < 1)
             {
                 transform.Translate(4.75f, 0, 0);
             }
-            else if (/*(Input.GetKeyDown(KeyCode.A) || */Input.GetKeyDown(KeyCode.LeftArrow) && transform.position.x > -1)
+            else if (Input.GetKeyDown(KeyCode.LeftArrow) && transform.position.x > -1)
             {
                 transform.Translate(-4.75f, 0, 0);
             }
             transform.Translate(0, 0, Time.deltaTime * _approachRate);
         }
-
-        camera.transform.position = new Vector3(camera.transform.position.x, camera.transform.position.y, this.transform.position.z -9.5f);//-8.4f);
+        camera.transform.position = new Vector3(camera.transform.position.x, camera.transform.position.y, this.transform.position.z -9.5f);
     }
 
     private void ResetVariable()

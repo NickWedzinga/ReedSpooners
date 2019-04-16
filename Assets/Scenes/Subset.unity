@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 170076734}
-  m_IndirectSpecularColor: {r: 0.43846747, g: 0.48655277, b: 0.56682587, a: 1}
+  m_IndirectSpecularColor: {r: 0.4384675, g: 0.48655337, b: 0.5668263, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1236,8 +1236,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 1, y: 1.1123462, z: 2.9577303}
+  m_Center: {x: 0, y: 0.056173086, z: 0.09105444}
 --- !u!23 &1801603280
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1440,7 +1440,6 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   SpikeMesh: {fileID: 4300000, guid: 04b72010bc36e8846a385f31656217cf, type: 3}
-  lastObjectPositionZ: 0
   HighlightTextureCoin: {fileID: 2800000, guid: 5a38cc8c8e112144a9513592cefdae42,
     type: 3}
   HighlightTextureSpike: {fileID: 2800000, guid: 324654b09fe4d3c408944b15c4597870,
@@ -1448,6 +1447,7 @@ MonoBehaviour:
   LightMaterial: {fileID: 2100000, guid: ec64cb5832ce7444dac6084d96947a88, type: 2}
   OriginalMaterial: {fileID: 2100000, guid: 5e2c89e7ff492bd4f99698d1661c9c49, type: 2}
   HueMaterial: {fileID: 2100000, guid: 3755f534595f37f4083cebb10a36d7f6, type: 2}
+  lastObjectPositionZ: 0
   owner: {fileID: 0}
 --- !u!1 &1986385471
 GameObject:
