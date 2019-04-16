@@ -7,8 +7,6 @@ public class ObjectManager : MonoBehaviour
     public HighlightableObject[] Objects = new HighlightableObject[100];
     public Mesh SpikeMesh;
     private Mesh CoinMesh;
-    //private CapsuleCollider CoinCollider;
-    //private BoxCollider Collider;
 
     public int lastObjectPositionZ = 0;
     public int nrOfHighlightedObjects { get; private set; } = 10;
@@ -32,8 +30,6 @@ public class ObjectManager : MonoBehaviour
         _FlashingTimer = 0.0f;
         _OriginalObjectColor = Color.gray;
         owner = FindObjectOfType<Subset>();
-
-        //Collider.size = new Vector3(2.5f, 2.5f, 1f);
     }
 
     // Update is called once per frame

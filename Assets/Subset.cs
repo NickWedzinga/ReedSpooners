@@ -72,11 +72,13 @@ public class Subset : MonoBehaviour
         }
     }
 
+    // Tells the object manager to send gaze data from highlighted objects
     public void UpdateGazeData()
     {
         objectManager.SendGazeData();
     }
 
+    // The function that is called by the highlighted objects
     public void UpdateGazeData(ObjectStats objectStats)
     {
         if(storageCounter < objects)
@@ -89,7 +91,6 @@ public class Subset : MonoBehaviour
     public void ResetRound(SCENARIO scenario)
     {
         ResetScore();
-        //if (GameManager.instance.round < (int)VISUAL_VARIABLE.VIS_VARS)
         objectManager.Reset(visVar, scenario);
     }
 

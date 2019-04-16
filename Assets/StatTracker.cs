@@ -28,23 +28,29 @@ public struct Stats
 
 public class StatTracker
 {
+    // Dict over the two scenarios, who's values are dicts over the variables who's values are the stats for the given variable
     private Dictionary<SCENARIO, Dictionary<VISUAL_VARIABLE, Stats>> playerStats;
 
     string statFilePath;
 
     public StatTracker()
     {
+        // Init dicts
         playerStats = new Dictionary<SCENARIO, Dictionary<VISUAL_VARIABLE, Stats>>();
+
         playerStats.Add(SCENARIO.POSITIVE, new Dictionary<VISUAL_VARIABLE, Stats>());
         playerStats.Add(SCENARIO.NEGATIVE, new Dictionary<VISUAL_VARIABLE, Stats>());
+
         statFilePath = "PlayerStatsReedSpooners.csv";
+        // Create file if needed
         if (!System.IO.File.Exists(statFilePath))
         {
             System.IO.File.Create(statFilePath);
         }
     }
-
-    public void AddTechnique(Subset subset, SCENARIO scenario)
+    
+    // Adds the recently completed scenario
+    public void AddVariable(Subset subset, SCENARIO scenario)
     {
         subset.UpdateGazeData();
         if(!playerStats[scenario].ContainsKey(subset.visVar))

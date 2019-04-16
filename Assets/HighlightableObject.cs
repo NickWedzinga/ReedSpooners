@@ -77,9 +77,9 @@ public class HighlightableObject : MonoBehaviour
 
     public Subset owner;
     GazeAware gazeAware;
-    //bool highlighted { get { return (type == (TYPE)Game.instance.scenario); } }
 
-    // Start is called before the first frame update
+    public const float PlayerToFarPlaneDistance = 22.95f;
+    
     void Start()
     {
         owner = FindObjectOfType<Subset>();
@@ -101,13 +101,13 @@ public class HighlightableObject : MonoBehaviour
             gazeAware.enabled = true;
         }
     }
-
-    // Update is called once per frame
+    
     void Update()
     {
-        if (/*highlighted*/highlight != HIGHLIGHT.NO)
+        if (highlight != HIGHLIGHT.NO)
         {
-            if ((transform.position.z - InputManager.instance.transform.position.z) < 27.05 && !hasEnteredView)
+            // If object has entered the view (i.e. passed through far plane)
+            if ((transform.position.z - InputManager.instance.transform.position.z) < PlayerToFarPlaneDistance && !hasEnteredView)
             {
                 hasEnteredView = true;
                 enteredViewAt = Time.time;
@@ -115,6 +115,7 @@ public class HighlightableObject : MonoBehaviour
                 gazePos = TobiiAPI.GetGazePoint().GUI;
             }
 
+            // Executes the first time the player changes to the same lane as the highlighted object.
             if (hasEnteredView && InputManager.instance.lane == stats.lane && stats.timeToChangeFromEnter == 0)
             {
                 stats.timeToChangeFromEnter = Time.time - enteredViewAt;
@@ -125,6 +126,7 @@ public class HighlightableObject : MonoBehaviour
             {
                 stats.fixations++;
 
+                // If it's the first time the player is viewing the object.
                 if (stats.TTFF < 0)
                 {
                     stats.TTFF = Time.time - enteredViewAt;
@@ -151,7 +153,8 @@ public class HighlightableObject : MonoBehaviour
 
     public void SendGazeData()
     {
-        if (/*highlighted*/highlight != HIGHLIGHT.NO)
+        //Update gaze data for object in subset if it _is_ highlighted
+        if (highlight != HIGHLIGHT.NO)
         {
             if (transform.position.x > 0)
                 stats.lane = LANE.RIGHT;

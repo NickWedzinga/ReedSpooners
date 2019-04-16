@@ -31,8 +31,7 @@ public class Game : MonoBehaviour
     public Text ScoreText;
 
     public SCENARIO scenario { get; private set; }
-
-    //private System.Random _random = new System.Random();
+    
     private System.Random _random = new System.Random((int)System.DateTime.Now.Ticks);
 
     public int lastObjectPositionZ { get { if (subset) return subset.objectManager.lastObjectPositionZ; else return 0; } }
@@ -56,7 +55,7 @@ public class Game : MonoBehaviour
             scenario = SCENARIO.POSITIVE;
 
         visVarOrder = new int[] { 5 };//{ 0, 1, 2, 3, 4, 5, 6, 7, 8 };
-        //RANDOMIZE VISUALORDER
+        //Randomize order
         Shuffle(visVarOrder);
 
         subset = gameObject.GetComponent<Subset>();
@@ -130,7 +129,7 @@ public class Game : MonoBehaviour
 
     public void ResetVariable()
     {
-        statTracker.AddTechnique(subset, scenario);
+        statTracker.AddVariable(subset, scenario);
         Score += subset.stats.score;
         // Announcer text reset and active
         ++round;
@@ -154,10 +153,6 @@ public class Game : MonoBehaviour
                 scenario = SCENARIO.NEGATIVE;
             else
                 scenario = SCENARIO.POSITIVE;
-
-            //ObjectManager objectManager = FindObjectOfType<ObjectManager>();
-            //objectManager.SwitchScenarioObjects();
-            //SwapTechnique();
 
             subset.ResetRound(scenario);
             InputManager.instance._approachRate = 0.0f;
