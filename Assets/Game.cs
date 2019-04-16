@@ -55,6 +55,7 @@ public class Game : MonoBehaviour
             scenario = SCENARIO.POSITIVE;
 
         visVarOrder = new int[] /*{ 4 };*/{ 0, 1, 2, 3, 4, 5, 6, 7, 8 };
+
         //RANDOMIZE VISUALORDER
         Shuffle(visVarOrder);
 
@@ -75,6 +76,7 @@ public class Game : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        #region Announcer text
         if(InputManager.instance._approachRate == 0.0f && !_GameOver)
         {
             Announcer.fontSize = 20;
@@ -110,6 +112,7 @@ public class Game : MonoBehaviour
 
         }
         ScoreText.text = "Score: " + (Score + subset.stats.score).ToString();
+        #endregion
 
         if (Input.GetKey(KeyCode.Return) && _GameOver)
         {
@@ -121,10 +124,6 @@ public class Game : MonoBehaviour
 #endif
            
         }
-    }
-
-    void SwapTechnique()
-    {
     }
 
     public void ResetVariable()
@@ -153,10 +152,6 @@ public class Game : MonoBehaviour
                 scenario = SCENARIO.NEGATIVE;
             else
                 scenario = SCENARIO.POSITIVE;
-
-            //ObjectManager objectManager = FindObjectOfType<ObjectManager>();
-            //objectManager.SwitchScenarioObjects();
-            //SwapTechnique();
 
             subset.ResetRound(scenario);
             InputManager.instance._approachRate = 0.0f;
