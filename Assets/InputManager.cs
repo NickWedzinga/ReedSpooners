@@ -41,7 +41,10 @@ public class InputManager : MonoBehaviour
         if (_approachRate > 0.0f)
         {
             if (_approachRate < 43.0f)
-                _approachRate += Time.deltaTime;
+                if (Game.instance.scenario == SCENARIO.TRAINING)
+                    _approachRate += Time.deltaTime * 0.5f;
+                else
+                    _approachRate += Time.deltaTime;
 
             if (transform.position.z > Game.instance.lastObjectPositionZ + 50 && !Game.instance._GameOver)
             {
@@ -72,7 +75,11 @@ public class InputManager : MonoBehaviour
         _approachRate = Time.deltaTime;
         Game.instance.Announcer.fontSize = 60;
         Game.instance.Announcer.GetComponent<RectTransform>().anchoredPosition = new Vector3(0.0f, 0.0f);
-        Game.instance.Announcer.text = "GET READY FOR ROUND " + (Game.instance.round + 1).ToString();
+        Game.instance.Announcer.text = "TRAINING ROUND";
+        if (Game.instance.scenario != SCENARIO.TRAINING)
+        {
+            Game.instance.Announcer.text = "GET READY FOR ROUND " + (Game.instance.round + 1).ToString();
+        }
 
         float timePassed = 0.0f;
         while (timePassed < 2.0f)

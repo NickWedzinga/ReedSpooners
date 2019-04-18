@@ -6,8 +6,9 @@ using Tobii.Gaming;
 
 public enum SCENARIO
 {
-    POSITIVE = 10,
-    NEGATIVE = 90
+    POSITIVE,
+    NEGATIVE,
+    TRAINING
 }
 
 public class Game : MonoBehaviour
@@ -17,10 +18,11 @@ public class Game : MonoBehaviour
 
     public int round { get; set; } //How many vis vars the participant has been through
     private bool _FirstScenario;
+    public int _FirstRound;
     public bool _GameOver;
 
     public Subset subset;
-    public int[] visVarOrder = { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
+    public int[] visVarOrder;// = { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
 
     public Text Announcer;
     private float _AnnouncerTextTimer;
@@ -44,26 +46,27 @@ public class Game : MonoBehaviour
         
         round = 0;
         _FirstScenario = true;
+        _FirstRound = 0;
         _GameOver = false;
 
         // First scenario randomized
-        int startScenario = (int)(Random.value*2.0f);
-        if (startScenario == 0)
-            scenario = SCENARIO.NEGATIVE;
-        else
-            scenario = SCENARIO.POSITIVE;
+        //int startScenario = (int)(Random.value*2.0f);
+        //if (startScenario == 0)
+        //    scenario = SCENARIO.NEGATIVE;
+        //else
+        //    scenario = SCENARIO.POSITIVE;
+        scenario = SCENARIO.TRAINING;
 
-        visVarOrder = new int[] /*{ 4 };*/{ 0, 1, 2, 3, 4, 5, 6, 7, 8 };
-
-        //Randomize variable order
-        Shuffle(visVarOrder);
+        //visVarOrder = new int[] /*{ 4 };*/{ 0, 1, 2, 3, 4, 5, 6, 7, 8 };
+        visVarOrder = new int[] { 0 }; 
 
         subset = gameObject.GetComponent<Subset>();
         subset.visVar = (VISUAL_VARIABLE)visVarOrder[0];
 
         _OriginalTextColor = Announcer.color;
         _AnnouncerTextTimer = Time.deltaTime;
-        Announcer.text = "GET READY FOR ROUND " + (round + 1).ToString();
+        //Announcer.text = "GET READY FOR ROUND " + (round + 1).ToString();
+        Announcer.text = "TRAINING ROUND";
         Announcer.fontSize = 40;
 
         Score = 0;
@@ -85,9 +88,14 @@ public class Game : MonoBehaviour
                 Announcer.text = "You will be approached by SPIKES and COINS.\n Some of the COINS will be HIGHLIGHTED in various ways.\n Your mission is to AVOID THE SPIKES AND COLLECT ALL COINS.\n" +
                     "\nInstructions: \nUse Left Arrow to move left\nUse Right Arrow to move right.\n\nPress SPACE to begin.";
             }
-            else
+            else if(scenario == SCENARIO.NEGATIVE)
             {
                 Announcer.text = "You will be approached by SPIKES and COINS.\n Some of the SPIKES will be HIGHLIGHTED in various ways.\n Your mission is to AVOID THE SPIKES AND COLLECT ALL COINS.\n" +
+                    "\nInstructions: \nUse Left Arrow to move left\nUse Right Arrow to move right.\n\nPress SPACE to begin.";
+            }
+            else
+            {
+                Announcer.text = "TRAINING SESSION\n\nYou will be approached by SPIKES and COINS.\nYour mission is to AVOID THE SPIKES AND COLLECT ALL COINS.\n" +
                     "\nInstructions: \nUse Left Arrow to move left\nUse Right Arrow to move right.\n\nPress SPACE to begin.";
             }
         }
@@ -127,47 +135,83 @@ public class Game : MonoBehaviour
 
     public void ResetVariable()
     {
-        statTracker.AddVariable(subset, scenario);
-        Score += subset.stats.score;
-        // Announcer text reset and active
-        ++round;
-        if (round < visVarOrder.Length)
+        if(scenario != SCENARIO.TRAINING)
         {
-            subset.visVar = (VISUAL_VARIABLE)visVarOrder[round];
-            subset.ResetRound(scenario);
+            // if last round was not training, save data
+            if(_FirstRound > 0)
+            {
+                statTracker.AddVariable(subset, scenario);
+                Score += subset.stats.score;
+                ++round;
+            }
 
-            Announcer.text = "GET READY FOR ROUND " + (round + 1).ToString();
-            Announcer.gameObject.SetActive(true);
-            _AnnouncerTextTimer += Time.deltaTime;
+            // for each round
+            if (round < visVarOrder.Length)
+            {
+                
+                if (_FirstRound == 0)
+                    _FirstRound++;
+
+                subset.visVar = (VISUAL_VARIABLE)visVarOrder[round];
+
+                subset.ResetRound(scenario);
+
+                Announcer.fontSize = 60;
+                Announcer.GetComponent<RectTransform>().anchoredPosition = new Vector3(0.0f, 0.0f);
+                Announcer.text = "GET READY FOR ROUND " + (round).ToString();
+                if (_FirstRound == 1)
+                    Announcer.text = "GET READY FOR ROUND " + (round + 1).ToString();
+                Announcer.gameObject.SetActive(true);
+                _AnnouncerTextTimer += Time.deltaTime;
+            }
+            else if (_FirstScenario)
+            {
+                _FirstRound = 2;
+                _FirstScenario = false;
+
+                round = 0;
+                Shuffle(visVarOrder);
+                subset.visVar = (VISUAL_VARIABLE)visVarOrder[round];
+
+                if (scenario == SCENARIO.POSITIVE)
+                    scenario = SCENARIO.NEGATIVE;
+                else
+                    scenario = SCENARIO.POSITIVE;
+
+                subset.ResetRound(scenario);
+                InputManager.instance._approachRate = 0.0f;
+                Announcer.text = "GET READY FOR ROUND " + (round + 1).ToString();
+                Announcer.gameObject.SetActive(true);
+                _AnnouncerTextTimer += Time.deltaTime;
+            }
+            else
+            {
+                Announcer.fontSize = 60;
+                Announcer.GetComponent<RectTransform>().anchoredPosition = new Vector3(0.0f, Screen.height / 2.5f);
+                Announcer.text = "Thank you for participating!.\nPress ENTER to exit.";
+                Announcer.gameObject.SetActive(true);
+
+                _GameOver = true;
+                InputManager.instance._approachRate = 0.0f;
+            }
         }
-        else if (_FirstScenario)
+        else
         {
-            _FirstScenario = false;
-
-            round = 0;
-            subset.visVar = (VISUAL_VARIABLE)visVarOrder[round];
-
-            if (scenario == SCENARIO.POSITIVE)
+            int startScenario = (int)(Random.value*2.0f);
+            if (startScenario == 0)
                 scenario = SCENARIO.NEGATIVE;
             else
                 scenario = SCENARIO.POSITIVE;
 
-            subset.ResetRound(scenario);
             InputManager.instance._approachRate = 0.0f;
-            Announcer.text = "GET READY FOR ROUND " + (round + 1).ToString();
-            Announcer.gameObject.SetActive(true);
-            _AnnouncerTextTimer += Time.deltaTime;
-        }
-        else
-        {
-            Announcer.fontSize = 60;
-            Announcer.GetComponent<RectTransform>().anchoredPosition = new Vector3(0.0f, Screen.height / 2.5f);
-            Announcer.text = "Thank you for participating!.\nPress ENTER to exit.";
-            Announcer.gameObject.SetActive(true);
 
-            _GameOver = true;
-            InputManager.instance._approachRate = 0.0f;
+            //Randomize variable order
+            visVarOrder = new int[] /*{ 1, 2 };*/{ 0, 1, 2, 3, 4, 5, 6, 7, 8 };
+            Shuffle(visVarOrder);
+
+            ResetVariable();
         }
+
     }
 
     void Shuffle(int[] array)

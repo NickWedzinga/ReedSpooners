@@ -188,6 +188,11 @@ public class ObjectManager : MonoBehaviour
                 nrOfHighlightsChosen++;
                 Objects[highlightIndex].highlight = HIGHLIGHT.HIGHLIGHTEDSPIKE;
             }
+            else if(scenario == SCENARIO.TRAINING && Objects[highlightIndex].type == TYPE.COIN)
+            {
+                nrOfHighlightsChosen++;
+                Objects[highlightIndex].highlight = HIGHLIGHT.HIGHLIGHTEDCOIN;
+            }
         }
     }
 
